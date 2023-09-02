@@ -29,15 +29,6 @@
     "url": "git+https://github.com/alykoshin/tools-runner.git"
   },
   "keywords": [
-    "json",
-    "schema",
-    "typescript",
-    "compile",
-    "transpile",
-    "api",
-    "interface",
-    "typing",
-    "share"
   ],
   "author": "alykoshin",
   "license": "MIT",
@@ -51,9 +42,9 @@
     "execa": "^8.0.1",
     "json5": "^2.2.3",
     "semver": "^7.5.4",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "shx": "^0.3.4"
   },
   "devDependencies": {
-    "shx": "^0.3.4"
   }
 }
