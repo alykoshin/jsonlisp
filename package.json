@@ -1,0 +1,59 @@
+{
+  "name": "tools-runner",
+  "version": "0.0.1",
+  "description": "tools-runner",
+  "main": "dist/src/index.js",
+  "bin": {
+    "json2ts": "dist/src/cli.js"
+  },
+  "typings": "dist/src/index.d.ts",
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "build": "echo \"WARN: compile is set to run on postinstall\" && npm run clean && mkdir dist && npm run build:server",
+    "build:server": "tsc -d",
+    "clean": "shx rm -rf dist",
+    "lint": "eslint src/*.ts test/*.ts",
+    "tdd": "concurrently -r -p '' -k 'npm run watch' 'npm run watch:test'",
+    "test": "ava --timeout=300s --verbose",
+    "stresstest": "seq 1 10 | xargs -I{} npm test",
+    "prepublishOnly": "npm test",
+    "pretest": "npm run build && npm run lint",
+    "postinstall": "npm run build",
+    "watch": "tsc -w",
+    "watch:test": "ava -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alykoshin/tools-runner.git"
+  },
+  "keywords": [
+    "json",
+    "schema",
+    "typescript",
+    "compile",
+    "transpile",
+    "api",
+    "interface",
+    "typing",
+    "share"
+  ],
+  "author": "alykoshin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/alykoshin/tools-runner/issues"
+  },
+  "homepage": "https://github.com/bcherny/json-schema-to-typescript#readme",
+  "dependencies": {
+    "@types/node": "^20.5.9",
+    "@types/semver": "^7.5.1",
+    "execa": "^8.0.1",
+    "json5": "^2.2.3",
+    "semver": "^7.5.4",
+    "typescript": "^5.2.2"
+  },
+  "devDependencies": {
+    "shx": "^0.3.4"
+  }
+}
