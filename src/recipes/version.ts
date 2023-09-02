@@ -1,8 +1,8 @@
 import {coerce,ReleaseType} from "semver";
 
-import {read_config,write_config,FullConfig, getConfigFilename} from '../config.ts'
-import {log_data} from '../log.ts'
-import {run_action} from "../runner.ts";
+import {read_config,write_config,FullConfig, getConfigFilename} from '../lib/config'
+import {log_data} from '../lib/log'
+import {run_action} from "../lib/runner";
 
 //
 

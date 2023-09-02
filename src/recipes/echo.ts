@@ -1,5 +1,5 @@
-import {FullConfig} from "../config.ts";
-import {log_data} from "../log.ts";
+import {FullConfig} from "../lib/config";
+import {log_data} from "../lib/log";
 
 export interface EchoAction {
   action: 'echo'

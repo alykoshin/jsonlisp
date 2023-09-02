@@ -1,8 +1,8 @@
 import {$} from "execa";
 
-import {FullConfig} from "../config.ts";
-import {log_data} from "../log.ts";
-import {execute} from "../exec.ts";
+import {FullConfig} from "../lib/config";
+import {log_data} from "../lib/log";
+import {execute} from "../lib/exec";
 
 export interface ZipAction {
   action: 'zip'

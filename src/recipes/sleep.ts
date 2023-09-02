@@ -1,4 +1,4 @@
-import {FullConfig} from "../config.ts";
+import {FullConfig} from "../lib/config";
 
 export interface SleepAction {
   action: 'sleep'

@@ -1,6 +1,7 @@
-import {FullConfig} from "../config.ts";
-import {ActionConfig} from "./index.ts";
-import {run_action} from "../runner.ts";
+import {ActionConfig} from "./index";
+
+import {FullConfig} from "../lib/config";
+import {run_action} from "../lib/runner";
 
 export interface ParallelAction {
   action: 'parallel'

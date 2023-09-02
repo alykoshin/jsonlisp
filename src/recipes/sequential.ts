@@ -1,7 +1,7 @@
-import {read_config,FullConfig} from '../config.ts'
-import {BaseActionConfig, ActionConfig} from "./index.ts";
-import {log_data} from "../log.ts";
-import {run_action} from "../runner.ts";
+import {FullConfig} from '../lib/config'
+import {BaseActionConfig, ActionConfig} from "./";
+// import {log_data} from "../lib/log";
+import {run_action} from "../lib/runner";
 
 export interface SequentialAction extends BaseActionConfig {
   action: 'sequential'
@@ -10,7 +10,7 @@ export interface SequentialAction extends BaseActionConfig {
 
 export async function action_sequential(baseActionConfig: SequentialAction, fullConfig: FullConfig) {
   for (const subActionConfig of baseActionConfig.actions) {
-    const {action} = baseActionConfig;
+    // const {action} = baseActionConfig;
     // log(action);
     await run_action(subActionConfig, fullConfig);
   }

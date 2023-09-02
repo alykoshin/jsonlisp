@@ -1,0 +1,60 @@
+{
+  base_dir: './demo',
+  version: '2.5.22',
+  execute: {
+    action: 'sequential',
+    actions: [
+      {
+        action: 'echo',
+        value: 'sequential-1'
+      },
+      {
+        action: 'parallel',
+        actions: [
+          {
+            action: 'sequential',
+            actions: [
+              {
+                action: 'echo',
+                value: 'sequential-2-parallel-1-sequential-1',
+              },
+              {
+                action: 'sleep',
+                value: 500,
+              },
+              {
+                action: 'echo',
+                value: 'sequential-2-parallel-1-sequential-2',
+              },
+            ],
+          },
+          {
+            action: 'sequential',
+            actions: [
+              {
+                action: 'echo',
+                value: 'sequential-2-parallel-2-sequential-1',
+              },
+              {
+                action: 'sleep',
+                value: 500,
+              },
+              {
+                action: 'echo',
+                value: 'sequential-2-parallel-2-sequential-2',
+              }
+            ]
+          }
+        ],
+      },
+      {
+        action: 'echo',
+        value: 'sequential-3'
+      },
+      {
+        action: 'echo',
+        value: 'sequential-4'
+      },
+    ],
+  }
+}

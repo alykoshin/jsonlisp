@@ -1,8 +1,8 @@
 import {$} from "execa";
 
-import {execute} from "../exec.ts";
-import {FullConfig} from "../config.ts";
-import {log_data} from "../log.ts";
+import {execute} from "../lib/exec";
+import {FullConfig} from "../lib/config";
+import {log_data} from "../lib/log";
 
 export interface BuildAction {
   action: 'build'

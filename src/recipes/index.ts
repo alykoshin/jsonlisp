@@ -1,13 +1,13 @@
-import {action_sequential, SequentialAction} from './sequential.ts'
-import {action_parallel, ParallelAction} from './parallel.ts'
+import {action_sequential, SequentialAction} from './sequential'
+import {action_parallel, ParallelAction} from './parallel'
 
-import {action_echo, EchoAction} from './echo.ts'
-import {action_sleep, SleepAction} from './sleep.ts'
+import {action_echo, EchoAction} from './echo'
+import {action_sleep, SleepAction} from './sleep'
 
-import {action_build, BuildAction} from './build.ts'
-import {action_version, VersionAction} from './version.ts'
-import {action_zip, ZipAction} from './zip.ts'
-import {FullConfig} from "../config.ts";
+import {action_build, BuildAction} from './build'
+import {action_version, VersionAction} from './version'
+import {action_zip, ZipAction} from './zip'
+import {FullConfig} from "../lib/config";
 
 //
 
@@ -38,9 +38,8 @@ export const actions/*: Actions */= {
   zip: action_zip,
 }
 
-type ActionKeys = keyof typeof actions
+// type ActionKeys = keyof typeof actions
 
-//
 
 
 
