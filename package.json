@@ -20,7 +20,6 @@
     "stresstest": "seq 1 10 | xargs -I{} npm test",
     "prepublishOnly": "npm test",
     "pretest": "npm run build && npm run lint",
-    "postinstall": "npm run build",
     "watch": "tsc -w",
     "watch:test": "ava -w"
   },
