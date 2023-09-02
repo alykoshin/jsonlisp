@@ -11,7 +11,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "build": "echo \"WARN: compile is set to run on postinstall\" && npm run clean && mkdir dist && npm run build:server",
+    "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
     "build:server": "tsc -d",
     "clean": "shx rm -rf dist",
     "lint": "eslint src/*.ts test/*.ts",
