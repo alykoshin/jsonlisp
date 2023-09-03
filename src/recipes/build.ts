@@ -1,5 +1,3 @@
-import {$} from "execa";
-
 import {execute} from "../lib/exec";
 import {FullConfig} from "../lib/config";
 import {log_data} from "../lib/log";
@@ -19,18 +17,18 @@ export async function action_build({config}: BuildAction, fullConfig: FullConfig
     CONFIG_ENV: target, // 'top100',
   }
 
-  const $$ = $({
+  const options = {
     cwd: fullConfig.base_dir,
     env,
     // // stdio: 'inherit',
     // stdin: 'inherit',
     // stdout: 'pipe',
     // stderr: 'pipe',
-  });
+  };
 
   const command_line = `webpack --mode production`;
 
-  await execute($$, command_line, log);
+  await execute(command_line, options, {}, log);
 }
 
 // export async function build_all({config}: BuildAction, fullConfig: FullConfig) {

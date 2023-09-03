@@ -1,5 +1,3 @@
-import {$} from "execa";
-
 import {FullConfig} from "../lib/config";
 import {log_data} from "../lib/log";
 import {execute} from "../lib/exec";
@@ -33,10 +31,10 @@ export async function action_zip({config}: ZipAction, fullConfig: FullConfig) {
 
   const command_line = `"${zip_exe}" a ${t_sw} ${r_sw} ${x_sw} "${archive_pathname}" "${file_names}"`;
 
-  const $$ = $({
+  const options = {
     cwd: fullConfig.base_dir,
-  });
+  };
 
-  await execute($$, command_line, log);
+  await execute(command_line, options, {}, log);
 }
 
