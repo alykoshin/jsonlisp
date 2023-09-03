@@ -1,5 +1,5 @@
-import fs from "node:fs/promises";
-import * as json5 from "json5";
+import * as fs from "node:fs/promises";
+import json5 from "json5";
 import * as path from "path";
 
 import {ActionConfig} from "../recipes/";

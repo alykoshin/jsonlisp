@@ -2,6 +2,8 @@
 
 import {run_config} from './lib/runner'
 import {getConfigFilename} from './lib/config'
+// const {run_config} = await import('./lib/runner')
+// const {getConfigFilename} = await import( './lib/config')
 
 //
 
@@ -11,3 +13,5 @@ run_config(config_file)
 // await build_all();
 // await auto_version_patch();
 // await zip();
+
+export {}

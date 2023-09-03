@@ -4,7 +4,7 @@
     "lib": [
       "es2015"
     ],
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
@@ -20,5 +20,9 @@
     "dist",
     "example",
     "node_modules"
-  ]
+  ],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

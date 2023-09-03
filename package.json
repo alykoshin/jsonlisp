@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "description": "tools-runner",
   "main": "dist/src/index.js",
+  "type": "module",
   "bin": {
-    "json2ts": "dist/src/cli.js"
+    "tools-runner": "dist/src/cli.js"
   },
   "typings": "dist/src/index.d.ts",
   "engines": {
