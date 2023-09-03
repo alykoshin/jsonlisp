@@ -63,8 +63,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getConfigFilename = exports.write_config = exports.read_config = void 0;
-var promises_1 = __importDefault(require("node:fs/promises"));
-var json5 = __importStar(require("json5"));
+var fs = __importStar(require("node:fs/promises"));
+var json5_1 = __importDefault(require("json5"));
 var path = __importStar(require("path"));
 var log_1 = require("./log");
 var CONFIG_MODE = 'json5'; // 'json'
@@ -73,10 +73,10 @@ function read_config(config_file) {
         var content;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, promises_1.default.readFile(config_file, { encoding: 'utf8' })];
+                case 0: return [4 /*yield*/, fs.readFile(config_file, { encoding: 'utf8' })];
                 case 1:
                     content = _a.sent();
-                    return [2 /*return*/, CONFIG_MODE === 'json5' ? json5.parse(content) : JSON.parse(content)];
+                    return [2 /*return*/, CONFIG_MODE === 'json5' ? json5_1.default.parse(content) : JSON.parse(content)];
             }
         });
     });
@@ -86,7 +86,7 @@ function write_config(config_file, config) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, promises_1.default.writeFile(config_file, CONFIG_MODE === 'json5' ? json5.stringify(config, null, 2) : JSON.stringify(config, null, 2))];
+                case 0: return [4 /*yield*/, fs.writeFile(config_file, CONFIG_MODE === 'json5' ? json5_1.default.stringify(config, null, 2) : JSON.stringify(config, null, 2))];
                 case 1:
                     _a.sent();
                     return [2 /*return*/];

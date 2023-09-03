@@ -1,8 +1,4 @@
 "use strict";
-var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,26 +37,68 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = void 0;
-function execute($$, command_line, log) {
+var child_process_1 = require("child_process");
+// export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
+//   log(command_line);
+//   const p = $$`${command_line}`;
+//   if (!p || !p.stdout || !p.stderr) throw new Error('Error creating ChildProcess');
+//   p.stdout.on("data", data => log(data))
+//   p.stderr.on("data", data => log(data))
+//   await p;
+// }
+function execute(command_line, spawnOptions, execOptions, log) {
     return __awaiter(this, void 0, void 0, function () {
-        var p;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    log(command_line);
-                    p = $$(templateObject_1 || (templateObject_1 = __makeTemplateObject(["", ""], ["", ""])), command_line);
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    if (!execOptions.encoding)
+                        execOptions.encoding = 'utf8';
+                    if (!execOptions.timeout)
+                        execOptions.timeout = 0;
+                    var p = (0, child_process_1.spawn)(command_line, spawnOptions);
+                    var stdout = "";
+                    var stderr = "";
                     if (!p || !p.stdout || !p.stderr)
                         throw new Error('Error creating ChildProcess');
-                    p.stdout.on("data", function (data) { return log(data); });
-                    p.stderr.on("data", function (data) { return log(data); });
-                    return [4 /*yield*/, p];
-                case 1:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
+                    p.stdout.setEncoding(execOptions.encoding); //'utf8');
+                    p.stderr.setEncoding(execOptions.encoding); //'utf8');
+                    p.stdout.on('data', function (data) {
+                        log(data);
+                        data = data.toString();
+                        stdout += data;
+                    });
+                    p.stderr.on('data', function (data) {
+                        log(data);
+                        data = data.toString();
+                        stderr += data;
+                    });
+                    p.on('close', function (code) {
+                        console.log("child process closed with code ".concat(code));
+                        if (code === 0) {
+                            resolve({ code: code, stdout: stdout, stderr: stderr });
+                        }
+                        else {
+                            reject({ code: code, stdout: stdout, stderr: stderr });
+                        }
+                    });
+                    p.on('exit', function (code, signal) {
+                        console.log("child process exited with code ".concat(code, " and signal ").concat(signal));
+                        if (code === 0) {
+                            resolve({ code: code, stdout: stdout, stderr: stderr });
+                        }
+                        else {
+                            reject({ code: code, stdout: stdout, stderr: stderr });
+                        }
+                    });
+                    if (execOptions.timeout !== 0) {
+                        setTimeout(function () {
+                            console.log("child process timed out in ".concat(execOptions.timeout, " ms"));
+                            console.warn("WARN: Force kill not implemented");
+                        }, execOptions.timeout);
+                    }
+                })];
         });
     });
 }
 exports.execute = execute;
-var templateObject_1;
+// execute('dir', {shell: true,}, {}, (s) => console.log(s));
 //# sourceMappingURL=exec.js.map

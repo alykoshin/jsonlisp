@@ -37,13 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_build = void 0;
-var execa_1 = require("execa");
 var exec_1 = require("../lib/exec");
 var log_1 = require("../lib/log");
 function action_build(_a, fullConfig) {
     var config = _a.config;
     return __awaiter(this, void 0, void 0, function () {
-        var target, log, env, $$, command_line;
+        var target, log, env, options, command_line;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -52,16 +51,16 @@ function action_build(_a, fullConfig) {
                     env = {
                         CONFIG_ENV: target, // 'top100',
                     };
-                    $$ = (0, execa_1.$)({
+                    options = {
                         cwd: fullConfig.base_dir,
                         env: env,
                         // // stdio: 'inherit',
                         // stdin: 'inherit',
                         // stdout: 'pipe',
                         // stderr: 'pipe',
-                    });
+                    };
                     command_line = "webpack --mode production";
-                    return [4 /*yield*/, (0, exec_1.execute)($$, command_line, log)];
+                    return [4 /*yield*/, (0, exec_1.execute)(command_line, options, {}, log)];
                 case 1:
                     _b.sent();
                     return [2 /*return*/];

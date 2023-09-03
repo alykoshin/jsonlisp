@@ -37,13 +37,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_zip = void 0;
-var execa_1 = require("execa");
 var log_1 = require("../lib/log");
 var exec_1 = require("../lib/exec");
 function action_zip(_a, fullConfig) {
     var config = _a.config;
     return __awaiter(this, void 0, void 0, function () {
-        var log, date, zip_exe, archive_name, archive_pathname, file_names, r_sw, t_sw, x_sw, command_line, $$;
+        var log, date, zip_exe, archive_name, archive_pathname, file_names, r_sw, t_sw, x_sw, command_line, options;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -57,10 +56,10 @@ function action_zip(_a, fullConfig) {
                     t_sw = '-tzip';
                     x_sw = config.exclude_files.map(function (f) { return "-x!".concat(f); }).join(' ');
                     command_line = "\"".concat(zip_exe, "\" a ").concat(t_sw, " ").concat(r_sw, " ").concat(x_sw, " \"").concat(archive_pathname, "\" \"").concat(file_names, "\"");
-                    $$ = (0, execa_1.$)({
+                    options = {
                         cwd: fullConfig.base_dir,
-                    });
-                    return [4 /*yield*/, (0, exec_1.execute)($$, command_line, log)];
+                    };
+                    return [4 /*yield*/, (0, exec_1.execute)(command_line, options, {}, log)];
                 case 1:
                     _b.sent();
                     return [2 /*return*/];
