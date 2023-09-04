@@ -4,15 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.log_data = void 0;
-var chalk_1 = __importDefault(require("chalk"));
-function log_data(data, prefix) {
-    if (prefix === void 0) { prefix = ''; }
+const chalk_1 = __importDefault(require("chalk"));
+function log_data(data, prefix = '') {
     data = data.toString();
     data
         .split(/\r?\n/)
-        .forEach(function (line) {
-        var l = typeof prefix !== 'undefined'
-            ? chalk_1.default.grey("[".concat(prefix, "] ")) + line
+        .forEach(line => {
+        const l = typeof prefix !== 'undefined'
+            ? chalk_1.default.grey(`[${prefix}] `) + line
             : line;
         process.stdout.write(l + "\n");
     });

@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-var sequential_1 = require("./sequential");
-var parallel_1 = require("./parallel");
-var echo_1 = require("./echo");
-var sleep_1 = require("./sleep");
-var exec_1 = require("./exec");
-var build_1 = require("./build");
-var version_1 = require("./version");
-var zip_1 = require("./zip");
-var yarnInstallProd_1 = require("./yarnInstallProd");
+const sequential_1 = require("./sequential");
+const parallel_1 = require("./parallel");
+const echo_1 = require("./echo");
+const sleep_1 = require("./sleep");
+const exec_1 = require("./exec");
+const build_1 = require("./build");
+const version_1 = require("./version");
+const zip_1 = require("./zip");
+const yarnInstallProd_1 = require("./yarnInstallProd");
 // export type ActionArrayDefinition = [
 //
 // ];

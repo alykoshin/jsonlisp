@@ -5,6 +5,7 @@
       "es2015"
     ],
     "module": "commonjs",
+//    "module": "nod",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
@@ -13,7 +14,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es5",
+//    "target": "es5",
+    "target": "esnext",
     "esModuleInterop": true
   },
   "exclude": [

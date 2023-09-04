@@ -2,6 +2,7 @@
   "name": "tools-runner",
   "version": "0.0.1",
   "description": "tools-runner",
+  "type": "commonjs",
   "main": "dist/index.js",
   "bin": {
     "tools-runner": "dist/cli.js"
