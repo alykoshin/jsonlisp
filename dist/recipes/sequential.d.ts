@@ -1,11 +1,16 @@
 import { FullConfig } from '../lib/config';
-import { ActionConfig, BaseActionConfig } from "./";
+import { ActionDefinition, BaseActionConfig } from "./";
+import { Runner } from "../lib/runner";
 export interface SequentialAction extends BaseActionConfig {
     action: 'sequential';
-    actions: ActionConfig[];
+    actions: ActionDefinition[];
 }
 export type SequentialMultiAction = [
     action: 'sequential',
-    ...actions: ActionConfig[]
+    ...actions: ActionDefinition[]
 ];
-export declare function action_sequential(baseActionConfig: SequentialAction | SequentialMultiAction, fullConfig: FullConfig): Promise<void>;
+export declare function action_sequential(definition: SequentialAction | SequentialMultiAction, { id, fullConfig, runner }: {
+    id: number | string;
+    fullConfig: FullConfig;
+    runner: Runner;
+}): Promise<void>;

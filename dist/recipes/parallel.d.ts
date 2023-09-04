@@ -1,11 +1,16 @@
-import { ActionConfig } from "./index";
+import { ActionDefinition } from "./index";
 import { FullConfig } from "../lib/config";
+import { Runner } from "../lib/runner";
 export interface ParallelAction {
     action: 'parallel';
-    actions: ActionConfig[];
+    actions: ActionDefinition[];
 }
 export type ParallelMultiAction = [
     action: 'parallel',
-    ...actions: ActionConfig[]
+    ...actions: ActionDefinition[]
 ];
-export declare function action_parallel(baseActionConfig: ParallelAction | ParallelMultiAction, fullConfig: FullConfig): Promise<void[]>;
+export declare function action_parallel(definition: ParallelAction | ParallelMultiAction, { id, fullConfig, runner }: {
+    id: number | string;
+    fullConfig: FullConfig;
+    runner: Runner;
+}): Promise<void[]>;

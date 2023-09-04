@@ -1,8 +1,8 @@
-import { ActionConfig } from "../recipes/";
+import { ActionDefinition } from "../recipes/";
 export interface FullConfig {
     base_dir: string;
     version: string;
-    execute: ActionConfig;
+    execute: ActionDefinition;
 }
 export declare function read_config(config_file: string): Promise<FullConfig>;
 export declare function write_config(config_file: string, config: FullConfig): Promise<void>;
