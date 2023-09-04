@@ -6,11 +6,11 @@ import { action_exec, ExecAction } from './exec';
 import { action_build, BuildAction } from './build';
 import { action_version, VersionAction } from './version';
 import { action_zip, ZipAction } from './zip';
-import { action_yarnInstallProd } from "./yarnInstallProd";
+import { action_yarnInstallProd, YarnInstallProdAction } from "./yarnInstallProd";
 export interface BaseActionConfig {
     action: string;
 }
-export type ActionDefinition = SequentialAction | SequentialMultiAction | ParallelAction | ParallelMultiAction | EchoAction | SleepAction | ExecAction | BuildAction | VersionAction | ZipAction;
+export type ActionDefinition = SequentialAction | SequentialMultiAction | ParallelAction | ParallelMultiAction | EchoAction | SleepAction | ExecAction | BuildAction | YarnInstallProdAction | VersionAction | ZipAction;
 export declare const actions: {
     sequential: typeof action_sequential;
     parallel: typeof action_parallel;

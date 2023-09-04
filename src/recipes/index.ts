@@ -18,7 +18,16 @@ export interface BaseActionConfig {
 }
 
 // export type ActionConfig = SequentialAction | ParallelAction | EchoAction | SleepAction | BuildAction | VersionAction | ZipAction
-export type ActionDefinition = SequentialAction | SequentialMultiAction | ParallelAction | ParallelMultiAction | EchoAction | SleepAction | ExecAction | BuildAction | VersionAction | ZipAction
+export type ActionDefinition =
+  SequentialAction | SequentialMultiAction |
+  ParallelAction | ParallelMultiAction |
+
+  EchoAction | SleepAction |
+
+  ExecAction | BuildAction | YarnInstallProdAction |
+
+  VersionAction |
+  ZipAction
 
 // export type ActionArrayDefinition = [
 //
