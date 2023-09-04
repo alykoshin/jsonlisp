@@ -9,7 +9,7 @@ import {action_build, BuildAction} from './build'
 import {action_version, VersionAction} from './version'
 import {action_zip, ZipAction} from './zip'
 import {FullConfig} from "../lib/config";
-import {action_yarnInstallProd} from "./yarnInstallProd";
+import {action_yarnInstallProd, YarnInstallProdAction} from "./yarnInstallProd";
 
 //
 

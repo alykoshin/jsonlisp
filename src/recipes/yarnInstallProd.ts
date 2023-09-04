@@ -3,6 +3,14 @@ import {FullConfig} from "../lib/config";
 import {Runner} from "../lib/runner";
 import {ExecAction} from "./exec";
 
+export interface YarnInstallProdAction {
+  action: 'yarnInstallProd'
+  config: {
+    cwd: string
+    env: { [key: string]: string }
+  }
+}
+
 function installDepsCmd() {
   const program = 'yarn';
   const keys = [
