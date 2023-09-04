@@ -4,4 +4,8 @@ export interface ParallelAction {
     action: 'parallel';
     actions: ActionConfig[];
 }
-export declare function action_parallel(actionConfig: ParallelAction, fullConfig: FullConfig): Promise<void[]>;
+export type ParallelMultiAction = [
+    action: 'parallel',
+    ...actions: ActionConfig[]
+];
+export declare function action_parallel(baseActionConfig: ParallelAction | ParallelMultiAction, fullConfig: FullConfig): Promise<void[]>;

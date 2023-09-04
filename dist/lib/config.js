@@ -66,7 +66,7 @@ exports.getConfigFilename = exports.write_config = exports.read_config = void 0;
 var fs = __importStar(require("node:fs/promises"));
 var json5_1 = __importDefault(require("json5"));
 var path = __importStar(require("path"));
-var log_1 = require("./log");
+var pkg = require('../../package.json');
 var CONFIG_MODE = 'json5'; // 'json'
 function read_config(config_file) {
     return __awaiter(this, void 0, void 0, function () {
@@ -101,12 +101,9 @@ function replace_extname(pathname, extname) {
 function getConfigFilename() {
     // log_data('process.argv:', process.argv)
     var config_file = process.argv[2];
-    // if (!config_file) throw new Error('config file not specified');
     if (!config_file) {
-        var this_file = process.argv[1];
-        config_file = replace_extname(this_file, CONFIG_MODE === 'json5' ? '.json5' : '.json');
+        config_file = pkg.name + (CONFIG_MODE === 'json5' ? '.json5' : '.json');
     }
-    (0, log_1.log_data)("Using config file \"".concat(config_file, "\""));
     return config_file;
 }
 exports.getConfigFilename = getConfigFilename;

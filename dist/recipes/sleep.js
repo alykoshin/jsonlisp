@@ -37,17 +37,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_sleep = void 0;
-function action_sleep(actionConfig, _fullConfig) {
+function action_sleep(definition, _a) {
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
         var action, value;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    action = actionConfig.action, value = actionConfig.value;
+                    action = definition.action, value = definition.value;
+                    // log_data(message, action);
+                    runner.debug(id, "sleep ".concat(value, "ms"));
                     return [4 /*yield*/, new Promise(function (resolve, _reject) { return setTimeout(resolve, value); })];
-                case 1: 
-                // log_data(message, action);
-                return [2 /*return*/, _a.sent()];
+                case 1:
+                    _b.sent();
+                    runner.log(id, "sleep done");
+                    return [2 /*return*/];
             }
         });
     });

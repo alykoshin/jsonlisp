@@ -1,44 +1,63 @@
 import {log_data} from './log'
 import {read_config,FullConfig} from './config'
-import {actions, ActionConfig, ActionMethod} from '../recipes/'
+import {actions, ActionDefinition} from '../recipes/'
+import chalk from "chalk";
 
-export async function run_config(config_filename: string) {
-  const log = (s: number | string) => log_data(s, 'run_config');
-  const fullConfig = await read_config(config_filename);
-  const actionObj = fullConfig.execute;
-  // for (const step of sequence) {
-  const {action} = actionObj;
-  log(action);
-  await run_action(actionObj, fullConfig);
-  // }
-}
-
-export async function run_action(actionConfig: ActionConfig, fullConfig: FullConfig) {
-  log_data(actionConfig.action, 'run_action');
-  const actionName = actionConfig.action
-  const actionMethod = <ActionMethod> actions[actionName]
-  if (actionMethod) {
-    // switch (actionName) {
-    //   case 'sequential':
-    //   case 'parallel':
-    //   case 'echo':
-    //   case 'sleep':
-    //   case 'build':
-    //   case 'version':
-    //   case 'zip':
-    ////     await run_sequential(actionConfig, fullConfig);
-    await actionMethod(actionConfig, fullConfig);
-    // break;
-    //
-    // await build_all(actionConfig, fullConfig);
-    // break;
-    // await auto_version(actionConfig, fullConfig);
-    // break;
-    // await action_zip(actionConfig, fullConfig);
-    // break;
-    // default:
-  } else {
-    throw new Error(`Unknown action at action config "${JSON.stringify(actionConfig)}"`);
+export type ActionMethod/*<T extends ActionConfig>*/ = (
+  definition: ActionDefinition/*T*/,
+  {
+    id,
+    fullConfig,
+    runner
+  }: {
+    id: number | string,
+    fullConfig: FullConfig,
+    runner: Runner
   }
-}
+) => Promise<any>
 
+export type MultiAction = [
+  action: string,
+  ...actions: ActionDefinition[]
+];
+
+export class Runner {
+  actionCount: number = 0;
+
+  extractAction(actionDefinition: ActionDefinition): {name: string, method: ActionMethod} {
+    const name = Array.isArray(actionDefinition) ? actionDefinition[0] : actionDefinition.action;
+    const method = <ActionMethod>actions[name]
+    if (!method) {
+      throw new Error(`Unknown action at action definition "${JSON.stringify(actionDefinition)}"`);
+    }
+    return {name, method}
+  }
+
+  async start(filename: string) {
+    // const log = (s: number | string) => log_data(s, 'run_config');
+    this.log(this.actionCount, `Using config file "${filename}"`);
+    const fullConfig = await read_config(filename);
+
+    this.actionCount = 0;
+    await this.execute(fullConfig.execute, fullConfig);
+  }
+
+  async execute(actionConfig: ActionDefinition, fullConfig: FullConfig) {
+    // const actionName = Array.isArray(actionConfig) ? actionConfig[0] : actionConfig.action;
+    // log_data(actionName, 'run_action');
+
+    const id = this.actionCount++;
+    const {name, method} = this.extractAction(actionConfig);
+    this.debug(id, `execute "${name}"`);
+    await method(actionConfig, { id, fullConfig, runner: this });
+  }
+
+  log(id: number|string, s: number|string) {
+    log_data(s, id)
+  }
+
+  debug(id: number|string, s: number|string) {
+    log_data(chalk.grey(s), id)
+  }
+
+}

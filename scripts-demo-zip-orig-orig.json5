@@ -10,13 +10,19 @@
           {
             action: 'build',
             config: {
-              target: 'top100',
+              base_dir: './demo',
+              env: {
+                CONFIG_ENV: 'top100',
+              },
             },
           },
           {
             action: 'build',
             config: {
-              target: 'stats-top100',
+              base_dir: './demo',
+              env: {
+                CONFIG_ENV: 'stats-top100',
+              }
             },
           },
         ],

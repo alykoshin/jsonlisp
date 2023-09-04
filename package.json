@@ -2,26 +2,23 @@
   "name": "tools-runner",
   "version": "0.0.1",
   "description": "tools-runner",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "bin": {
-    "tools-runner": "dist/src/cli.js"
+    "tools-runner": "dist/cli.js"
   },
-  "typings": "dist/src/index.d.ts",
+  "typings": "dist/cli.d.ts",
   "engines": {
     "node": ">=10.0.0"
   },
   "scripts": {
+    "version": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
+    "start": "ts-node --esm ./src/cli.ts",
+    "start-js": "node ./dist/cli.js",
     "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
     "build:server": "tsc -d",
     "clean": "shx rm -rf dist",
     "lint": "eslint src/*.ts test/*.ts",
-    "tdd": "concurrently -r -p '' -k 'npm run watch' 'npm run watch:test'",
-    "test": "ava --timeout=300s --verbose",
-    "stresstest": "seq 1 10 | xargs -I{} npm test",
-    "prepublishOnly": "npm test",
-    "pretest": "npm run build && npm run lint",
-    "watch": "tsc -w",
-    "watch:test": "ava -w"
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -37,9 +34,11 @@
   "dependencies": {
     "@types/node": "^20.5.9",
     "@types/semver": "^7.5.1",
+    "chalk": "4",
     "json5": "^2.2.3",
     "semver": "^7.5.4",
     "shx": "^0.3.4",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "devDependencies": {}

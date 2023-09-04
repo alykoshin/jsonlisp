@@ -37,22 +37,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_sequential = void 0;
-// import {log_data} from "../lib/log";
-var runner_1 = require("../lib/runner");
-function action_sequential(baseActionConfig, fullConfig) {
+function action_sequential(definition, _a) {
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
-        var _i, _a, subActionConfig;
+        var actions, _action, _actions, _i, actions_1, subActionConfig;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _i = 0, _a = baseActionConfig.actions;
+                    if (Array.isArray(definition)) {
+                        _action = definition[0], _actions = definition.slice(1);
+                        actions = _actions;
+                    }
+                    else {
+                        actions = definition.actions;
+                    }
+                    _i = 0, actions_1 = actions;
                     _b.label = 1;
                 case 1:
-                    if (!(_i < _a.length)) return [3 /*break*/, 4];
-                    subActionConfig = _a[_i];
+                    if (!(_i < actions_1.length)) return [3 /*break*/, 4];
+                    subActionConfig = actions_1[_i];
                     // const {action} = baseActionConfig;
                     // log(action);
-                    return [4 /*yield*/, (0, runner_1.run_action)(subActionConfig, fullConfig)];
+                    return [4 /*yield*/, runner.execute(subActionConfig, fullConfig)];
                 case 2:
                     // const {action} = baseActionConfig;
                     // log(action);

@@ -1,8 +1,9 @@
-import {coerce,ReleaseType} from "semver";
+import {coerce, ReleaseType} from "semver";
 
-import {read_config,write_config,FullConfig, getConfigFilename} from '../lib/config'
+import {read_config, write_config, FullConfig, getConfigFilename} from '../lib/config'
 import {log_data} from '../lib/log'
-import {run_action} from "../lib/runner";
+import {Runner} from "../lib/runner";
+import {SleepAction} from "./sleep";
 
 //
 
@@ -16,8 +17,11 @@ export interface VersionAction {
 }
 
 
-export async function action_version({config}: VersionAction, fullConfig: FullConfig) {
-  const log = (s: number | string) => log_data(s, 'version');
+export async function action_version(
+  definition: VersionAction,
+  {id, fullConfig, runner}: { id: number | string, fullConfig: FullConfig, runner: Runner }
+) {
+  const {config} = definition;
   const release = config.release ?? 'patch';
 
   // const mainConfig = await read_config(config_file);
@@ -30,5 +34,5 @@ export async function action_version({config}: VersionAction, fullConfig: FullCo
 
   const config_file = getConfigFilename();
   await write_config(config_file, fullConfig)
-  log(`version ${orig_version} -> ${fullConfig.version}`);
+  runner.log(id, `version ${orig_version} -> ${fullConfig.version}`);
 }

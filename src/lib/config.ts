@@ -2,15 +2,17 @@ import * as fs from "node:fs/promises";
 import json5 from "json5";
 import * as path from "path";
 
-import {ActionConfig} from "../recipes/";
-import {log_data} from "./log";
+import {ActionDefinition} from "../recipes/";
+
+
+const pkg = require('../../package.json');
 
 const CONFIG_MODE = 'json5'; // 'json'
 
 export interface FullConfig {
   base_dir: string
   version: string
-  execute: ActionConfig
+  execute: ActionDefinition
 }
 
 export async function read_config(config_file: string): Promise<FullConfig> {
@@ -29,12 +31,12 @@ function replace_extname(pathname: string, extname: string) {
 export function getConfigFilename(): string {
   // log_data('process.argv:', process.argv)
   let config_file = process.argv[2];
-// if (!config_file) throw new Error('config file not specified');
+
   if (!config_file) {
-    const this_file = process.argv[1];
-    config_file = replace_extname(this_file, CONFIG_MODE === 'json5' ? '.json5' : '.json');
+    config_file = pkg.name + (CONFIG_MODE === 'json5' ? '.json5' : '.json');
   }
-  log_data(`Using config file "${config_file}"`);
   return config_file;
 }
+
+
 

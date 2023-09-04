@@ -37,13 +37,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_echo = void 0;
-var log_1 = require("../lib/log");
-function action_echo(actionConfig, _fullConfig) {
+function action_echo(definition, _a) {
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
         var action, value;
-        return __generator(this, function (_a) {
-            action = actionConfig.action, value = actionConfig.value;
-            (0, log_1.log_data)(value, action);
+        return __generator(this, function (_b) {
+            action = definition.action, value = definition.value;
+            runner.log(id, value);
             return [2 /*return*/];
         });
     });

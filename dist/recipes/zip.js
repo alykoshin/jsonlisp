@@ -37,16 +37,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_zip = void 0;
-var log_1 = require("../lib/log");
 var exec_1 = require("../lib/exec");
-function action_zip(_a, fullConfig) {
-    var config = _a.config;
+function action_zip(definition, _a) {
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
-        var log, date, zip_exe, archive_name, archive_pathname, file_names, r_sw, t_sw, x_sw, command_line, options;
+        var config, date, zip_exe, archive_name, archive_pathname, file_names, r_sw, t_sw, x_sw, command_line, options;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    log = function (s) { return (0, log_1.log_data)(s, 'zip'); };
+                    config = definition.config;
                     date = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
                     zip_exe = "c:/Program Files/7-Zip/7z.exe";
                     archive_name = "".concat(config.archive_prefix, "-v").concat(fullConfig.version, "-").concat(date, ".zip");
@@ -59,7 +58,7 @@ function action_zip(_a, fullConfig) {
                     options = {
                         cwd: fullConfig.base_dir,
                     };
-                    return [4 /*yield*/, (0, exec_1.execute)(command_line, options, {}, log)];
+                    return [4 /*yield*/, (0, exec_1.execute)(command_line, options, {}, function (s) { return runner.log(id, s); })];
                 case 1:
                     _b.sent();
                     return [2 /*return*/];

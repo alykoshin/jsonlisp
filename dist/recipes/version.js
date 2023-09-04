@@ -39,16 +39,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_version = void 0;
 var semver_1 = require("semver");
 var config_1 = require("../lib/config");
-var log_1 = require("../lib/log");
-function action_version(_a, fullConfig) {
+function action_version(definition, _a) {
     var _b;
-    var config = _a.config;
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
-        var log, release, orig_version, v, config_file;
+        var config, release, orig_version, v, config_file;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
-                    log = function (s) { return (0, log_1.log_data)(s, 'version'); };
+                    config = definition.config;
                     release = (_b = config.release) !== null && _b !== void 0 ? _b : 'patch';
                     orig_version = fullConfig.version;
                     v = (0, semver_1.coerce)(orig_version);
@@ -61,7 +60,7 @@ function action_version(_a, fullConfig) {
                     return [4 /*yield*/, (0, config_1.write_config)(config_file, fullConfig)];
                 case 1:
                     _c.sent();
-                    log("version ".concat(orig_version, " -> ").concat(fullConfig.version));
+                    runner.log(id, "version ".concat(orig_version, " -> ").concat(fullConfig.version));
                     return [2 /*return*/];
             }
         });

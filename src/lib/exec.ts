@@ -1,5 +1,4 @@
 import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
-import * as timers from "timers";
 
 // export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
 //   log(command_line);
@@ -10,16 +9,22 @@ import * as timers from "timers";
 //   await p;
 // }
 
-export async function execute(command_line: string, spawnOptions: SpawnOptionsWithoutStdio, execOptions: {
-  encoding?: BufferEncoding, timeout?: number
-}, log: (s: number | string) => void) {
-
+export async function execute(
+  command_line: string,
+  spawnOptions: SpawnOptionsWithoutStdio,
+  execOptions: {
+    encoding?: BufferEncoding, timeout?: number
+  },
+  log: (s: number | string) => void
+) {
 
   return new Promise((resolve, reject) => {
     if (!execOptions.encoding) execOptions.encoding = 'utf8';
     if (!execOptions.timeout) execOptions.timeout = 0;
 
-    const p = spawn(command_line, spawnOptions);
+    spawnOptions.shell = true;
+
+    const p = spawn(command_line, [], spawnOptions);
 
     let stdout = "";
     let stderr = "";
@@ -42,7 +47,7 @@ export async function execute(command_line: string, spawnOptions: SpawnOptionsWi
     });
 
     p.on('close', function (code) {
-      console.log(`child process closed with code ${code}`);
+      log(`child process closed with code ${code}`);
       if (code === 0) {
         resolve({code, stdout, stderr});
       } else {
@@ -51,7 +56,7 @@ export async function execute(command_line: string, spawnOptions: SpawnOptionsWi
     });
 
     p.on('exit', function (code, signal) {
-      console.log(`child process exited with code ${code} and signal ${signal}`);
+      log(`child process exited with code ${code} and signal ${signal}`);
       if (code === 0) {
         resolve({code, stdout, stderr});
       } else {
@@ -60,9 +65,9 @@ export async function execute(command_line: string, spawnOptions: SpawnOptionsWi
     });
 
     if (execOptions.timeout !== 0) {
-      setTimeout(()=> {
-        console.log(`child process timed out in ${execOptions.timeout} ms`);
-        console.warn(`WARN: Force kill not implemented`);
+      setTimeout(() => {
+        log(`child process timed out in ${execOptions.timeout} ms`);
+        log(`WARN: Force kill not implemented`);
 
       }, execOptions.timeout);
     }
@@ -71,4 +76,3 @@ export async function execute(command_line: string, spawnOptions: SpawnOptionsWi
 
 }
 
-// execute('dir', {shell: true,}, {}, (s) => console.log(s));

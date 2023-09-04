@@ -1,7 +1,57 @@
 {
   base_dir: './demo',
   version: '2.5.22',
-  execute: {
+  execute: [
+    'sequential',
+    {
+      action: 'echo',
+      value: 'sequential-1'
+    },
+    [
+      'parallel',
+      [
+        'sequential',
+        {
+          action: 'echo',
+          value: 'sequential-2-parallel-1-sequential-1',
+        },
+        {
+          action: 'sleep',
+          value: 500,
+        },
+        {
+          action: 'echo',
+          value: 'sequential-2-parallel-1-sequential-2',
+        },
+      ],
+      [
+        'sequential',
+        {
+          action: 'echo',
+          value: 'sequential-2-parallel-2-sequential-1',
+        },
+        {
+          action: 'sleep',
+          value: 500,
+        },
+        {
+          action: 'echo',
+          value: 'sequential-2-parallel-2-sequential-2',
+        }
+      ]
+    ],
+    {
+      action: 'exec',
+      config: {
+        command: 'cmd /c echo'
+      },
+    },
+    {
+      action: 'echo',
+      value: 'sequential-4'
+    },
+  ],
+  _execute: {
     action: 'sequential',
     actions: [
       {

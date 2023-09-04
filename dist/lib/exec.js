@@ -54,7 +54,8 @@ function execute(command_line, spawnOptions, execOptions, log) {
                         execOptions.encoding = 'utf8';
                     if (!execOptions.timeout)
                         execOptions.timeout = 0;
-                    var p = (0, child_process_1.spawn)(command_line, spawnOptions);
+                    spawnOptions.shell = true;
+                    var p = (0, child_process_1.spawn)(command_line, [], spawnOptions);
                     var stdout = "";
                     var stderr = "";
                     if (!p || !p.stdout || !p.stderr)
@@ -72,7 +73,7 @@ function execute(command_line, spawnOptions, execOptions, log) {
                         stderr += data;
                     });
                     p.on('close', function (code) {
-                        console.log("child process closed with code ".concat(code));
+                        log("child process closed with code ".concat(code));
                         if (code === 0) {
                             resolve({ code: code, stdout: stdout, stderr: stderr });
                         }
@@ -81,7 +82,7 @@ function execute(command_line, spawnOptions, execOptions, log) {
                         }
                     });
                     p.on('exit', function (code, signal) {
-                        console.log("child process exited with code ".concat(code, " and signal ").concat(signal));
+                        log("child process exited with code ".concat(code, " and signal ").concat(signal));
                         if (code === 0) {
                             resolve({ code: code, stdout: stdout, stderr: stderr });
                         }
@@ -91,8 +92,8 @@ function execute(command_line, spawnOptions, execOptions, log) {
                     });
                     if (execOptions.timeout !== 0) {
                         setTimeout(function () {
-                            console.log("child process timed out in ".concat(execOptions.timeout, " ms"));
-                            console.warn("WARN: Force kill not implemented");
+                            log("child process timed out in ".concat(execOptions.timeout, " ms"));
+                            log("WARN: Force kill not implemented");
                         }, execOptions.timeout);
                     }
                 })];
@@ -100,5 +101,4 @@ function execute(command_line, spawnOptions, execOptions, log) {
     });
 }
 exports.execute = execute;
-// execute('dir', {shell: true,}, {}, (s) => console.log(s));
 //# sourceMappingURL=exec.js.map

@@ -35,70 +35,71 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.run_action = exports.run_config = void 0;
+exports.Runner = void 0;
 var log_1 = require("./log");
 var config_1 = require("./config");
 var recipes_1 = require("../recipes/");
-function run_config(config_filename) {
-    return __awaiter(this, void 0, void 0, function () {
-        var log, fullConfig, actionObj, action;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    log = function (s) { return (0, log_1.log_data)(s, 'run_config'); };
-                    return [4 /*yield*/, (0, config_1.read_config)(config_filename)];
-                case 1:
-                    fullConfig = _a.sent();
-                    actionObj = fullConfig.execute;
-                    action = actionObj.action;
-                    log(action);
-                    return [4 /*yield*/, run_action(actionObj, fullConfig)];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
+var chalk_1 = __importDefault(require("chalk"));
+var Runner = /** @class */ (function () {
+    function Runner() {
+        this.actionCount = 0;
+    }
+    Runner.prototype.extractAction = function (actionDefinition) {
+        var name = Array.isArray(actionDefinition) ? actionDefinition[0] : actionDefinition.action;
+        var method = recipes_1.actions[name];
+        if (!method) {
+            throw new Error("Unknown action at action definition \"".concat(JSON.stringify(actionDefinition), "\""));
+        }
+        return { name: name, method: method };
+    };
+    Runner.prototype.start = function (filename) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fullConfig;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        // const log = (s: number | string) => log_data(s, 'run_config');
+                        this.log(this.actionCount, "Using config file \"".concat(filename, "\""));
+                        return [4 /*yield*/, (0, config_1.read_config)(filename)];
+                    case 1:
+                        fullConfig = _a.sent();
+                        this.actionCount = 0;
+                        return [4 /*yield*/, this.execute(fullConfig.execute, fullConfig)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-    });
-}
-exports.run_config = run_config;
-function run_action(actionConfig, fullConfig) {
-    return __awaiter(this, void 0, void 0, function () {
-        var actionName, actionMethod;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    (0, log_1.log_data)(actionConfig.action, 'run_action');
-                    actionName = actionConfig.action;
-                    actionMethod = recipes_1.actions[actionName];
-                    if (!actionMethod) return [3 /*break*/, 2];
-                    // switch (actionName) {
-                    //   case 'sequential':
-                    //   case 'parallel':
-                    //   case 'echo':
-                    //   case 'sleep':
-                    //   case 'build':
-                    //   case 'version':
-                    //   case 'zip':
-                    ////     await run_sequential(actionConfig, fullConfig);
-                    return [4 /*yield*/, actionMethod(actionConfig, fullConfig)];
-                case 1:
-                    // switch (actionName) {
-                    //   case 'sequential':
-                    //   case 'parallel':
-                    //   case 'echo':
-                    //   case 'sleep':
-                    //   case 'build':
-                    //   case 'version':
-                    //   case 'zip':
-                    ////     await run_sequential(actionConfig, fullConfig);
-                    _a.sent();
-                    return [3 /*break*/, 3];
-                case 2: throw new Error("Unknown action at action config \"".concat(JSON.stringify(actionConfig), "\""));
-                case 3: return [2 /*return*/];
-            }
+    };
+    Runner.prototype.execute = function (actionConfig, fullConfig) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, _a, name, method;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        id = this.actionCount++;
+                        _a = this.extractAction(actionConfig), name = _a.name, method = _a.method;
+                        this.debug(id, "execute \"".concat(name, "\""));
+                        return [4 /*yield*/, method(actionConfig, { id: id, fullConfig: fullConfig, runner: this })];
+                    case 1:
+                        _b.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-    });
-}
-exports.run_action = run_action;
+    };
+    Runner.prototype.log = function (id, s) {
+        (0, log_1.log_data)(s, id);
+    };
+    Runner.prototype.debug = function (id, s) {
+        (0, log_1.log_data)(chalk_1.default.grey(s), id);
+    };
+    return Runner;
+}());
+exports.Runner = Runner;
 //# sourceMappingURL=runner.js.map

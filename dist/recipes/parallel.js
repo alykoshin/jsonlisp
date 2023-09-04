@@ -37,18 +37,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.action_parallel = void 0;
-var runner_1 = require("../lib/runner");
-function action_parallel(actionConfig, fullConfig) {
+function action_parallel(definition, _a) {
+    var id = _a.id, fullConfig = _a.fullConfig, runner = _a.runner;
     return __awaiter(this, void 0, void 0, function () {
-        var promises;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var actions, _action, _actions, promises;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    promises = actionConfig.actions.map(function (a) { return (0, runner_1.run_action)(a, fullConfig); });
+                    if (Array.isArray(definition)) {
+                        _action = definition[0], _actions = definition.slice(1);
+                        actions = _actions;
+                    }
+                    else {
+                        actions = definition.actions;
+                    }
+                    promises = actions.map(function (a) { return runner.execute(a, fullConfig); });
                     return [4 /*yield*/, Promise.all(promises)];
                 case 1: 
                 // }
-                return [2 /*return*/, _a.sent()];
+                return [2 /*return*/, _b.sent()];
             }
         });
     });

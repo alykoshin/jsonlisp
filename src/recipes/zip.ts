@@ -1,6 +1,6 @@
 import {FullConfig} from "../lib/config";
-import {log_data} from "../lib/log";
 import {execute} from "../lib/exec";
+import {Runner} from "../lib/runner";
 
 export interface ZipAction {
   action: 'zip'
@@ -12,8 +12,11 @@ export interface ZipAction {
   }
 }
 
-export async function action_zip({config}: ZipAction, fullConfig: FullConfig) {
-  const log = (s: number | string) => log_data(s, 'zip');
+export async function action_zip(
+  definition: ZipAction,
+  {id, fullConfig, runner}: { id: number | string, fullConfig: FullConfig, runner: Runner}
+){
+  const {config} = definition;
   const date = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
 
 // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
@@ -35,6 +38,6 @@ export async function action_zip({config}: ZipAction, fullConfig: FullConfig) {
     cwd: fullConfig.base_dir,
   };
 
-  await execute(command_line, options, {}, log);
+  await execute(command_line, options, {}, (s: number|string) => runner.log(id, s));
 }
 

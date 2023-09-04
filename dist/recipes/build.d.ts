@@ -2,7 +2,10 @@ import { FullConfig } from "../lib/config";
 export interface BuildAction {
     action: 'build';
     config: {
-        target: string;
+        base_dir: string;
+        env: {
+            [key: string]: string;
+        };
     };
 }
-export declare function action_build({ config }: BuildAction, fullConfig: FullConfig): Promise<void>;
+export declare function action_build(actionDefinition: BuildAction, fullConfig: FullConfig): Promise<void>;
