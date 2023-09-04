@@ -33,9 +33,11 @@
   },
   "homepage": "https://github.com/bcherny/json-schema-to-typescript#readme",
   "dependencies": {
+    "@types/ejs": "^3.1.2",
     "@types/node": "^20.5.9",
     "@types/semver": "^7.5.1",
     "chalk": "4",
+    "ejs": "^3.1.9",
     "json5": "^2.2.3",
     "semver": "^7.5.4",
     "shx": "^0.3.4",
