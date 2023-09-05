@@ -2,7 +2,7 @@ import { FullConfig } from '../lib/config';
 import { ActionDefinition } from "./";
 import { Runner } from "../lib/runner";
 export type WhenAction = [
-    action: 'sequential',
+    action: 'when',
     testClause: boolean,
     action: ActionDefinition
 ];
