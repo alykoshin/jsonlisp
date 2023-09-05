@@ -4,6 +4,7 @@ exports.actions = void 0;
 const sequential_1 = require("./sequential");
 const parallel_1 = require("./parallel");
 const echo_1 = require("./echo");
+const cleanup_1 = require("./cleanup");
 const sleep_1 = require("./sleep");
 const exec_1 = require("./exec");
 const build_1 = require("./build");
@@ -22,14 +23,15 @@ const action = {
 //   [key: string]: ActionMethod
 // }
 exports.actions /*: Actions */ = {
-    sequential: sequential_1.action_sequential,
-    parallel: parallel_1.action_parallel,
-    echo: echo_1.action_echo,
-    sleep: sleep_1.action_sleep,
-    exec: exec_1.action_exec,
     build: build_1.action_build,
-    yarnInstallProd: yarnInstallProd_1.action_yarnInstallProd,
+    cleanup: cleanup_1.action_cleanup,
+    echo: echo_1.action_echo,
+    exec: exec_1.action_exec,
+    parallel: parallel_1.action_parallel,
+    sequential: sequential_1.action_sequential,
+    sleep: sleep_1.action_sleep,
     version: version_1.action_version,
+    yarnInstallProd: yarnInstallProd_1.action_yarnInstallProd,
     zip: zip_1.action_zip,
 };
 // type ActionKeys = keyof typeof actions

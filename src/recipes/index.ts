@@ -2,13 +2,13 @@ import {action_sequential, SequentialAction, SequentialMultiAction} from './sequ
 import {action_parallel, ParallelAction, ParallelMultiAction} from './parallel'
 
 import {action_echo, EchoAction} from './echo'
+import {action_cleanup, CleanupAction} from './cleanup'
 import {action_sleep, SleepAction} from './sleep'
 
 import {action_exec, ExecAction} from './exec'
 import {action_build, BuildAction} from './build'
 import {action_version, VersionAction} from './version'
 import {action_zip, ZipAction} from './zip'
-import {FullConfig} from "../lib/config";
 import {action_yarnInstallProd, YarnInstallProdAction} from "./yarnInstallProd";
 
 //
@@ -19,15 +19,17 @@ export interface BaseActionConfig {
 
 // export type ActionConfig = SequentialAction | ParallelAction | EchoAction | SleepAction | BuildAction | VersionAction | ZipAction
 export type ActionDefinition =
-  SequentialAction | SequentialMultiAction |
+  BuildAction |
+  CleanupAction |
+  EchoAction |
+  ExecAction |
   ParallelAction | ParallelMultiAction |
-
-  EchoAction | SleepAction |
-
-  ExecAction | BuildAction | YarnInstallProdAction |
-
+  SequentialAction | SequentialMultiAction |
+  SleepAction |
   VersionAction |
+  YarnInstallProdAction |
   ZipAction
+;
 
 // export type ActionArrayDefinition = [
 //
@@ -45,17 +47,15 @@ const action: ActionDefinition = {
 // }
 
 export const actions/*: Actions */= {
-  sequential: action_sequential,
-  parallel: action_parallel,
-
-  echo: action_echo,
-  sleep: action_sleep,
-
-  exec: action_exec,
   build: action_build,
-  yarnInstallProd: action_yarnInstallProd,
-
+  cleanup: action_cleanup,
+  echo: action_echo,
+  exec: action_exec,
+  parallel: action_parallel,
+  sequential: action_sequential,
+  sleep: action_sleep,
   version: action_version,
+  yarnInstallProd: action_yarnInstallProd,
   zip: action_zip,
 }
 
