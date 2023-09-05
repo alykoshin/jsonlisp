@@ -4,8 +4,8 @@ import { ExecAction } from "./exec";
 export interface YarnInstallProdAction {
     action: 'yarnInstallProd';
     config: {
-        cwd: string;
-        env: {
+        cwd?: string;
+        env?: {
             [key: string]: string;
         };
     };

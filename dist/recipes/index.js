@@ -13,6 +13,10 @@ const yarnInstallProd_1 = require("./yarnInstallProd");
 // export type ActionArrayDefinition = [
 //
 // ];
+const action = {
+    action: 'yarnInstallProd',
+    config: {}
+};
 //
 // interface Actions {
 //   [key: string]: ActionMethod
