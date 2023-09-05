@@ -8,9 +8,10 @@ const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 const fsUtils_1 = require("../lib/fsUtils");
 async function action_copyResourcesRecursive(definition, { id, fullConfig, runner }) {
+    const excludeDirs = Array.isArray(definition.excludeDirs) ? definition.excludeDirs : [definition.excludeDirs];
     const pathnames = await (0, fsUtils_1.getFilesRecursive)(definition.sourceDir, {
         extnames: ['.bmp', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.css', '.ttf', '.woff', '.woff2',],
-        excludeDirs: definition.excludeDirs,
+        excludeDirs,
     });
     for (let sourcePathname of pathnames) {
         const sourceDir = path_1.default.dirname(sourcePathname);

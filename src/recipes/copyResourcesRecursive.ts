@@ -15,10 +15,11 @@ export async function action_copyResourcesRecursive(
   definition: CopyResourcesRecursiveAction,
   {id, fullConfig, runner}: { id: number | string, fullConfig: FullConfig, runner: Runner }
 ) {
+  const excludeDirs = Array.isArray(definition.excludeDirs) ? definition.excludeDirs : [definition.excludeDirs];
 
   const pathnames = await getFilesRecursive(definition.sourceDir, {
     extnames: ['.bmp', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.css', '.ttf', '.woff', '.woff2',],
-    excludeDirs: definition.excludeDirs,
+    excludeDirs,
   })
 
   for (let sourcePathname of pathnames) {

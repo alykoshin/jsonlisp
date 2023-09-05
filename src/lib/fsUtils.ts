@@ -10,12 +10,17 @@ export async function removeDirRecursive(dirname: string) {
 }
 
 
-export async function getFilesRecursive(startDir: string, {extnames, excludeDirs}: {
-  extnames: string[],
-  excludeDirs: string[]
-}): Promise<string[]> {
-  if (extnames && !Array.isArray(extnames)) extnames = [extnames];
-  if (excludeDirs && !Array.isArray(excludeDirs)) excludeDirs = [excludeDirs];
+interface GetFilesRecursiveOptions {
+  extnames: string | string[],
+  excludeDirs: string | string[]
+}
+
+export async function getFilesRecursive(startDir: string, options: GetFilesRecursiveOptions ): Promise<string[]> {
+  // if (extnames && !Array.isArray(extnames)) extnames = [extnames];
+  const extnames = (typeof options.extnames !== 'undefined' && !Array.isArray(options.extnames)) ? [options.extnames] : options.extnames;
+
+  // if (excludeDirs && !Array.isArray(excludeDirs)) excludeDirs = [excludeDirs];
+  const excludeDirs = (typeof options.excludeDirs !== 'undefined' && !Array.isArray(options.excludeDirs)) ? [options.excludeDirs] : options.excludeDirs;
 
   async function _getFiles(dir: string): Promise<string[]> {
     const dirents = await fsPromises.readdir(dir, {withFileTypes: true});
@@ -24,7 +29,7 @@ export async function getFilesRecursive(startDir: string, {extnames, excludeDirs
         return (dirent.isDirectory() && (excludeDirs ? excludeDirs.every((d: string) => path.resolve(startDir, d) !== path.resolve(dir, dirent.name)) : true) || (dirent.isFile() && (extnames ? extnames.some((e: string) => dirent.name.endsWith(e)) : true)))
       })
       // .reduce((acc, dirent, currentIndex, array ) => {
-      .map((dirent, currentIndex, array ) => {
+      .map((dirent, currentIndex, array) => {
         const res = path.resolve(dir, dirent.name);
         return dirent.isDirectory() ? _getFiles(res) : [res];
       })

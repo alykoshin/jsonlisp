@@ -15,11 +15,11 @@ async function removeDirRecursive(dirname) {
     });
 }
 exports.removeDirRecursive = removeDirRecursive;
-async function getFilesRecursive(startDir, { extnames, excludeDirs }) {
-    if (extnames && !Array.isArray(extnames))
-        extnames = [extnames];
-    if (excludeDirs && !Array.isArray(excludeDirs))
-        excludeDirs = [excludeDirs];
+async function getFilesRecursive(startDir, options) {
+    // if (extnames && !Array.isArray(extnames)) extnames = [extnames];
+    const extnames = (typeof options.extnames !== 'undefined' && !Array.isArray(options.extnames)) ? [options.extnames] : options.extnames;
+    // if (excludeDirs && !Array.isArray(excludeDirs)) excludeDirs = [excludeDirs];
+    const excludeDirs = (typeof options.excludeDirs !== 'undefined' && !Array.isArray(options.excludeDirs)) ? [options.excludeDirs] : options.excludeDirs;
     async function _getFiles(dir) {
         const dirents = await promises_2.default.readdir(dir, { withFileTypes: true });
         const promises = dirents

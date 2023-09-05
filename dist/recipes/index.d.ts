@@ -12,16 +12,18 @@ import { action_version, VersionAction } from './version';
 import { action_when, WhenAction } from "./when";
 import { action_zip, ZipAction } from './zip';
 import { action_yarnInstallProd, YarnInstallProdAction } from "./yarnInstallProd";
+import { action_ejsTemplates, EjsTemplatesAction } from "./ejsTemplates";
 export interface BaseActionConfig {
     action: string;
 }
-export type ActionDefinition = BuildAction | CleanupAction | CpAction | CopyResourcesRecursiveAction | EchoAction | ExecAction | ParallelAction | ParallelMultiAction | RmAction | SequentialAction | SequentialMultiAction | SleepAction | VersionAction | WhenAction | YarnInstallProdAction | ZipAction;
+export type ActionDefinition = BuildAction | CleanupAction | CpAction | CopyResourcesRecursiveAction | EchoAction | EjsTemplatesAction | ExecAction | ParallelAction | ParallelMultiAction | RmAction | SequentialAction | SequentialMultiAction | SleepAction | VersionAction | WhenAction | YarnInstallProdAction | ZipAction;
 export declare const actions: {
     build: typeof action_build;
     cleanup: typeof action_cleanup;
     cp: typeof action_cp;
     copyResourcesRecursive: typeof action_copyResourcesRecursive;
     echo: typeof action_echo;
+    ejsTemplates: typeof action_ejsTemplates;
     exec: typeof action_exec;
     parallel: typeof action_parallel;
     rm: typeof action_rm;

@@ -13,6 +13,7 @@ import {action_version, VersionAction} from './version'
 import {action_when, WhenAction} from "./when";
 import {action_zip, ZipAction} from './zip'
 import {action_yarnInstallProd, YarnInstallProdAction} from "./yarnInstallProd";
+import {action_ejsTemplates, EjsTemplatesAction} from "./ejsTemplates";
 
 //
 
@@ -27,6 +28,7 @@ export type ActionDefinition =
   CpAction |
   CopyResourcesRecursiveAction |
   EchoAction |
+  EjsTemplatesAction |
   ExecAction |
   ParallelAction | ParallelMultiAction |
   RmAction |
@@ -58,6 +60,7 @@ export const actions/*: Actions */= {
   cp: action_cp,
   copyResourcesRecursive: action_copyResourcesRecursive,
   echo: action_echo,
+  ejsTemplates: action_ejsTemplates,
   exec: action_exec,
   parallel: action_parallel,
   rm: action_rm,

@@ -15,6 +15,7 @@ const version_1 = require("./version");
 const when_1 = require("./when");
 const zip_1 = require("./zip");
 const yarnInstallProd_1 = require("./yarnInstallProd");
+const ejsTemplates_1 = require("./ejsTemplates");
 // export type ActionArrayDefinition = [
 //
 // ];
@@ -31,6 +32,7 @@ exports.actions /*: Actions */ = {
     cp: cp_1.action_cp,
     copyResourcesRecursive: copyResourcesRecursive_1.action_copyResourcesRecursive,
     echo: echo_1.action_echo,
+    ejsTemplates: ejsTemplates_1.action_ejsTemplates,
     exec: exec_1.action_exec,
     parallel: parallel_1.action_parallel,
     rm: rm_1.action_rm,
