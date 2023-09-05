@@ -32,7 +32,11 @@ export type ActionDefinition =
 // export type ActionArrayDefinition = [
 //
 // ];
-
+const action: ActionDefinition = {
+  action: 'yarnInstallProd',
+  config: {
+  }
+}
 //
 
 
