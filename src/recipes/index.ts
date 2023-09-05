@@ -3,6 +3,7 @@ import {action_parallel, ParallelAction, ParallelMultiAction} from './parallel'
 
 import {action_echo, EchoAction} from './echo'
 import {action_cleanup, CleanupAction} from './cleanup'
+import {action_copyResourcesRecursive, CopyResourcesRecursiveAction} from './copyResourcesRecursive'
 import {action_sleep, SleepAction} from './sleep'
 
 import {action_exec, ExecAction} from './exec'
@@ -21,6 +22,7 @@ export interface BaseActionConfig {
 export type ActionDefinition =
   BuildAction |
   CleanupAction |
+  CopyResourcesRecursiveAction |
   EchoAction |
   ExecAction |
   ParallelAction | ParallelMultiAction |
@@ -49,6 +51,7 @@ const action: ActionDefinition = {
 export const actions/*: Actions */= {
   build: action_build,
   cleanup: action_cleanup,
+  copyResourcesRecursive: action_copyResourcesRecursive,
   echo: action_echo,
   exec: action_exec,
   parallel: action_parallel,

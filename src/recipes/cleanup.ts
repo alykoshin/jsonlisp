@@ -4,6 +4,7 @@ import {ReleaseType} from "semver";
 import {FullConfig} from "../lib/config";
 import {Runner} from "../lib/runner";
 import {VersionAction} from "./version";
+import {run} from "node:test";
 
 async function removeDirRecursive(dirname: string) {
   return fs.rm(dirname, {recursive: true})
@@ -22,6 +23,7 @@ export async function action_cleanup(
   {id, fullConfig, runner}: { id: number | string, fullConfig: FullConfig, runner: Runner }
 ) {
   for (const d of definition.dirs) {
+    runner.debug(id, `cleanup ${d}`)
     await removeDirRecursive(d);
   }
 }

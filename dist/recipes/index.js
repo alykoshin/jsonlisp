@@ -5,6 +5,7 @@ const sequential_1 = require("./sequential");
 const parallel_1 = require("./parallel");
 const echo_1 = require("./echo");
 const cleanup_1 = require("./cleanup");
+const copyResourcesRecursive_1 = require("./copyResourcesRecursive");
 const sleep_1 = require("./sleep");
 const exec_1 = require("./exec");
 const build_1 = require("./build");
@@ -25,6 +26,7 @@ const action = {
 exports.actions /*: Actions */ = {
     build: build_1.action_build,
     cleanup: cleanup_1.action_cleanup,
+    copyResourcesRecursive: copyResourcesRecursive_1.action_copyResourcesRecursive,
     echo: echo_1.action_echo,
     exec: exec_1.action_exec,
     parallel: parallel_1.action_parallel,

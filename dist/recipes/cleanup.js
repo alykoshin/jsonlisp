@@ -34,6 +34,7 @@ async function removeDirRecursive(dirname) {
 }
 async function action_cleanup(definition, { id, fullConfig, runner }) {
     for (const d of definition.dirs) {
+        runner.debug(id, `cleanup ${d}`);
         await removeDirRecursive(d);
     }
 }

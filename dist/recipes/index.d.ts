@@ -2,6 +2,7 @@ import { action_sequential, SequentialAction, SequentialMultiAction } from './se
 import { action_parallel, ParallelAction, ParallelMultiAction } from './parallel';
 import { action_echo, EchoAction } from './echo';
 import { action_cleanup, CleanupAction } from './cleanup';
+import { action_copyResourcesRecursive, CopyResourcesRecursiveAction } from './copyResourcesRecursive';
 import { action_sleep, SleepAction } from './sleep';
 import { action_exec, ExecAction } from './exec';
 import { action_build, BuildAction } from './build';
@@ -11,10 +12,11 @@ import { action_yarnInstallProd, YarnInstallProdAction } from "./yarnInstallProd
 export interface BaseActionConfig {
     action: string;
 }
-export type ActionDefinition = BuildAction | CleanupAction | EchoAction | ExecAction | ParallelAction | ParallelMultiAction | SequentialAction | SequentialMultiAction | SleepAction | VersionAction | YarnInstallProdAction | ZipAction;
+export type ActionDefinition = BuildAction | CleanupAction | CopyResourcesRecursiveAction | EchoAction | ExecAction | ParallelAction | ParallelMultiAction | SequentialAction | SequentialMultiAction | SleepAction | VersionAction | YarnInstallProdAction | ZipAction;
 export declare const actions: {
     build: typeof action_build;
     cleanup: typeof action_cleanup;
+    copyResourcesRecursive: typeof action_copyResourcesRecursive;
     echo: typeof action_echo;
     exec: typeof action_exec;
     parallel: typeof action_parallel;
