@@ -1,16 +1,16 @@
-import {action_sequential, SequentialAction, SequentialMultiAction} from './sequential'
-import {action_parallel, ParallelAction, ParallelMultiAction} from './parallel'
 
-import {action_echo, EchoAction} from './echo'
+import {action_build, BuildAction} from './build'
 import {action_cleanup, CleanupAction} from './cleanup'
 import {action_cp, CpAction} from './cp'
 import {action_copyResourcesRecursive, CopyResourcesRecursiveAction} from './copyResourcesRecursive'
+import {action_echo, EchoAction} from './echo'
+import {action_exec, ExecAction} from './exec'
+import {action_parallel, ParallelAction, ParallelMultiAction} from './parallel'
 import {action_rm, RmAction} from './rm'
 import {action_sleep, SleepAction} from './sleep'
-
-import {action_exec, ExecAction} from './exec'
-import {action_build, BuildAction} from './build'
+import {action_sequential, SequentialAction, SequentialMultiAction} from './sequential'
 import {action_version, VersionAction} from './version'
+import {action_when, WhenAction} from "./when";
 import {action_zip, ZipAction} from './zip'
 import {action_yarnInstallProd, YarnInstallProdAction} from "./yarnInstallProd";
 
@@ -33,6 +33,7 @@ export type ActionDefinition =
   SequentialAction | SequentialMultiAction |
   SleepAction |
   VersionAction |
+  WhenAction |
   YarnInstallProdAction |
   ZipAction
 ;
@@ -63,6 +64,7 @@ export const actions/*: Actions */= {
   sequential: action_sequential,
   sleep: action_sleep,
   version: action_version,
+  when: action_when,
   yarnInstallProd: action_yarnInstallProd,
   zip: action_zip,
 }

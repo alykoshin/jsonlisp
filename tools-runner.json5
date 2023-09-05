@@ -46,6 +46,14 @@
         command: 'cmd /c echo'
       },
     },
+    [
+      'when',
+      true,
+      {
+        action: 'echo',
+        value: '"when" evaluated to true'
+      }
+    ],
     {
       action: 'echo',
       value: 'sequential-4'
