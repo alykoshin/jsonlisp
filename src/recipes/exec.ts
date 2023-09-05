@@ -32,6 +32,9 @@ export async function action_exec(
     // stderr: 'pipe',
   };
 
-  await execute(command, options, {}, (s: number|string) => runner.log(id, s));
+  await execute(command, options, {
+    log: (s: number|string) => runner.log(id, s),
+    debug: (s: number|string) => runner.debug(id, s),
+  });
 }
 

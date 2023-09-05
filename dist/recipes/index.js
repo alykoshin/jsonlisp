@@ -1,17 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const sequential_1 = require("./sequential");
-const parallel_1 = require("./parallel");
-const echo_1 = require("./echo");
+const build_1 = require("./build");
 const cleanup_1 = require("./cleanup");
 const cp_1 = require("./cp");
 const copyResourcesRecursive_1 = require("./copyResourcesRecursive");
+const echo_1 = require("./echo");
+const exec_1 = require("./exec");
+const parallel_1 = require("./parallel");
 const rm_1 = require("./rm");
 const sleep_1 = require("./sleep");
-const exec_1 = require("./exec");
-const build_1 = require("./build");
+const sequential_1 = require("./sequential");
 const version_1 = require("./version");
+const when_1 = require("./when");
 const zip_1 = require("./zip");
 const yarnInstallProd_1 = require("./yarnInstallProd");
 // export type ActionArrayDefinition = [
@@ -36,6 +37,7 @@ exports.actions /*: Actions */ = {
     sequential: sequential_1.action_sequential,
     sleep: sleep_1.action_sleep,
     version: version_1.action_version,
+    when: when_1.action_when,
     yarnInstallProd: yarnInstallProd_1.action_yarnInstallProd,
     zip: zip_1.action_zip,
 };

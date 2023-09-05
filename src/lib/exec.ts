@@ -13,9 +13,10 @@ export async function execute(
   command_line: string,
   spawnOptions: SpawnOptionsWithoutStdio,
   execOptions: {
-    encoding?: BufferEncoding, timeout?: number
+    encoding?: BufferEncoding, timeout?: number,
+    log: (s: number | string) => void,
+    debug?: (s: number | string) => void,
   },
-  log: (s: number | string) => void
 ) {
 
   return new Promise((resolve, reject) => {
@@ -35,19 +36,19 @@ export async function execute(
     p.stderr.setEncoding(execOptions.encoding); //'utf8');
 
     p.stdout.on('data', function (data) {
-      log(data);
+      execOptions.log(data);
       data = data.toString();
       stdout += data;
     });
 
     p.stderr.on('data', function (data) {
-      log(data);
+      execOptions.log(data);
       data = data.toString();
       stderr += data;
     });
 
     p.on('close', function (code) {
-      log(`child process closed with code ${code}`);
+      execOptions.debug && execOptions.debug(`child process closed with code ${code}`);
       if (code === 0) {
         resolve({code, stdout, stderr});
       } else {
@@ -56,7 +57,7 @@ export async function execute(
     });
 
     p.on('exit', function (code, signal) {
-      log(`child process exited with code ${code} and signal ${signal}`);
+      execOptions.debug && execOptions.debug(`child process exited with code ${code} and signal ${signal}`);
       if (code === 0) {
         resolve({code, stdout, stderr});
       } else {
@@ -66,8 +67,8 @@ export async function execute(
 
     if (execOptions.timeout !== 0) {
       setTimeout(() => {
-        log(`child process timed out in ${execOptions.timeout} ms`);
-        log(`WARN: Force kill not implemented`);
+        execOptions.log(`child process timed out in ${execOptions.timeout} ms`);
+        execOptions.log(`WARN: Force kill not implemented`);
 
       }, execOptions.timeout);
     }

@@ -33,7 +33,10 @@ export async function action_yarnInstallProd(
   };
 
   const command_line = installDepsCmd();
-  await execute(command_line, options, {}, (s: number | string) => runner.log(id, s));
+  await execute(command_line, options, {
+    log: (s: number | string) => runner.log(id, s),
+    debug: (s: number | string) => runner.debug(id, s),
+  });
 
 }
 

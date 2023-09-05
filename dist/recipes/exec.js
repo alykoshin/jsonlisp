@@ -17,7 +17,10 @@ async function action_exec(definition, { id, fullConfig, runner }) {
         // stdout: 'pipe',
         // stderr: 'pipe',
     };
-    await (0, exec_1.execute)(command, options, {}, (s) => runner.log(id, s));
+    await (0, exec_1.execute)(command, options, {
+        log: (s) => runner.log(id, s),
+        debug: (s) => runner.debug(id, s),
+    });
 }
 exports.action_exec = action_exec;
 //# sourceMappingURL=exec.js.map

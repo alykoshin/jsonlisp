@@ -10,7 +10,7 @@ const child_process_1 = require("child_process");
 //   p.stderr.on("data", data => log(data))
 //   await p;
 // }
-async function execute(command_line, spawnOptions, execOptions, log) {
+async function execute(command_line, spawnOptions, execOptions) {
     return new Promise((resolve, reject) => {
         if (!execOptions.encoding)
             execOptions.encoding = 'utf8';
@@ -25,17 +25,17 @@ async function execute(command_line, spawnOptions, execOptions, log) {
         p.stdout.setEncoding(execOptions.encoding); //'utf8');
         p.stderr.setEncoding(execOptions.encoding); //'utf8');
         p.stdout.on('data', function (data) {
-            log(data);
+            execOptions.log(data);
             data = data.toString();
             stdout += data;
         });
         p.stderr.on('data', function (data) {
-            log(data);
+            execOptions.log(data);
             data = data.toString();
             stderr += data;
         });
         p.on('close', function (code) {
-            log(`child process closed with code ${code}`);
+            execOptions.debug && execOptions.debug(`child process closed with code ${code}`);
             if (code === 0) {
                 resolve({ code, stdout, stderr });
             }
@@ -44,7 +44,7 @@ async function execute(command_line, spawnOptions, execOptions, log) {
             }
         });
         p.on('exit', function (code, signal) {
-            log(`child process exited with code ${code} and signal ${signal}`);
+            execOptions.debug && execOptions.debug(`child process exited with code ${code} and signal ${signal}`);
             if (code === 0) {
                 resolve({ code, stdout, stderr });
             }
@@ -54,8 +54,8 @@ async function execute(command_line, spawnOptions, execOptions, log) {
         });
         if (execOptions.timeout !== 0) {
             setTimeout(() => {
-                log(`child process timed out in ${execOptions.timeout} ms`);
-                log(`WARN: Force kill not implemented`);
+                execOptions.log(`child process timed out in ${execOptions.timeout} ms`);
+                execOptions.log(`WARN: Force kill not implemented`);
             }, execOptions.timeout);
         }
     });

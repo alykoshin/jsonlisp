@@ -17,7 +17,10 @@ async function action_yarnInstallProd(definition, { id, fullConfig, runner }) {
         env,
     };
     const command_line = installDepsCmd();
-    await (0, exec_1.execute)(command_line, options, {}, (s) => runner.log(id, s));
+    await (0, exec_1.execute)(command_line, options, {
+        log: (s) => runner.log(id, s),
+        debug: (s) => runner.debug(id, s),
+    });
 }
 exports.action_yarnInstallProd = action_yarnInstallProd;
 //# sourceMappingURL=yarnInstallProd.js.map

@@ -17,7 +17,10 @@ async function action_zip(definition, { id, fullConfig, runner }) {
     const options = {
         cwd: fullConfig.base_dir,
     };
-    await (0, exec_1.execute)(command_line, options, {}, (s) => runner.log(id, s));
+    await (0, exec_1.execute)(command_line, options, {
+        log: (s) => runner.log(id, s),
+        debug: (s) => runner.debug(id, s),
+    });
 }
 exports.action_zip = action_zip;
 //# sourceMappingURL=zip.js.map

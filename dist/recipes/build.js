@@ -16,7 +16,10 @@ async function action_build(definition, { id, fullConfig, runner }) {
     };
   
   
-    await execute(command, options, {}, log);
+    await execute(command, options, {
+      log: (s: number|string) => runner.log(id, s),
+      debug: (s: number|string) => runner.debug(id, s),
+    });
   */
     const execDefinition = {
         action: 'exec',
