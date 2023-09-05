@@ -1,17 +1,6 @@
-import * as path from 'path';
-import * as fs from 'fs/promises';
-import {ReleaseType} from "semver";
 import {FullConfig} from "../lib/config";
 import {Runner} from "../lib/runner";
-import {VersionAction} from "./version";
-import {run} from "node:test";
-
-async function removeDirRecursive(dirname: string) {
-  return fs.rm(dirname, {recursive: true})
-    .catch(e => {
-      if (e.code !== 'ENOENT') throw e; // be silent if dir doesn't exists
-    });
-}
+import {removeDirRecursive} from '../lib/fsUtils'
 
 export interface CleanupAction {
   action: 'cleanup'

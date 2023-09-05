@@ -6,35 +6,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 import fs        from 'fs/promises';
 import ejs   from 'ejs';
 
-async function removeDirRecursive(dirname) {
-  return fs.rm(dirname, { recursive: true })
-    .catch(e => {
-      if (e.code !== 'ENOENT') throw e; // be silent if dir doesn't exists
-    });
-}
-
-async function getFilesRecursive(startDir, { extnames, excludeDirs }) {
-  if (extnames && !Array.isArray(extnames)) extnames = [ extnames ];
-  if (excludeDirs && !Array.isArray(excludeDirs)) excludeDirs = [ excludeDirs ];
-
-  async function _getFiles(dir) {
-    const dirents = await fs.readdir(dir, { withFileTypes: true });
-    const files   = await Promise.all(dirents
-      .filter((dirent) => {
-        return (dirent.isDirectory() && (excludeDirs ? excludeDirs.every(d => path.resolve(startDir, d) !== path.resolve(dir, dirent.name)) : true) || (dirent.isFile() && (extnames ? extnames.some(e => dirent.name.endsWith(e)) : true)))
-      })
-      .map((dirent) => {
-        const res = path.resolve(dir, dirent.name);
-        return dirent.isDirectory() ? _getFiles(res) : res;
-      }));
-    return Array.prototype.concat(...files);
-  }
-
-  return _getFiles(startDir)
-
-}
-
-
 const DEBUG = false;
 
 const PROJECT_ROOT_DIR    = path.resolve(__dirname, '..');
