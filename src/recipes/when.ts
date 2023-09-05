@@ -3,7 +3,7 @@ import {ActionDefinition, BaseActionConfig} from "./";
 import {Runner} from "../lib/runner";
 
 export type WhenAction = [
-  action: 'sequential',
+  action: 'when',
   testClause: boolean,
   action: ActionDefinition,
 ]
