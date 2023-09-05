@@ -4,7 +4,7 @@ export interface CpAction {
     action: 'cp';
     source: string | string[];
     dest: string;
-    dry: boolean;
+    dry?: boolean;
 }
 export declare function action_cp(definition: CpAction, { id, fullConfig, runner }: {
     id: number | string;
