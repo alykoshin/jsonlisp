@@ -1,3 +1,4 @@
+import { statSync, existsSync } from 'node:fs';
 import * as fs from "node:fs/promises";
 import * as path from "path";
 import json5 from "json5";
@@ -24,14 +25,117 @@ function buildPathname(config_file: string) {
   return path.join(process.cwd(), config_file)
 }
 
+export async function readToolsFile(origPathname: string/*, extname?: string*/): Promise<any> {
+  const extname = path.extname(origPathname);
+  // const fileExtname = path.extname(origPathname);
+  // if (!extname) {
+  //   extname = fileExtname;
+  // } else {
+  //
+  // }
+  let pathname;
+  let content;
+  let data;
+  switch (extname) {
+    case '.ts':
+    case '.js':
+      pathname = path.resolve('..', origPathname)
+      console.log(`Importing file "${pathname}"`)
+      data = (await import(pathname)).default
+      break;
+    case '.json':
+      pathname = path.resolve(__dirname, '..', origPathname)
+      console.log(`Reading and parsing file "${pathname}"`)
+      content = await fs.readFile(pathname, {encoding: 'utf8'})
+      data = JSON.parse(content);
+      break;
+    case '.json5':
+      pathname = path.resolve(__dirname, '..', origPathname)
+      console.log(`Reading and parsing file "${pathname}"`)
+      content = await fs.readFile(pathname, {encoding: 'utf8'})
+      data = json5.parse(content);
+      break;
+    default:
+      throw new Error(`Unsupported extension "${extname}" for "${origPathname}"`)
+  }
+  // const pathname = options.dataFile
+  // const pathname = '../'+options.dataFile
+  // const a = await import(pathname)
+  // console.log(`readToolsFile:`, data)
+  return data;
+}
+
+
+const SUPPORTED_EXTENSIONS = [
+  '.ts',
+  '.js',
+  '.json',
+  '.json5',
+];
+const INDEX_FILE_BASENAME = 'index';
+
+function isDirectory(pathname: string): boolean {
+  try {
+    return statSync(pathname).isDirectory();
+  } catch (e) {
+    return false;
+  }
+}
+
 export async function read_config(config_file: string): Promise<FullConfig> {
+  console.log(`Starting filename "${config_file}"`)
+
+  let extname = path.extname(config_file);
+  let pathname= buildPathname(config_file);
+  if (!extname) {
+
+    // look for 'index' file if directory is passed
+
+    if (isDirectory(pathname)) {
+      pathname = path.join(pathname, INDEX_FILE_BASENAME);
+      // console.log(`Directory was passed; will look for 'index' file "${pathname}"`)
+    }
+    // console.log(`Will look for pathname "${pathname}"`)
+
+    // try all supported extensions
+
+    for (const ext of SUPPORTED_EXTENSIONS) {
+      if (existsSync(pathname + ext)) {
+        extname = ext;
+        break;
+      }
+    }
+
+    if (!extname) {
+      throw new Error(`Unable to find source file with any of ${SUPPORTED_EXTENSIONS.join('|')} extnames`)
+    }
+    pathname = pathname + extname;
+  }
+  console.log(`Will process as "${extname}"`)
+
+  pathname = path.resolve(pathname);
+  console.log(`Final pathname: "${pathname}"`)
+
+  return readToolsFile(pathname);
+
+
+/*
   if (CONFIG_MODE === '.ts') {
-    const module = await import(buildPathname(config_file));
+
+    const pathname= buildPathname(config_file);
+    console.log(`Reading and parsing file "${pathname}" as .ts`)
+
+    const module = await import(pathname);
     return module.default;
   } else {
+
+    const pathname= buildPathname(config_file);
+    console.log(`Reading and parsing file "${pathname}" as .json/.json5`)
+
     const content = await fs.readFile(config_file, {encoding: 'utf8'});
     return CONFIG_MODE === '.json5' ? json5.parse(content) : JSON.parse(content);
   }
+*/
 }
 
 export async function write_config(config_file: string, config: FullConfig) {

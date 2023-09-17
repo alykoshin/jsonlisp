@@ -7,6 +7,7 @@ import pkg from '../package.json';
 import fs from "fs/promises";
 import json5 from "json5";
 import {Runner} from "./lib/runner";
+import {readToolsFile} from "./lib/config";
 
 const program = new Command();
 
@@ -21,35 +22,14 @@ program
   .option('-5, --data-json5 <json5>', 'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)')
   .action(async (activity, action, options, command) => {
     console.log(`Starting activity: "${activity}" action: "${action}"`)
-    // console.log(`options:`, options)
+
+    console.warn(`WARN: dataFile is not implemented`)
+
     if (options.dataFile) {
-      const extname = path.extname(options.dataFile);
-      let pathname;
-      let content;
-      let data;
-      switch (extname) {
-        case '.ts':
-        case '.js':
-          pathname = path.join('..', options.dataFile)
-          data = (await import(pathname)).default
-          break;
-        case '.json':
-          pathname = path.join(__dirname, '..', options.dataFile)
-          content = await fs.readFile(pathname, {encoding: 'utf8'})
-          data = JSON.parse(content);
-          break;
-        case '.json5':
-          pathname = path.join(__dirname, '..', options.dataFile)
-          content = await fs.readFile(pathname, {encoding: 'utf8'})
-          data = json5.parse(content);
-          break;
-        default:
-          throw new Error(`Unsupported extension "${extname}" for "${options.dataFile}"`)
-      }
-      // const pathname = options.dataFile
-      // const pathname = '../'+options.dataFile
-      // const a = await import(pathname)
-      console.log(data)
+
+      const data = readToolsFile(options.dataFile)
+
+
     }
     if (options.dataJson && options.dataJson5) throw new Error(`Options --data-json and --data-json5 are mutually exclusive`)
     const data = options.dataJson ? JSON.parse(options.dataJson) : options.dataJson ? JSON.parse(options.dataJson5) : {};
