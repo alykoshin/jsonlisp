@@ -1,0 +1,55 @@
+{
+    "name": "tools-runner",
+    "version": "0.0.1",
+    "description": "tools-runner",
+    "type": "commonjs",
+    "main": "dist/index.js",
+    "bin": {
+        "tools-runner": "dist/cli.js"
+    },
+    "typings": "dist/cli.d.ts",
+    "engines": {
+        "node": ">=10.0.0"
+    },
+    "scripts": {
+        "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
+        "build:server": "tsc -d",
+        "start": "ts-node --esm ./src/cli.ts",
+        "start-js": "node ./dist/cli.js",
+        "version": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
+        "clean": "shx rm -rf dist",
+        "lint": "eslint src/*.ts test/*.ts",
+        "watch": "tsc -w"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alykoshin/tools-runner.git"
+    },
+    "keywords": [],
+    "author": "alykoshin",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/alykoshin/tools-runner/issues"
+    },
+    "homepage": "https://github.com/bcherny/json-schema-to-typescript#readme",
+    "dependencies": {
+        "@types/debug": "^4.1.8",
+        "@types/ejs": "^3.1.2",
+        "@types/lodash": "^4.14.198",
+        "@types/node": "^20.5.9",
+        "@types/semver": "^7.5.1",
+        "@utilities/object": "^0.4.0",
+        "ajv": "^8.12.0",
+        "chalk": "4",
+        "commander": "^11.0.0",
+        "ejs": "^3.1.9",
+        "git-config": "^0.0.7",
+        "json5": "^2.2.3",
+        "lodash": "^4.17.21",
+        "octokit": "^3.1.0",
+        "semver": "^7.5.4",
+        "shx": "^0.3.4",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2"
+    }
+}

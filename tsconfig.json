@@ -16,12 +16,14 @@
     "strict": true,
 //    "target": "es5",
     "target": "esnext",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "dist",
     "example",
-    "node_modules"
+    "node_modules",
+    "_archive"
   ],
   "ts-node": {
     "esm": true,
