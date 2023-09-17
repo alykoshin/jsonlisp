@@ -25,8 +25,12 @@ function buildPathname(config_file: string) {
   return path.join(process.cwd(), config_file)
 }
 
-export async function readToolsFile(origPathname: string/*, extname?: string*/): Promise<any> {
-  const extname = path.extname(origPathname);
+export async function readToolsFile(origPathname?: string/*, extname?: string*/): Promise<any> {
+  if (!origPathname) {
+    return {}
+  }
+
+    const extname = path.extname(origPathname);
   // const fileExtname = path.extname(origPathname);
   // if (!extname) {
   //   extname = fileExtname;

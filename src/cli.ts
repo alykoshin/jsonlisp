@@ -23,21 +23,15 @@ program
   .action(async (activity, action, options, command) => {
     console.log(`Starting activity: "${activity}" action: "${action}"`)
 
-    console.warn(`WARN: dataFile is not implemented`)
+    const fileData = readToolsFile(options.dataFile)
 
-    if (options.dataFile) {
-
-      const data = readToolsFile(options.dataFile)
-
-
-    }
     if (options.dataJson && options.dataJson5) throw new Error(`Options --data-json and --data-json5 are mutually exclusive`)
     const data = options.dataJson ? JSON.parse(options.dataJson) : options.dataJson ? JSON.parse(options.dataJson5) : {};
     const runner = new Runner()
     await runner.start({
       activity,
       action,
-      scope: data,//{test: 'test-value'}
+      scope: _.defaultsDeep({}, fileData, data)//, {test: 'test-value'}),
     });
   })
   .addHelpText('after', `
