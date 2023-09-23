@@ -7,7 +7,10 @@ exports.actions = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const util_1 = require("../lib/util");
 exports.actions = {
-    "$expect": async function (action, parameters, { id, level, fullConfig, runner, logger }) {
+    "$expect": async function (action, parameters, 
+    // {id, level, activity, runner, logger}: ActionMethodState
+    state) {
+        const { runner, logger, scopes } = state;
         //runner.debug('$expect', { parameters, prevResult });
         (0, util_1.fn_check_params)(parameters, { exactCount: [1, 2] });
         // let actual;
@@ -20,8 +23,8 @@ exports.actions = {
         // } else if (parameters.length === 2) {
         //   actual = await runner.eval(parameters[0], fullConfig, {level, logger});
         // }
-        const actual = await runner.eval(parameters[0], fullConfig, { level, logger });
-        // console.log('>>>>>>>>', actual)
+        const actual = await runner.eval(parameters[0], state);
+        // console.log('>>>', actual)
         let res;
         let sValue;
         if (parameters.length === 1) {
@@ -29,14 +32,25 @@ exports.actions = {
             sValue = JSON.stringify(actual);
         }
         else {
-            const expected = await runner.eval(parameters[1], fullConfig, { level, logger });
+            const expected = await runner.eval(parameters[1], state);
             res = lodash_1.default.isEqual(actual, expected);
             sValue = JSON.stringify({ actual, expected });
         }
-        if (res)
-            logger.success('$expect: OK:   ' + sValue);
-        else
+        const SCOPE_KEY_OK = '$expect_ok_count';
+        const SCOPE_KEY_FAIL = '$expect_fail_count';
+        const scope = scopes.global();
+        if (typeof scope.get(SCOPE_KEY_OK) === 'undefined')
+            scope.set(SCOPE_KEY_OK, 0);
+        if (typeof scope.get(SCOPE_KEY_FAIL) === 'undefined')
+            scope.set(SCOPE_KEY_FAIL, 0);
+        if (res) {
+            logger.success('$expect: OK:  ' + sValue);
+            scope.set(SCOPE_KEY_OK, scope.get(SCOPE_KEY_OK, 0) + 1);
+        }
+        else {
             logger.error('$expect: FAIL: ' + sValue);
+            scope.set(SCOPE_KEY_FAIL, scope.get(SCOPE_KEY_FAIL, 0) + 1);
+        }
         return res;
     },
 };

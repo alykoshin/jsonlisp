@@ -17,7 +17,7 @@ export async function execute(
     log: (s: number | string) => void,
     debug?: (s: number | string) => void,
   },
-) {
+): Promise<string> {
 
   return new Promise((resolve, reject) => {
     if (!execOptions.encoding) execOptions.encoding = 'utf8';

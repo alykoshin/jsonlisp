@@ -1,16 +1,14 @@
 import {Actions} from "../../lib/runner";
 
-import {series} from './series'
-import {sleep} from './sleep'
-import {parallel} from './parallel'
-import {time} from "./time";
+import {$series} from './$series'
+import {$parallel} from './$parallel'
 
 export const actions: Actions = {
-  parallel,
-  series,
-  sleep,
-  time,
+  $parallel,
+  $series,
 }
+
+export default actions;
 
 
 

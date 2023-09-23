@@ -7,7 +7,7 @@ import pkg from '../package.json';
 import fs from "fs/promises";
 import json5 from "json5";
 import {Runner} from "./lib/runner";
-import {readToolsFile} from "./lib/config";
+import {readToolsFile, Activity, readActivityFile} from "./lib/config";
 
 const program = new Command();
 
@@ -20,19 +20,28 @@ program
   .option('-f, --data-file <filename>', 'Optional file with data object to pass to the action; supported types: .ts, .js, .json .json5')
   .option('-j, --data-json <json>', 'Optional data (stringified JSON) to pass to the action (deeply overrides --data-file)')
   .option('-5, --data-json5 <json5>', 'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)')
-  .action(async (activity, action, options, command) => {
-    console.log(`Starting activity: "${activity}" action: "${action}"`)
+  .action(async (activityName, actionName, options, command) => {
+    console.log(`Starting activity: "${activityName}" action: "${actionName}"`)
 
-    const fileData = readToolsFile(options.dataFile)
+    const activityData = await readActivityFile(activityName)
+
+    const fileData = await readToolsFile(options.dataFile)
+    console.log(`fileData: "${JSON.stringify(fileData)}"`)
 
     if (options.dataJson && options.dataJson5) throw new Error(`Options --data-json and --data-json5 are mutually exclusive`)
-    const data = options.dataJson ? JSON.parse(options.dataJson) : options.dataJson ? JSON.parse(options.dataJson5) : {};
+    const cmdlineData = options.dataJson ? JSON.parse(options.dataJson) : options.dataJson ? JSON.parse(options.dataJson5) : {};
+    console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`)
+
+    const finalData = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
+    console.log(`finalData: "${JSON.stringify(finalData)}"`)
+
     const runner = new Runner()
     await runner.start({
-      activity,
-      action,
-      scope: _.defaultsDeep({}, fileData, data)//, {test: 'test-value'}),
+      activity: activityData,
+      action: actionName,
+      scope: finalData,
     });
+
   })
   .addHelpText('after', `
     Example calls (Windows):

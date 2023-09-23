@@ -1,66 +1,51 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const build_1 = require("./build/build");
-const copyBuildPkg_1 = require("./build/copyBuildPkg");
-const version_bump_1 = require("./build/version-bump");
-const yarnInstallProd_1 = require("./build/yarnInstallProd");
-const ejsTemplates_1 = require("./build/ejsTemplates");
+const _build_1 = require("./build/$build");
+const _copyBuildPkg_1 = require("./build/$copyBuildPkg");
+const _version_bump_1 = require("./build/$version-bump");
+const _yarnInstallProd_1 = require("./build/$yarnInstallProd");
+const _ejsTemplates_1 = require("./build/$ejsTemplates");
 const _ensureFile_1 = require("./fs/$ensureFile");
 const _ensureNoFile_1 = require("./fs/$ensureNoFile");
-const cleanup_1 = require("./fs/cleanup");
-const cp_1 = require("./fs/cp");
-const copyResourcesRecursive_1 = require("./fs/copyResourcesRecursive");
-const rm_1 = require("./fs/rm");
-const zip_1 = require("./fs/zip");
-const echo_1 = require("./echo");
-const exec_1 = require("./exec");
-const operators_1 = require("./operators");
-const confirm_1 = require("./confirm");
-const when_1 = require("./when");
-const process_1 = require("./process");
-const _expect_1 = require("./$expect");
+const _cleanup_1 = require("./fs/$cleanup");
+const _cp_1 = require("./fs/$cp");
+const _copyResourcesRecursive_1 = require("./fs/$copyResourcesRecursive");
+const _rm_1 = require("./fs/$rm");
+const _zip_1 = require("./fs/$zip");
+const _echo_1 = require("./$echo");
+const _exec_1 = require("./$exec");
+const lisp_like_1 = __importDefault(require("./lisp-like"));
+const _confirm_1 = require("./$confirm");
+const process_1 = __importDefault(require("./process"));
+const _expect_1 = __importDefault(require("./$expect"));
+const _shelljs_1 = __importDefault(require("./$shelljs"));
+const _cwd_1 = __importDefault(require("./$cwd"));
 exports.actions = {
-    ...process_1.actions,
-    ..._expect_1.actions,
-    build: build_1.build,
-    confirm: confirm_1.confirm,
-    copyBuildPkg: copyBuildPkg_1.copyBuildPkg,
+    ...process_1.default,
+    ..._expect_1.default,
+    ..._shelljs_1.default,
+    ..._cwd_1.default,
+    ...lisp_like_1.default,
+    build: _build_1.$build,
+    $confirm: _confirm_1.$confirm,
+    $copyBuildPkg: _copyBuildPkg_1.$copyBuildPkg,
     $ensureFile: _ensureFile_1.$ensureFile,
     $ensureNoFile: _ensureNoFile_1.$ensureNoFile,
-    cleanup: cleanup_1.cleanup,
-    cp: cp_1.cp,
-    copyResourcesRecursive: copyResourcesRecursive_1.copyResourcesRecursive,
-    // !!!
-    echo: echo_1.echo,
-    $print: echo_1.echo,
-    exec: exec_1.exec,
-    $exec: exec_1.exec,
-    // !!!
-    ejsTemplates: ejsTemplates_1.ejsTemplates,
-    '+': operators_1.operators,
-    '-': operators_1.operators,
-    '*': operators_1.operators,
-    '/': operators_1.operators,
-    '%': operators_1.operators,
-    '=': operators_1.operators,
-    '/=': operators_1.operators,
-    '>': operators_1.operators,
-    '<': operators_1.operators,
-    '>=': operators_1.operators,
-    '<=': operators_1.operators,
-    'min': operators_1.operators,
-    'max': operators_1.operators,
-    'mod': operators_1.operators,
-    'rem': operators_1.operators,
-    'and': operators_1.operators,
-    'or': operators_1.operators,
-    'not': operators_1.operators,
-    rm: rm_1.rm,
-    version: version_bump_1.versionBump,
-    when: when_1.when,
-    yarnInstallProd: yarnInstallProd_1.yarnInstallProd,
-    zip: zip_1.zip,
+    cleanup: _cleanup_1.$cleanup,
+    cp: _cp_1.$cp,
+    copyResourcesRecursive: _copyResourcesRecursive_1.$copyResourcesRecursive,
+    $echo: _echo_1.$echo,
+    $print: _echo_1.$echo,
+    $exec: _exec_1.$exec,
+    $ejsTemplates: _ejsTemplates_1.$ejsTemplates,
+    $rm: _rm_1.$rm,
+    $version: _version_bump_1.$versionBump,
+    $yarnInstallProd: _yarnInstallProd_1.$yarnInstallProd,
+    $zip: _zip_1.$zip,
 };
 // type ActionKeys = keyof typeof actions
 //# sourceMappingURL=index.js.map

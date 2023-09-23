@@ -1,14 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const series_1 = require("./series");
-const sleep_1 = require("./sleep");
-const parallel_1 = require("./parallel");
-const time_1 = require("./time");
+const _series_1 = require("./$series");
+const _parallel_1 = require("./$parallel");
 exports.actions = {
-    parallel: parallel_1.parallel,
-    series: series_1.series,
-    sleep: sleep_1.sleep,
-    time: time_1.time,
+    $parallel: _parallel_1.$parallel,
+    $series: _series_1.$series,
 };
+exports.default = exports.actions;
 //# sourceMappingURL=index.js.map

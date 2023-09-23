@@ -1,6 +1,5 @@
 import chalk from "chalk";
-import {AtomDefinition} from "./runner";
-import stringUtils from "@utilities/string";
+import {AtomDefinition, Parameter} from "./runner";
 
 
 /*
@@ -12,17 +11,45 @@ debug(...args: any[]) {
 }
 */
 
+type LogStrPrefix = number | string;
+// type LogParam = undefined | null | boolean | number | string;
+type LogParam = Parameter;
 
-export function log_data(data: number | string, prefix: number | string = '') {
-  data = data.toString()
-  data
+function getLogStrs(color: typeof chalk.Color, prefix: LogStrPrefix = '', data: LogParam): string[] {
+  data = String(data)
+  return data
     .split(/\r?\n/)
-    .forEach(line => {
-      const l = typeof prefix !== 'undefined'
-        ? chalk.grey(`[${prefix}] `) + line
-        : line;
-      process.stdout.write(l + "\n")
+    .map(line => {
+      const colorPrefix = typeof prefix !== 'undefined' ? chalk.grey(prefix) + ' ' : '';
+      const colorData = chalk[color](line);
+      return colorPrefix + colorData + '\n';
+      // process.stdout.write(l + "\n")
     })
+}
+
+const errorTypes = ['success', 'fatal', 'error', 'warn', 'info', 'log', 'debug'] as const;
+
+type ErrorType = typeof errorTypes[number]
+
+type ErrorColorsMap = Record<ErrorType, typeof chalk.Color>
+
+
+const errorColors: ErrorColorsMap = {
+  success: 'green',
+  fatal: 'redBright',
+  error: 'red',
+  warn: 'yellow',
+  info: 'whiteBright',
+  log: 'white',
+  debug: 'grey',
+}
+
+function log_data(errorType: ErrorType, prefix: LogStrPrefix = '', data: LogParam | LogParam[]) {
+  const color = errorColors[errorType]
+  if (Array.isArray(data)) data = data.join('\n');
+  const l = getLogStrs(color, prefix, data)
+  l.forEach(s => process.stdout.write(s));
+  return l.join('\n')
 }
 
 function debugPrimitive(value: AtomDefinition): string {
@@ -35,6 +62,7 @@ function debugPrimitive(value: AtomDefinition): string {
 export interface LogPrefix {
   id: number | string,
   level: number
+  name?: string
 }
 
 
@@ -52,7 +80,6 @@ export interface LogPrefix {
 
  */
 
-type LogData = boolean | number | string;
 
 export class Logger<T extends { [key: string]: any }> {
   _prefix: T
@@ -67,40 +94,51 @@ export class Logger<T extends { [key: string]: any }> {
   }
 
   new(prefix: Partial<T>) {
-    return new Logger({ ...this._prefix, ...prefix });
+    return new Logger({...this._prefix, ...prefix});
   }
 
   _prefixToString(prefix: T) {
-    return `${this._prefix.level}/${this._prefix.id}`;
+    let p = `${this._prefix.level}/${this._prefix.id}`;
+
+    // let namePart = prefix.name ? `/${prefix.name}` : ``;
+    let namePart = prefix.name ? prefix.name : ``;
+
+    return `[${p}] [${namePart}]`;
   }
 
-  success(s: LogData) {
-    log_data(chalk.green(s), this._prefixToString(this._prefix));
+  //
+  success(...params: LogParam[]): this {
+    log_data('success', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  error(s: LogData) {
-    log_data(chalk.red(s), this._prefixToString(this._prefix));
+  fatal(...params: LogParam[]): never {
+    const msg = log_data('fatal', this._prefixToString(this._prefix), params);
+    throw new Error(params.join('\n'))
+  }
+
+  error(...params: LogParam[]): this {
+    log_data('error', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  warn(s: LogData) {
-    log_data(chalk.yellow(s), this._prefixToString(this._prefix));
+  warn(...params: LogParam[]): this {
+    log_data('warn', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  info(s: LogData) {
-    log_data(chalk.whiteBright(s), this._prefixToString(this._prefix));
+  info(...params: LogParam[]): this {
+    log_data('info', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  log(s: LogData) {
-    log_data(chalk.white(s), this._prefixToString(this._prefix))
+  log(...params: LogParam[]): Logger<T> {
+    log_data('log', this._prefixToString(this._prefix), params)
     return this;
   }
 
-  debug(s: LogData) {
-    log_data(chalk.grey(s), this._prefixToString(this._prefix))
+  debug(...params: LogParam[]): Logger<T> {
+    log_data('debug', this._prefixToString(this._prefix), params)
     return this;
   }
 

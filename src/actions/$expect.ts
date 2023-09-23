@@ -7,8 +7,10 @@ export const actions: Actions = {
   "$expect": async function (
     action: string,
     parameters: Parameters,
-    {id, level, fullConfig, runner, logger}: ActionMethodState
+    // {id, level, activity, runner, logger}: ActionMethodState
+    state: ActionMethodState
   ) {
+    const {runner, logger, scopes} = state;
     //runner.debug('$expect', { parameters, prevResult });
     fn_check_params(parameters, {exactCount: [1, 2]});
 
@@ -22,8 +24,8 @@ export const actions: Actions = {
     // } else if (parameters.length === 2) {
     //   actual = await runner.eval(parameters[0], fullConfig, {level, logger});
     // }
-    const actual = await runner.eval(parameters[0], fullConfig, {level, logger});
-    // console.log('>>>>>>>>', actual)
+    const actual = await runner.eval(parameters[0], state);
+    // console.log('>>>', actual)
 
     let res: boolean;
     let sValue: string;
@@ -32,13 +34,23 @@ export const actions: Actions = {
       sValue = JSON.stringify(actual)
 
     } else {
-      const expected = await runner.eval(parameters[1], fullConfig, {level, logger});
+      const expected = await runner.eval(parameters[1], state);
       res = _.isEqual(actual, expected);
       sValue = JSON.stringify({actual, expected})
     }
 
-    if (res) logger.success('$expect: OK:   ' + sValue);
-    else logger.error('$expect: FAIL: ' + sValue);
+    const SCOPE_KEY_OK = '$expect_ok_count'
+    const SCOPE_KEY_FAIL = '$expect_fail_count'
+    const scope = scopes.global()
+    if (typeof scope.get(SCOPE_KEY_OK) === 'undefined' ) scope.set(SCOPE_KEY_OK, 0)
+    if (typeof scope.get(SCOPE_KEY_FAIL) === 'undefined' ) scope.set(SCOPE_KEY_FAIL, 0)
+    if (res) {
+      logger.success('$expect: OK:  ' + sValue);
+      scope.set(SCOPE_KEY_OK, scope.get(SCOPE_KEY_OK, 0) +1)
+    } else {
+      logger.error('$expect: FAIL: ' + sValue);
+      scope.set(SCOPE_KEY_FAIL, scope.get(SCOPE_KEY_FAIL, 0) +1)
+    }
     return res;
   },
 
