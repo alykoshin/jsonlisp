@@ -4,7 +4,7 @@ exports.actions = void 0;
 const util_1 = require("../../lib/util");
 //
 exports.actions = {
-    version: async function $version(a, params, { evaluate, activity, logger }) {
+    $version: async function $version(a, params, { evaluate, activity, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: [0, 1] });
         if (params.length > 0) {
             const release = params[0];

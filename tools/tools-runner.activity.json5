@@ -23,5 +23,6 @@
     ],
     'git-commit': ['$exec', "git commit -am \"auto commit\""],
     'git-push': ['$exec', "git push --follow-tags"],
+    'build-commit-push': [ '$series', ['build'], ['git-commit'], ['git-push']]
   },
 }

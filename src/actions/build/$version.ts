@@ -12,7 +12,7 @@ import {
 //
 
 export const actions: Actions = {
-  version: async function $version(
+  $version: async function $version(
     a,
     params,
     { evaluate, activity, logger }

@@ -1,6 +1,7 @@
 import {execute} from "../../helpers/exec";
+import $versionActions from "../build/$version";
 import {fn_check_params} from "../../lib/util";
-import { ActionMethodState, Parameters} from "../../lib/runner";
+import { ActionListExecutor, ActionMethodState, Parameters} from "../../lib/runner";
 
 export type ZipActionConfig = {
   file_names: string[]
@@ -23,6 +24,9 @@ export async function $zip(
   fn_check_params(parameters, {exactCount: 1})
   const [pConfig] = parameters;
 
+  const version = await ($versionActions.$version as ActionListExecutor)(action, [], state);
+
+
   const {file_names, archive_prefix, out_dir, exclude_files} = pConfig as ZipActionConfig
 
   const date = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
@@ -30,17 +34,18 @@ export async function $zip(
 // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
   const zip_exe = "c:/Program Files/7-Zip/7z.exe";
 
-  const archive_name = `${archive_prefix}-v${activity.version}-${date}.zip`;
+  const archive_name = `${archive_prefix}-v${ version }-${date}.zip`;
   const archive_pathname = [out_dir, archive_name].join('/');
 
   const sFileNames = file_names.join(' ');
 
-  const r_sw = '-r'
-  const t_sw = '-tzip'
-  const x_sw = exclude_files.map(f => `-x!${f}`).join(' ')
+  const switches = [
+    '-r',
+  '-tzip',
+    ...exclude_files.map(f => `-x!${f}`),
+  ]
 
-
-  const command_line = `"${zip_exe}" a ${t_sw} ${r_sw} ${x_sw} "${archive_pathname}" "${sFileNames}"`;
+  const command_line = `"${zip_exe}" a ${switches.join(' ')} "${archive_pathname}" "${sFileNames}"`;
 
   const options = {
     cwd: activity.base_dir,
