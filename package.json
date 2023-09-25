@@ -1,6 +1,6 @@
 {
   "name": "tools-runner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tools-runner",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -16,7 +16,7 @@
     "build:server": "tsc -d",
     "start": "ts-node --esm ./src/cli.ts",
     "start-js": "node ./dist/cli.js",
-    "version": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
+    "version_": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
     "clean": "shx rm -rf dist",
     "lint": "eslint src/*.ts test/*.ts",
     "watch": "tsc -w"
