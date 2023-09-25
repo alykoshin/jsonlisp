@@ -12,7 +12,8 @@ const actions = {
         // ['test-length'],
         // ['test-nth'],
         // ['test-cdr'],
-        ['test-rest'],
+        // ['test-rest'],
+        ['test-first'],
     ],
     "test-list": ['$series',
         ['$echo', 'list'],
@@ -38,6 +39,11 @@ const actions = {
         ['$echo', 'rest'],
         ['$expect', ["rest", ["list", 11, 22, 33]], ["list", 22, 33]],
         // ['$expect', [ "rest", [ "list", 11, 22, 33 ] ], [ "cdr", [ "list", 11, 22, 33 ] ] ],
+    ],
+    "test-first": ['$series',
+        ['$echo', 'first'],
+        ['$expect', ["first", ["list", 11, 22, 33]], 11],
+        ['$expect', ["first", ["list", 11, 22, 33]], ["$sbcl-to-list", "(first (list 11 22 33))"]],
     ],
 };
 exports.activity = {

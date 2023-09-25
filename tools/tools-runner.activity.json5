@@ -1,0 +1,27 @@
+{
+  base_dir: './',
+  version: '0.0.0',
+  actions: {
+    "default": [ "$echo", "\nAction name is missing\n" ],
+    "build": [ '$series',
+      [ "$echo", "WARN: dist/ is added to Git"],
+      [ "$shelljs", "rm", "-rf", "dist/*" ],
+      [ "$shelljs", "mkdir", "-p", "dist" ],
+      [ '$exec', '.\\node_modules\\.bin\\tsc -d', { cwd: './', env: {}, } ] ],
+    queryClean: [ '$series',
+      ["$echo", "Ensuring Git directory is clean..."],
+      // ["$exec", "git status --untracked-files=no --porcelain"]],
+      ["$exec", "git status --untracked-files=yes --porcelain"]],
+    testClean: [
+      // 'if', ["$exec", "git status --untracked-files=no --porcelain"], 
+      'if', ['first', ["$exec",
+          ["git status --untracked-files=no --porcelain"] 
+        ], 
+        ["$echo", "TRUE"],
+        ["$echo", "FALSE"]
+      ]
+    ],
+    'git-commit': ['$exec', "git commit -am \"auto commit\""],
+    'git-push': ['$exec', "git push --follow-tags"],
+  },
+}

@@ -7,13 +7,13 @@ exports.actions = {
     if: async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
         const [pTest, pThen, pElse] = params;
-        const condition = await evaluate(pTest);
+        const condition = !!await evaluate(pTest);
         logger.debug(`if: condition: ` + JSON.stringify(condition));
         if (condition) {
             return await evaluate(pThen);
         }
         else {
-            if (pElse) {
+            if (typeof pElse !== 'undefined') {
                 return await evaluate(pElse);
             }
         }

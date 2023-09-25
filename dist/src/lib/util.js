@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.fn_check_params = void 0;
 const fn_check_params = (parameters, { exactCount, minCount, typ, }) => {
-    if (!parameters) {
+    if (typeof parameters === 'undefined') {
         throw new Error('Parameters must be provided');
     }
     if (typeof exactCount !== 'undefined' || typeof minCount !== 'undefined') {
