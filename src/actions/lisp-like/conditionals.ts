@@ -19,7 +19,7 @@ export const actions: Actions = {
     if (condition) {
       return await evaluate(pThen);
     } else {
-      if (pElse) {
+      if (typeof pElse !== 'undefined') {
         return await evaluate(pElse);
       }
     }
