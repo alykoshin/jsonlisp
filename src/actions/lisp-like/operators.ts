@@ -274,39 +274,39 @@ const plog = function (logger: Logger<LogPrefix>) {
 //
 
 export const actions: Actions = {
-  '+': async (action, params, { parameters, evaluate, logger }) =>
+  '+': async (action, params, { evaluate, logger }) =>
     plog(logger)(
       pReduce(
-        parameters,
+        params,
         async (acc, p) => <number>await evaluate(acc) + <number>await evaluate(p),
         0
       )
     ),
 
-  '-': async (action, params, { parameters, evaluate, logger }) =>
+  '-': async (action, params, { evaluate, logger }) =>
     plog(logger)(
       pReduce(
-        parameters,
+        params,
         async (acc, p, i, arr, stop) =>
           <number>await evaluate(acc) - <number>await evaluate(p),
         0
       )
     ),
 
-  '*': async (action, params, { parameters, evaluate, logger }) =>
+  '*': async (action, params, { evaluate, logger }) =>
     plog(logger)(
       pReduce(
-        parameters,
+        params,
         async (acc, p, i, arr, stop) =>
           <number>await evaluate(acc) * <number>await evaluate(p),
         1
       )
     ),
 
-  '/': async (action, params, { parameters, evaluate, logger }) =>
+  '/': async (action, params, { evaluate, logger }) =>
     plog(logger)(
       pReduce(
-        parameters,
+        params,
         async (acc, p, i, arr, stop) =>
           <number>await evaluate(acc) / <number>await evaluate(p),
         1
