@@ -13,7 +13,7 @@ export const actions: Actions = {
     fn_check_params(params, { exactCount: [2, 3] });
     const [pTest, pThen, pElse] = params;
 
-    const condition = await evaluate(pTest);
+    const condition = !! await evaluate(pTest);
     logger.debug(`if: condition: ` + JSON.stringify(condition));
 
     if (condition) {

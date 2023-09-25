@@ -14,7 +14,7 @@ export const fn_check_params = (
     typ?: 'number' | 'string' | 'array';
   }
 ) => {
-  if (!parameters) {
+  if (typeof parameters === 'undefined') {
     throw new Error('Parameters must be provided');
   }
 
