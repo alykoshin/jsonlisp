@@ -3,7 +3,6 @@ import { Logger, LogPrefix } from './log';
 import { Activity } from './config';
 export interface ActionMethodState {
     name: string;
-    parameters: Parameters;
     evaluate: (parameter: Parameter) => Promise<Parameter>;
     id: number | string;
     level: number;
@@ -43,7 +42,7 @@ export declare class Runner {
     };
     start({ activity, action, scope, }: {
         activity: Activity;
-        action: string;
+        action: string | string[];
         scope: ScopeObject<AtomDefinition>;
     }): Promise<void>;
     eval(parameter: Parameter, { level, activity, logger, }: {

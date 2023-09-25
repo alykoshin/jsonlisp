@@ -29,7 +29,7 @@ const errorColors = {
 function log_data(errorType, prefix = '', data) {
     const color = errorColors[errorType];
     if (Array.isArray(data))
-        data = data.join('\n');
+        data = data.join(' ');
     const l = getLogStrs(color, prefix, data);
     l.forEach(s => process.stdout.write(s));
     return l.join('\n');
@@ -45,13 +45,10 @@ function debugPrimitive(value) {
  //
  // Possible implementations:
  //
- const logger = new Logger({ id: 1, level: 1}).log('test')
+  const logger = new Logger({ id: 1, level: 1}).log('test')
 
- const logger = Logger({id, level}).log('test')
- logger2 = logger({id: 2}).log('abc').debug('def')
-
-
-
+  const logger = Logger({id, level}).log('test')
+  logger2 = logger({id: 2}).log('abc').debug('def')
  */
 class Logger {
     _prefix;

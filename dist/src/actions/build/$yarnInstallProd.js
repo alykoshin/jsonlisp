@@ -19,10 +19,7 @@ async function $yarnInstallProd(action, parameters, state) {
         env,
     };
     const command_line = installDepsCmd();
-    await (0, exec_1.execute)(command_line, options, {
-        log: (s) => logger.log(s),
-        debug: (s) => logger.debug(s),
-    });
+    await (0, exec_1.execute)(command_line, options, { logger });
 }
 exports.$yarnInstallProd = $yarnInstallProd;
 exports.default = $yarnInstallProd;

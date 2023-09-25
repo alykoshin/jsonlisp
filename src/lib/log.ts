@@ -46,10 +46,10 @@ const errorColors: ErrorColorsMap = {
 
 function log_data(errorType: ErrorType, prefix: LogStrPrefix = '', data: LogParam | LogParam[]) {
   const color = errorColors[errorType]
-  if (Array.isArray(data)) data = data.join('\n');
+  if (Array.isArray(data)) data = data.join(' ');
   const l = getLogStrs(color, prefix, data)
   l.forEach(s => process.stdout.write(s));
-  return l.join('\n')
+  return l.join('\n');
 }
 
 function debugPrimitive(value: AtomDefinition): string {
@@ -59,10 +59,11 @@ function debugPrimitive(value: AtomDefinition): string {
 }
 
 //
-export interface LogPrefix {
+
+export interface LogPrefix { 
   id: number | string,
   level: number
-  name?: string
+  name?: string 
 }
 
 
@@ -71,13 +72,10 @@ export interface LogPrefix {
  //
  // Possible implementations:
  //
- const logger = new Logger({ id: 1, level: 1}).log('test')
+  const logger = new Logger({ id: 1, level: 1}).log('test')
 
- const logger = Logger({id, level}).log('test')
- logger2 = logger({id: 2}).log('abc').debug('def')
-
-
-
+  const logger = Logger({id, level}).log('test')
+  logger2 = logger({id: 2}).log('abc').debug('def')
  */
 
 

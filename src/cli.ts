@@ -17,11 +17,13 @@ program
   .version(pkg.version)
   .argument('<activity>', 'Activity filename to load')
   .argument('[action]', 'Activity\' action name to run', 'default')
+  .argument('[parameters...]', 'Parameters to pass to the action', [])
   .option('-f, --data-file <filename>', 'Optional file with data object to pass to the action; supported types: .ts, .js, .json .json5')
   .option('-j, --data-json <json>', 'Optional data (stringified JSON) to pass to the action (deeply overrides --data-file)')
   .option('-5, --data-json5 <json5>', 'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)')
-  .action(async (activityName, actionName, options, command) => {
-    console.log(`Starting activity: "${activityName}" action: "${actionName}"`)
+  .action(async (activityName, actionName, parameters, options) => {
+    console.log(`Starting activity: "${activityName}", action: "${actionName}", `+
+      `parameters: ${JSON.stringify(parameters)}, options: ${JSON.stringify(options)}`)
 
     const activityData = await readActivityFile(activityName)
 
@@ -38,7 +40,7 @@ program
     const runner = new Runner()
     await runner.start({
       activity: activityData,
-      action: actionName,
+      action: [actionName, ...parameters],
       scope: finalData,
     });
 

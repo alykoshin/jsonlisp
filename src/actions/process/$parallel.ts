@@ -2,6 +2,7 @@ import Ajv, { Schema, JSONSchemaType, ValidateFunction } from 'ajv';
 import { fn_check_params } from '../../lib/util';
 import {
   ActionMethodState,
+  Actions,
   AtomDefinition,
   Parameter,
   Parameters,
@@ -57,15 +58,12 @@ type ActionArg = // undefined |
 //   console.log(validate.errors);
 // }
 
-export async function $parallel(
-  action: string,
-  parameters: Parameters,
-  state: ActionMethodState
-) {
-  const { runner, logger } = state;
-  fn_check_params(parameters, { minCount: 2 });
-  const promises = parameters.map((a) => runner.eval(a, state));
-  return await Promise.all(promises);
-}
+export const actions: Actions = {
+  $parallel: async function $parallel(action, params, { evaluate, logger }) {
+    fn_check_params(params, { minCount: 2 });
+    const promises = params.map((a) => evaluate(a));
+    return await Promise.all(promises);
+  },
+};
 
-export default $parallel;
+export default actions;

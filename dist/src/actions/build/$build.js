@@ -6,10 +6,8 @@ async function $build(action, parameters, state) {
     const { runner, logger } = state;
     (0, util_1.fn_check_params)(parameters, { exactCount: 1 });
     const [pConfig] = parameters;
-    const command = `webpack --mode production`;
     const execDefinition = [
-        'exec',
-        command,
+        '$exec', `webpack --mode production`,
         {
             ...pConfig,
         },

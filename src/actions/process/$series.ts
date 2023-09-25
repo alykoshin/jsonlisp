@@ -1,31 +1,15 @@
-import { fn_check_params } from "../../lib/util";
+import { fn_check_params } from '../../lib/util';
 import {
-  ActionMethodState,
-  AtomDefinition,
-  Parameters
-} from "../../lib/runner";
+  Actions,
+} from '../../lib/runner';
+import { series } from '../../helpers/series';
 
-// export type SequentialAction = [
-//   action: 'sequential',
-//   ...actions: ActionDefinition[],
-// ]
+export const actions: Actions = {
+  $series: async function $series(action, params, { evaluate, logger }) {
+    fn_check_params(params, { minCount: 1 });
 
-export async function $series(
-  action: string,
-  parameters: Parameters,
-  state: ActionMethodState
-): Promise<AtomDefinition[]> {
-  const {runner, logger} = state;
-  fn_check_params(parameters, {minCount: 1})
+    return series(params, evaluate);
+  },
+};
 
-  const result = [];
-  for (const p of parameters) {
-    // const {action} = baseActionConfig;
-    // log(action);
-    const res = await runner.eval(p, state);
-    result.push(res);
-  }
-  return result;
-}
-
-export default $series;
+export default actions;

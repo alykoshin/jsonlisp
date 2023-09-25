@@ -6,6 +6,7 @@ import {
   Parameter,
   Parameters,
 } from '../../lib/runner';
+import { series, seriesLast } from '../../helpers/series';
 
 export const actions: Actions = {
   if: async function (action, params, { evaluate, logger }) {
@@ -17,8 +18,10 @@ export const actions: Actions = {
 
     if (condition) {
       return await evaluate(pThen);
-    } else if (pElse) {
-      return await evaluate(pElse);
+    } else {
+      if (pElse) {
+        return await evaluate(pElse);
+      }
     }
 
     return null;
@@ -33,16 +36,7 @@ export const actions: Actions = {
       // logger.debug(`cond[{$i}]: condition:`, JSON.stringify(condition));
       logger.debug(`cond[{$i}]: condition:`, condition);
       if (condition) {
-        function formSerie(
-          forms: Parameters,
-          evaluate: (parameter: Parameter) => Promise<Parameter>
-        ) {
-          const results ;
-
-          return result;
-        }
-
-        return await formSerie(forms, evaluate);
+        return seriesLast(forms, evaluate);
       }
     }
 

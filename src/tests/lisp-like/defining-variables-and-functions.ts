@@ -8,7 +8,7 @@ export const config: Activity = {
       [ 'test_setq' ],
 
     ],
-    test_setq: [ '$series',
+    "test_setq": [ '$series',
       [ 'setq', 'abc', 1 ],
       [ '$expect', '${abc}', 1 ],
     ]

@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const _series_1 = require("./$series");
-const _parallel_1 = require("./$parallel");
+const _series_1 = __importDefault(require("./$series"));
+const _parallel_1 = __importDefault(require("./$parallel"));
 exports.actions = {
-    $parallel: _parallel_1.$parallel,
-    $series: _series_1.$series,
+    ..._parallel_1.default,
+    ..._series_1.default,
 };
 exports.default = exports.actions;
 //# sourceMappingURL=index.js.map

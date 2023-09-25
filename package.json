@@ -12,6 +12,17 @@
     "node": ">=10.0.0"
   },
   "scripts": {
+    "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json5",
+    "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
+    "build:server": "tsc -d",
+    "start-ts": "ts-node --esm ./src/cli.ts",
+    "start-js": "node ./dist/cli.js",
+    "version_": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
+    "clean": "shx rm -rf dist",
+    "lint": "eslint src/*.ts test/*.ts",
+    "watch": "tsc -w"
+  },
+  "_scripts": {
     "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
     "build:server": "tsc -d",
     "start": "ts-node --esm ./src/cli.ts",

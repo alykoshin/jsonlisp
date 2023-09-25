@@ -46,10 +46,7 @@ export async function $zip(
     cwd: activity.base_dir,
   };
 
-  return await execute(command_line, options, {
-    log: (s: number | string) => logger.log(s),
-    debug: (s: number | string) => logger.debug( s),
-  });
+  return await execute(command_line, options, {logger});
 }
 
 export default $zip;

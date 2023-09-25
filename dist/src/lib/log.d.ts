@@ -10,13 +10,10 @@ export interface LogPrefix {
  //
  // Possible implementations:
  //
- const logger = new Logger({ id: 1, level: 1}).log('test')
+  const logger = new Logger({ id: 1, level: 1}).log('test')
 
- const logger = Logger({id, level}).log('test')
- logger2 = logger({id: 2}).log('abc').debug('def')
-
-
-
+  const logger = Logger({id, level}).log('test')
+  logger2 = logger({id: 2}).log('abc').debug('def')
  */
 export declare class Logger<T extends {
     [key: string]: any;

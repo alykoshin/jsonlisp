@@ -2,7 +2,7 @@ import {Actions} from "../lib/runner";
 
 import {$build} from './build/$build'
 import {$copyBuildPkg} from './build/$copyBuildPkg'
-import {$versionBump} from './build/$version-bump'
+import $versionActions from './build/$version'
 import {$yarnInstallProd} from "./build/$yarnInstallProd";
 import {$ejsTemplates} from "./build/$ejsTemplates";
 
@@ -14,23 +14,25 @@ import {$copyResourcesRecursive} from './fs/$copyResourcesRecursive'
 import {$rm} from './fs/$rm'
 import {$zip} from './fs/$zip'
 
-import {$echo} from './$echo'
-import {$exec} from './$exec'
+import {$echo} from './os/$echo'
+import {$exec} from './os/$exec'
 
 import lispLike from './lisp-like'
 
-import {$confirm} from './$confirm'
+import {$confirm} from './os/$confirm'
 
 import $sbcl from "./$sbcl";
 
-import $processActions from "./process";
-import $expectActions from "./$expect";
-import $shelljsActions from "./$shelljs";
-import $cwdActions from "./$cwd";
+import $processActions from "./process/";
+import $miscActions from "./misc/";
+import $shelljsActions from "./os/$shelljs";
+import $cwdActions from "./os/$cwd";
 
 export const actions: Actions = {
+  ...$versionActions,
+
   ...$processActions,
-  ...$expectActions,
+  ...$miscActions,
   ...$shelljsActions,
   ...$cwdActions,
   ...lispLike,
@@ -51,7 +53,6 @@ export const actions: Actions = {
   $ejsTemplates: $ejsTemplates,
 
   $rm,
-  $version: $versionBump,
   $yarnInstallProd: $yarnInstallProd,
   $zip: $zip,
 }

@@ -148,7 +148,8 @@ class Runner {
         logger.debug(`Starting action "${action}"`);
         // const actionDefinition = this.getActionImplementation(action);
         // logger.debug(`Eval "${JSON.stringify(actionDefinition)}"`);
-        const result = await this.eval([action], {
+        const a = Array.isArray(action) ? action : [action];
+        const result = await this.eval(a, {
             activity,
             level: state.level,
             logger,
@@ -170,7 +171,7 @@ class Runner {
         if (!logger)
             logger = new log_1.Logger({ id, level });
         if (isAtom(parameter)) {
-            logger.debug(`eval atom "${String(parameter)}" (${typeof parameter})`);
+            logger.debug(`eval atom (${typeof parameter}) "${String(parameter)}"`);
             if (typeof parameter === 'string') {
                 parameter = string_1.default.literalTemplate(parameter, 
                 // ! This is not effective
@@ -180,33 +181,48 @@ class Runner {
         }
         else {
             const { name, executor, parameters } = this.getActionImplementation(parameter);
-            const newLevel = level + 1;
-            const newLogger = logger.new({ id, level: newLevel, name });
-            const evState = { activity, level: newLevel, logger: newLogger };
-            const evaluate = async (p) => await this.eval(p, evState);
-            if (typeof executor === 'function') {
-                logger.debug(`eval function "${name}"`);
-                const exState = {
-                    ...evState,
-                    name,
-                    parameters,
-                    evaluate,
-                    // activity,
-                    id,
-                    // level: newLevel,
-                    scopes: this.scopes,
-                    runner: this,
-                    // logger: newLogger,
-                };
-                return await executor(name, parameters, exState);
-            }
-            else if (isList(executor)) {
-                logger.debug(`eval list "${name}"`);
-                return await this.eval(executor, evState);
-            }
-            else {
-                throw new Error(`Unknown method at eval(): ${name} => ${JSON.stringify(executor)}`);
-            }
+            const execActionImpl = async () => {
+                const newLevel = level + 1;
+                const newLogger = logger.new({ id, level: newLevel, name });
+                const evState = { activity, level: newLevel, logger: newLogger };
+                const evaluate = async (p) => await this.eval(p, evState);
+                if (typeof executor === 'function') {
+                    logger.debug(`eval function "${name}"`);
+                    const exState = {
+                        ...evState,
+                        name,
+                        // parameters,
+                        evaluate,
+                        // activity,
+                        id,
+                        // level: newLevel,
+                        scopes: this.scopes,
+                        runner: this,
+                        // logger: newLogger,
+                    };
+                    return await executor(name, parameters, exState);
+                    //
+                }
+                else if (isList(executor)) {
+                    logger.debug(`eval list "${name}"`);
+                    return await this.eval(executor, evState);
+                    //
+                    // } else if (typeof executor === 'string') {
+                    //   logger.debug(`eval string "${executor}"`);
+                    //   const {
+                    //     name,
+                    //     executor: newExecutor,
+                    //     parameters,
+                    //   } = this.getActionImplementation(executor);
+                    //   return await execActionImpl();
+                    //   //
+                }
+                else {
+                    throw new Error(`Unknown method at eval(): ${name} => ${JSON.stringify(executor)}`);
+                    //
+                }
+            };
+            return await execActionImpl();
         }
     }
     //

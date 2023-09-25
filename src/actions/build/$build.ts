@@ -16,11 +16,8 @@ export async function $build(
   fn_check_params(parameters, {exactCount: 1})
   const [pConfig] = parameters;
 
-  const command = `webpack --mode production`;
-
   const execDefinition: ActionListDefinition = [
-    'exec',
-    command,
+    '$exec', `webpack --mode production`,
     {
       ...(pConfig as BuildActionConfig),
     },

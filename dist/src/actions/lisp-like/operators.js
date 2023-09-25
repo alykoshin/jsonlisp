@@ -207,10 +207,10 @@ const plog = function (logger) {
 };
 //
 exports.actions = {
-    '+': async (action, params, { parameters, evaluate, logger }) => plog(logger)(pReduce(parameters, async (acc, p) => await evaluate(acc) + await evaluate(p), 0)),
-    '-': async (action, params, { parameters, evaluate, logger }) => plog(logger)(pReduce(parameters, async (acc, p, i, arr, stop) => await evaluate(acc) - await evaluate(p), 0)),
-    '*': async (action, params, { parameters, evaluate, logger }) => plog(logger)(pReduce(parameters, async (acc, p, i, arr, stop) => await evaluate(acc) * await evaluate(p), 1)),
-    '/': async (action, params, { parameters, evaluate, logger }) => plog(logger)(pReduce(parameters, async (acc, p, i, arr, stop) => await evaluate(acc) / await evaluate(p), 1)),
+    '+': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p) => await evaluate(acc) + await evaluate(p), 0)),
+    '-': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) - await evaluate(p), 0)),
+    '*': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) * await evaluate(p), 1)),
+    '/': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) / await evaluate(p), 1)),
     '%': operators,
     '=': operators,
     '/=': operators,

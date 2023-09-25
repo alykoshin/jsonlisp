@@ -1,4 +1,6 @@
-import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
+import { spawn, SpawnOptionsWithoutStdio } from 'child_process';
+import { Logger, LogPrefix } from '../lib/log';
+import { sign } from 'crypto';
 
 // export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
 //   log(command_line);
@@ -9,16 +11,20 @@ import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
 //   await p;
 // }
 
+type ExecResult = string;
+
+export type ExecSpawnOptions = Pick<SpawnOptionsWithoutStdio, 'cwd'|'env'>
+
 export async function execute(
   command_line: string,
   spawnOptions: SpawnOptionsWithoutStdio,
   execOptions: {
-    encoding?: BufferEncoding, timeout?: number,
-    log: (s: number | string) => void,
-    debug?: (s: number | string) => void,
-  },
-): Promise<string> {
-
+    encoding?: BufferEncoding;
+    timeout?: number;
+    logger: Logger<LogPrefix>;
+  }
+): Promise<ExecResult> {
+  const logger = execOptions.logger;
   return new Promise((resolve, reject) => {
     if (!execOptions.encoding) execOptions.encoding = 'utf8';
     if (!execOptions.timeout) execOptions.timeout = 0;
@@ -27,54 +33,65 @@ export async function execute(
 
     const p = spawn(command_line, [], spawnOptions);
 
-    let stdout = "";
-    let stderr = "";
+    const outStreamNames = ['stdout', 'stderr'] as const;
+    let results: { [key in (typeof outStreamNames)[number]]: string } = {
+      stdout: '',
+      stderr: '',
+    };
 
-    if (!p || !p.stdout || !p.stderr) throw new Error('Error creating ChildProcess');
+    if (!p || !p.stdout || !p.stderr) {
+      throw new Error('Error creating ChildProcess');
+    }
 
     p.stdout.setEncoding(execOptions.encoding); //'utf8');
     p.stderr.setEncoding(execOptions.encoding); //'utf8');
 
     p.stdout.on('data', function (data) {
-      execOptions.log(data);
       data = data.toString();
-      stdout += data;
+      logger.log(`[stdout] ` + data);
+      results.stdout += data;
     });
 
     p.stderr.on('data', function (data) {
-      execOptions.log(data);
       data = data.toString();
-      stderr += data;
+      logger.log(`[stderr] ` + data);
+      results.stderr += data;
     });
 
-    function exit(code: number|null, signal?: NodeJS.Signals|null) {
+    function exit(
+      event: 'close' | 'exit',
+      code: number | null,
+      signal?: NodeJS.Signals | null
+    ) {
+      let msg = `[${event}] child process ${event} with code ${code}`;
+      if (typeof signal !== 'undefined') msg += ` and signal ${signal}`;
+      logger.debug(msg);
       if (code === 0) {
         // resolve({code, stdout, stderr});
-        resolve(stdout.trim());
+        resolve(results.stdout.trim());
       } else {
-        reject({code, stdout, stderr});
+        reject({ code, ...results });
       }
     }
 
-    p.on('close', function (code) {
-      execOptions.debug && execOptions.debug(`child process closed with code ${code}`);
-      exit(code);
+    p.on('close', function (code: number | null) {
+      exit('close', code);
     });
 
-    p.on('exit', function (code, signal) {
-      execOptions.debug && execOptions.debug(`child process exited with code ${code} and signal ${signal}`);
-      exit(code, signal);
-    });
+    p.on(
+      'exit',
+      function (code: number | null, signal?: NodeJS.Signals | null) {
+        exit('exit', code, signal);
+      }
+    );
 
     if (execOptions.timeout !== 0) {
       setTimeout(() => {
-        execOptions.log(`child process timed out in ${execOptions.timeout} ms`);
-        execOptions.log(`WARN: Force kill not implemented`);
-
+        logger.log(
+          `[timeout] child process timed out in ${execOptions.timeout} ms`
+        );
+        logger.warn(`WARN: Force kill not implemented`);
       }, execOptions.timeout);
     }
-
   });
-
 }
-

@@ -31,10 +31,7 @@ export async function $yarnInstallProd(
   };
 
   const command_line = installDepsCmd();
-  await execute(command_line, options, {
-    log: (s: number | string) => logger.log(s),
-    debug: (s: number | string) => logger.debug(s),
-  });
+  await execute(command_line, options, {logger});
 
 }
 

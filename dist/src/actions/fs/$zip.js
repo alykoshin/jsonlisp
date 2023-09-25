@@ -25,10 +25,7 @@ async function $zip(action, parameters, state) {
     const options = {
         cwd: activity.base_dir,
     };
-    return await (0, exec_1.execute)(command_line, options, {
-        log: (s) => logger.log(s),
-        debug: (s) => logger.debug(s),
-    });
+    return await (0, exec_1.execute)(command_line, options, { logger });
 }
 exports.$zip = $zip;
 exports.default = $zip;

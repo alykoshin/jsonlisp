@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.$parallel = void 0;
+exports.actions = void 0;
 const util_1 = require("../../lib/util");
 // type ActionList = [
 // ActionName,
@@ -38,12 +38,12 @@ const util_1 = require("../../lib/util");
 // } else {
 //   console.log(validate.errors);
 // }
-async function $parallel(action, parameters, state) {
-    const { runner, logger } = state;
-    (0, util_1.fn_check_params)(parameters, { minCount: 2 });
-    const promises = parameters.map((a) => runner.eval(a, state));
-    return await Promise.all(promises);
-}
-exports.$parallel = $parallel;
-exports.default = $parallel;
+exports.actions = {
+    $parallel: async function $parallel(action, params, { evaluate, logger }) {
+        (0, util_1.fn_check_params)(params, { minCount: 2 });
+        const promises = params.map((a) => evaluate(a));
+        return await Promise.all(promises);
+    },
+};
+exports.default = exports.actions;
 //# sourceMappingURL=$parallel.js.map

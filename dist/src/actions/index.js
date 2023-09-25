@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const _build_1 = require("./build/$build");
 const _copyBuildPkg_1 = require("./build/$copyBuildPkg");
-const _version_bump_1 = require("./build/$version-bump");
+const _version_1 = __importDefault(require("./build/$version"));
 const _yarnInstallProd_1 = require("./build/$yarnInstallProd");
 const _ejsTemplates_1 = require("./build/$ejsTemplates");
 const _ensureFile_1 = require("./fs/$ensureFile");
@@ -16,17 +16,18 @@ const _cp_1 = require("./fs/$cp");
 const _copyResourcesRecursive_1 = require("./fs/$copyResourcesRecursive");
 const _rm_1 = require("./fs/$rm");
 const _zip_1 = require("./fs/$zip");
-const _echo_1 = require("./$echo");
-const _exec_1 = require("./$exec");
+const _echo_1 = require("./os/$echo");
+const _exec_1 = require("./os/$exec");
 const lisp_like_1 = __importDefault(require("./lisp-like"));
-const _confirm_1 = require("./$confirm");
-const process_1 = __importDefault(require("./process"));
-const _expect_1 = __importDefault(require("./$expect"));
-const _shelljs_1 = __importDefault(require("./$shelljs"));
-const _cwd_1 = __importDefault(require("./$cwd"));
+const _confirm_1 = require("./os/$confirm");
+const process_1 = __importDefault(require("./process/"));
+const misc_1 = __importDefault(require("./misc/"));
+const _shelljs_1 = __importDefault(require("./os/$shelljs"));
+const _cwd_1 = __importDefault(require("./os/$cwd"));
 exports.actions = {
+    ..._version_1.default,
     ...process_1.default,
-    ..._expect_1.default,
+    ...misc_1.default,
     ..._shelljs_1.default,
     ..._cwd_1.default,
     ...lisp_like_1.default,
@@ -43,7 +44,6 @@ exports.actions = {
     $exec: _exec_1.$exec,
     $ejsTemplates: _ejsTemplates_1.$ejsTemplates,
     $rm: _rm_1.$rm,
-    $version: _version_bump_1.$versionBump,
     $yarnInstallProd: _yarnInstallProd_1.$yarnInstallProd,
     $zip: _zip_1.$zip,
 };
