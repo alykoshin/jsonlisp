@@ -17,6 +17,7 @@ async function $zip(action, parameters, state) {
     const [pConfig] = parameters;
     const version = await _version_1.default.$version(action, [], state);
     const { file_names, archive_prefix, out_dir, exclude_files } = pConfig;
+    let a = 1;
     const date = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
     // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
     const zip_exe = "c:/Program Files/7-Zip/7z.exe";

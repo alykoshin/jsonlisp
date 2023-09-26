@@ -23,12 +23,15 @@ exports.actions = {
         const fn = shelljs_1.default[shellCmd];
         if (typeof fn !== 'function')
             throw new Error(`first parameter of $shelljs must match the name of shelljs method`);
-        let res = fn(...shellParams);
-        res = res.trim();
+        let shellRes = fn(...shellParams);
+        // console.log('>>>>>', res)
+        // console.log('>>>>>', JSON.stringify(res))
+        // console.log('>>>>>', JSON.stringify((res as any).code))
+        const s = String(shellRes).trim();
         // logger.log(`[${action}] ` + res );
-        logger.log('result:', res);
+        logger.log(`s: "${s}", stdout: "${shellRes.stdout}", stderr: "${shellRes.stderr}", code: "${shellRes.code}"`);
         // print(shellParams);
-        return res;
+        return s;
     },
 };
 exports.default = exports.actions;

@@ -1,4 +1,4 @@
-import shelljs from 'shelljs';
+import shelljs, { ShellString } from 'shelljs';
 import { fn_check_params } from '../../lib/util';
 import { ActionMethodState, Actions, Parameters } from '../../lib/runner';
 
@@ -27,13 +27,18 @@ export const actions: Actions = {
         `first parameter of $shelljs must match the name of shelljs method`
       );
 
-    let res: string = (fn as Function)(...shellParams);
-    res = res.trim();
+    let shellRes: ShellString = (fn as Function)(...shellParams);
+    // console.log('>>>>>', res)
+    // console.log('>>>>>', JSON.stringify(res))
+    // console.log('>>>>>', JSON.stringify((res as any).code))
+    const s = String(shellRes).trim();
 
     // logger.log(`[${action}] ` + res );
-    logger.log('result:', res);
+    logger.log(
+      `s: "${s}", stdout: "${shellRes.stdout}", stderr: "${shellRes.stderr}", code: ${shellRes.code}`
+    );
     // print(shellParams);
-    return res;
+    return s;
   },
 };
 

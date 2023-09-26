@@ -4,9 +4,9 @@ const helpers_1 = require("./helpers");
 const actions = {
     '$sbcl': async function (a, params, { evaluate }) {
         const line = await evaluate(params[0]);
-        // const res = await evaluate([ `$exec`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
-        const res = await evaluate([`$exec`, (0, helpers_1.get_sbcl_cmd)(String(line))]);
-        return res[0];
+        // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
+        const res = await evaluate([`shell-command`, (0, helpers_1.get_sbcl_cmd)(String(line))]);
+        return res;
     },
     // '$sbcl-to-int': async function(a,params,{evaluate}) {
     //   return await evaluate(

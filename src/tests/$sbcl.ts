@@ -7,7 +7,7 @@ export const config: Activity = {
   actions: {
     ...$sbcl,
     default: [ '$series',
-      ['$echo', 'Testing sbcl'],
+      ['print', 'Testing sbcl'],
       
       // ['$expect', 1, [ "$sbcl-to-list", '1']],
       // ['$expect', -1000, [ "$sbcl-to-list", '-1000']],

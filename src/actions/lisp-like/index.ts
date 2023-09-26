@@ -1,17 +1,21 @@
 import {Actions} from "../../lib/runner";
 
 import conditionals from "./conditionals";
-import definingVariablesAndFunctions from './defining-variables-and-functions'
+import defines from './defines'
 import errorActions from "./error";
-import listFunctions from './list-functions'
+import inputOutput from "./input-output";
+import listFunctions from './lists'
 import operators from './operators'
+import system from './system'
 
 export const actions: Actions = {
   ...conditionals,
-  ...definingVariablesAndFunctions,
+  ...defines,
   ...errorActions,
-  ...operators,
+  ...inputOutput,
   ...listFunctions,
+  ...operators,
+  ...system,
 }
 
 export default actions;

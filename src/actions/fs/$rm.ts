@@ -16,7 +16,6 @@ export async function $rm(
   const {runner, logger} = state;
   fn_check_params(parameters, {minCount: 1})
 
-
   for (let pf of parameters) {
     const pathname = await runner.eval(pf, state);
     const sPathname = String(pathname)

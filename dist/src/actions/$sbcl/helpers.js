@@ -60,7 +60,7 @@ function parse_sbcl_list(str, { logger }) {
             else if (token === 'NIL') {
                 r = false;
             }
-            else if (token.match(/^[0123456789\.\/]+$/)) {
+            else if (token.match(/^[0123456789\.\/\-]+$/)) {
                 // integer or float number or fraction (example: 1/2)
                 const [sNominator, sDenominator] = token.split('/');
                 const nNominator = parseFloat(sNominator);
@@ -140,6 +140,7 @@ function parse_sbcl_list(str, { logger }) {
 exports.parse_sbcl_list = parse_sbcl_list;
 //
 //
+// const logger = new Logger({ id: 'test', level: 0,})
 // parse_sbcl_list(`
 //   (print
 //     (cond
@@ -150,8 +151,8 @@ exports.parse_sbcl_list = parse_sbcl_list;
 // );
 // parse_sbcl_list('10');
 // parse_sbcl_list('(10)');
-// parse_sbcl_list('true');
-// parse_sbcl_list('false');
+// parse_sbcl_list('NIL', {logger});
+// parse_sbcl_list('T', {logger});
 //
 //
 //# sourceMappingURL=helpers.js.map

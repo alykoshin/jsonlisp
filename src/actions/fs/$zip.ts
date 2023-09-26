@@ -29,6 +29,8 @@ export async function $zip(
 
   const {file_names, archive_prefix, out_dir, exclude_files} = pConfig as ZipActionConfig
 
+  let a = 1;
+
   const date = new Date().toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
 
 // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";

@@ -7,7 +7,7 @@ exports.config = {
     actions: {
         default: [
             '$series',
-            ['$echo', 'This will test operators'],
+            ['print', 'This will test operators'],
             ['$expect', true],
             ['$expect', false],
             ['$expect', 1, 1],

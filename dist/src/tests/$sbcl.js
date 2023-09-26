@@ -11,7 +11,7 @@ exports.config = {
     actions: {
         ..._sbcl_1.default,
         default: ['$series',
-            ['$echo', 'Testing sbcl'],
+            ['print', 'Testing sbcl'],
             // ['$expect', 1, [ "$sbcl-to-list", '1']],
             // ['$expect', -1000, [ "$sbcl-to-list", '-1000']],
             // 

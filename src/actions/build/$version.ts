@@ -35,7 +35,7 @@ export const actions: Actions = {
       // logger.log(`version ${orig_version} -> ${activity.version}`);
       const cmd = `yarn version --${release}`;
       const execDefinition: ActionListDefinition = [
-        '$exec',
+        'shell-command',
         cmd,
         {
           // ...(pConfig as BuildActionConfig),
@@ -46,7 +46,7 @@ export const actions: Actions = {
     }
     const cmd = `node -p -e "require('./package.json').version"`;
     const execDefinition: ActionListDefinition = [
-      '$exec',
+      'shell-command',
       cmd,
       {
         // ...(pConfig as BuildActionConfig),

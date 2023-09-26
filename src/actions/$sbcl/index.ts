@@ -6,12 +6,12 @@ const actions: Actions = {
 
   '$sbcl': async function(a,params,{evaluate}) {
     const line = await evaluate(params[0]);
-    // const res = await evaluate([ `$exec`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
+    // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
     const res = await evaluate(
-      [ `$exec`, get_sbcl_cmd(String(line)) ]
+      [ `shell-command`, get_sbcl_cmd(String(line)) ]
     );
 
-    return (res as Parameters)[0];
+    return (res as Parameters);
   },
 
   // '$sbcl-to-int': async function(a,params,{evaluate}) {

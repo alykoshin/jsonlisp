@@ -1,1 +1,0 @@
-{"version":3,"file":"test-error.js","sourceRoot":"","sources":["../../../../src/tests/lisp-like/test-error.ts"],"names":[],"mappings":";;;AAEa,QAAA,MAAM,GAAa;IAC9B,QAAQ,EAAE,QAAQ;IAClB,OAAO,EAAE,QAAQ;IACjB,OAAO,EAAE;QACP,OAAO,EAAE,CAAE,OAAO,EAAE,kFAAkF,CAAE;QACxG,YAAY,EAAE,CAAE,OAAO,EAAE,2BAA2B,CAAE;QACtD,eAAe,EAAE,CAAE,OAAO,EAAE,2BAA2B,CAAE;KAC1D;CACF,CAAA;AAED,kBAAe,cAAM,CAAC"}

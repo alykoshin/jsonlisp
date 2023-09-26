@@ -5,16 +5,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const conditionals_1 = __importDefault(require("./conditionals"));
-const defining_variables_and_functions_1 = __importDefault(require("./defining-variables-and-functions"));
+const defines_1 = __importDefault(require("./defines"));
 const error_1 = __importDefault(require("./error"));
-const list_functions_1 = __importDefault(require("./list-functions"));
+const input_output_1 = __importDefault(require("./input-output"));
+const lists_1 = __importDefault(require("./lists"));
 const operators_1 = __importDefault(require("./operators"));
+const system_1 = __importDefault(require("./system"));
 exports.actions = {
     ...conditionals_1.default,
-    ...defining_variables_and_functions_1.default,
+    ...defines_1.default,
     ...error_1.default,
+    ...input_output_1.default,
+    ...lists_1.default,
     ...operators_1.default,
-    ...list_functions_1.default,
+    ...system_1.default,
 };
 exports.default = exports.actions;
 //# sourceMappingURL=index.js.map
