@@ -4,7 +4,7 @@ import $sbcl from "../../actions/$sbcl";
 
 const actions: ActivityActionsDefinition = {
   ...$sbcl,
-  "default": ['$series', ['print', 'This will test operators'],
+  "default": ['list', ['print', 'This will test operators'],
     // ['test-list'],
     // ['test-length'],
     // ['test-nth'],
@@ -13,42 +13,42 @@ const actions: ActivityActionsDefinition = {
     ['test-first'],
   ],
 
-  "test-list": ['$series',
+  "test-list": ['list',
     ['print', 'list'],
 
-    ['$expect', [ "list" ], [ "list" ] ],
-    ['$expect', [ "list", 1 ], [ "list", 1 ] ],
-    ['$expect', [ "list", 1, 2, 3 ], [ "list", 1, 2, 3 ] ],
+    ['assert-equal', [ "list" ], [ "list" ] ],
+    ['assert-equal', [ "list", 1 ], [ "list", 1 ] ],
+    ['assert-equal', [ "list", 1, 2, 3 ], [ "list", 1, 2, 3 ] ],
   ],
 
-  "test-length": ['$series',
+  "test-length": ['list',
     ['print', 'length'],
 
-    ['$expect', [ "length", [ "list" ] ], [ "$sbcl-to-list",  "(length (list))" ] ],
-    ['$expect', [ "length", [ "list", 1 ] ], [ "$sbcl-to-list",  "(length (list 1))" ] ],
-    ['$expect', [ "length", [ "list", 1, 2, 3 ] ], [ "$sbcl-to-list",  "(length (list 1 2 3))" ] ],
+    ['assert-equal', [ "length", [ "list" ] ],          [ "$sbcl-to-list",  "(length (list))" ] ],
+    ['assert-equal', [ "length", [ "list", 1 ] ],       [ "$sbcl-to-list",  "(length (list 1))" ] ],
+    ['assert-equal', [ "length", [ "list", 1, 2, 3 ] ], [ "$sbcl-to-list",  "(length (list 1 2 3))" ] ],
   ],
 
-  "test-nth": ['$series',
+  "test-nth": ['list',
     ['print', 'nth'],
-    ['$expect', [ "nth", 1, [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(nth 1 (list 11 22 33))" ] ],
+    ['assert-equal', [ "nth", 1, [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(nth 1 (list 11 22 33))" ] ],
   ],
 
-  "test-cdr": ['$series',
+  "test-cdr": ['list',
     ['print', 'cdr'],
-    ['$expect', [ "cdr", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(cdr (list 11 22 33))" ] ],
+    ['assert-equal', [ "cdr", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(cdr (list 11 22 33))" ] ],
   ],
 
-  "test-rest": ['$series',
+  "test-rest": ['list',
     ['print', 'rest'],
-    ['$expect', [ "rest", [ "list", 11, 22, 33 ] ], [ "list", 22, 33 ] ],
-    // ['$expect', [ "rest", [ "list", 11, 22, 33 ] ], [ "cdr", [ "list", 11, 22, 33 ] ] ],
+    ['assert-equal', [ "rest", [ "list", 11, 22, 33 ] ], [ "list", 22, 33 ] ],
+    // ['assert-equal', [ "rest", [ "list", 11, 22, 33 ] ], [ "cdr", [ "list", 11, 22, 33 ] ] ],
   ],
 
-  "test-first": ['$series',
+  "test-first": ['list',
     ['print', 'first'],
-    ['$expect', [ "first", [ "list", 11, 22, 33 ] ], 11 ],
-    ['$expect', [ "first", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(first (list 11 22 33))" ] ],
+    ['assert-equal', [ "first", [ "list", 11, 22, 33 ] ], 11 ],
+    ['assert-equal', [ "first", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(first (list 11 22 33))" ] ],
   ],
 
 }

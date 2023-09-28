@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -29,7 +30,7 @@ exports.actions = {
         // console.log('>>>>>', JSON.stringify((res as any).code))
         const s = String(shellRes).trim();
         // logger.log(`[${action}] ` + res );
-        logger.log(`s: "${s}", stdout: "${shellRes.stdout}", stderr: "${shellRes.stderr}", code: "${shellRes.code}"`);
+        logger.log(`s: "${s}", stdout: "${shellRes.stdout}", stderr: "${shellRes.stderr}", code: ${shellRes.code}`);
         // print(shellParams);
         return s;
     },

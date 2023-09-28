@@ -1,3 +1,5 @@
+/** @format */
+
 import { fn_check_params } from '../../lib/util';
 import {
   ActionDefinition,
@@ -6,14 +8,14 @@ import {
   Parameter,
   Parameters,
 } from '../../lib/runner';
-import { series, seriesLast } from '../../helpers/series';
+import { series, seriesLast } from './helpers/series';
 
 export const actions: Actions = {
   if: async function (action, params, { evaluate, logger }) {
     fn_check_params(params, { exactCount: [2, 3] });
     const [pTest, pThen, pElse] = params;
 
-    const condition = !! await evaluate(pTest);
+    const condition = !!(await evaluate(pTest));
     logger.debug(`if: condition: ` + JSON.stringify(condition));
 
     if (condition) {
@@ -34,7 +36,7 @@ export const actions: Actions = {
       const [test, ...forms] = params[i] as Parameters;
       const condition = await evaluate(test);
       // logger.debug(`cond[{$i}]: condition:`, JSON.stringify(condition));
-      logger.debug(`cond[{$i}]: condition:`, condition);
+      logger.debug(`cond[${i}]: condition:`, condition);
       if (condition) {
         return seriesLast(forms, evaluate);
       }
@@ -59,13 +61,13 @@ export const actions: Actions = {
 
   unless: async function (action, params, { evaluate, logger }) {
     fn_check_params(params, { exactCount: 2 });
-    const [testClause, actionWhenTrue] = params;
+    const [testClause, actionWhenFalse] = params;
 
     const condition = await evaluate(testClause);
     logger.debug(`unless: condition: ` + JSON.stringify(condition));
 
     if (!condition) {
-      return await evaluate(actionWhenTrue);
+      return await evaluate(actionWhenFalse);
     }
 
     return null;

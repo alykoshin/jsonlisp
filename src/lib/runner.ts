@@ -1,8 +1,10 @@
+/** @format */
+
 import stringUtils from '@utilities/string';
-import { ScopeObject, Scopes } from '@utilities/object';
-import { Logger, LogPrefix } from './log';
-import { Activity } from './config';
-import { actions } from '../actions/';
+import {ScopeObject, Scopes} from '@utilities/object';
+import {Logger, LogPrefix} from './log';
+import {Activity} from './config';
+import {actions} from '../actions/';
 
 export interface ActionMethodState {
   name: string;
@@ -40,7 +42,7 @@ const atomDefinitionTypes = [
   'string',
   'symbol',
   'object',
-];
+] as const;
 
 const isAtom = (value: any): value is AtomDefinition =>
   // atomDefinitionTypes.indexOf(typeof value) >= 0 ||
@@ -115,6 +117,9 @@ options: GenericScriptOptions = {}) {
 }
 */
 
+type ActionArg = string;
+type ActionWithParamsArg = string[];
+
 export class Runner {
   maxLevels: number;
   maxSteps: number;
@@ -122,7 +127,7 @@ export class Runner {
   actions: Actions;
   actionCount: number = 0;
 
-  constructor(options: { maxLevels?: number; maxSteps?: number } = {}) {
+  constructor(options: {maxLevels?: number; maxSteps?: number} = {}) {
     this.maxSteps =
       typeof options.maxSteps !== 'undefined'
         ? options.maxSteps
@@ -135,10 +140,13 @@ export class Runner {
     this.actions = actions;
   }
 
-  getActionImplementation(actionDefinition: ActionDefinition): {
+  getActionImplementation(
+    actionDefinition: ActionDefinition,
+    logger: Logger<LogPrefix>
+  ): {
     name: ActionName;
     executor: ActionListExecutor;
-    parameters: Parameter[];
+    params: Parameter[];
   } {
     //     const name = Array.isArray(actionDefinition)
     //       ? actionDefinition[0]
@@ -154,57 +162,36 @@ export class Runner {
       parameters = <Parameter[]>[];
     } else {
       [name, ...parameters] = actionDefinition;
+      if (typeof name !== 'string') {
+        let msg = [
+          `Expect symbol (i.e.string), instead found:`,
+          isList(name) ? `list (i.e.array)` : `"${typeof name}`,
+          JSON.stringify(name),
+          `, definition:`,
+          JSON.stringify(actionDefinition),
+        ];
+        logger.fatal(...msg);
+      }
       // console.log('>>>', actionDefinition)
       executor = <ActionListExecutor>this.actions[name];
     }
     if (!executor) {
-      throw new Error(
-        `Unknown action name: "${name}", definition: "${JSON.stringify(
-          actionDefinition
-        )}"`
-      );
+      let msg = `Unknown action name: "${name}"`;
+      msg += `, definition: "${JSON.stringify(actionDefinition)}"`;
+      logger.fatal(...msg);
     }
-    return { name, executor, parameters };
+    return {name, executor, params: parameters};
   }
 
-  // _getConfigAction(fullConfig: FullConfig, name: keyof FullConfig['actions'] /*string*/ = 'default'): ActionDefinition {
-  //   // const startName: keyof FullConfig['actions'] = 'default';
-  //   // this.level = 0;
-  //   const action = this.actions[name];
-  //   if (!action) throw new Error(`Action "${name}" not found`);
-  //   return action;
-  // }
-
-  // async _start(filename: string, startName?: keyof FullConfig['actions'] /*string*/ /*= 'default'*/) {
-  //   this.actionCount = 0;
-  //   const id = this.actionCount++;
-  //   const level = 0;
-  //
-  //   this.log({id,level}, `Using config file "${filename}"`);
-  //   const fullConfig = await read_config(filename);
-  //
-  //   // const startName: keyof FullConfig['actions'] = 'default';
-  //   const actionDefinition = this._getConfigAction(fullConfig, startName);
-  //   // this.level = 0;
-  //   const result = await this.eval(actionDefinition, fullConfig, {level});
-  //
-  //   this.debug({id,level}, `Exited with result ${JSON.stringify(result)}`)
-  // }
-
-  async start(
-    // filename: string,
-    // startName: keyof typeof actions | keyof FullConfig['actions'], /*string*/ /*= 'default'*/
-    // startName: string = 'default',
-    {
-      activity,
-      action,
-      scope,
-    }: {
-      activity: Activity;
-      action: string | string[]; // keyof typeof actions | keyof FullConfig['actions'], /*string*/ /*= 'default'*/
-      scope: ScopeObject<AtomDefinition>;
-    }
-  ) {
+  async start({
+    activity,
+    action,
+    scope,
+  }: {
+    activity: Activity;
+    action: ActionArg | ActionWithParamsArg;
+    scope: ScopeObject<AtomDefinition>;
+  }) {
     // const id = this.actionCount++;
     // const level = 0;
     const state = this._initState();
@@ -250,7 +237,7 @@ export class Runner {
   // }
 
   async eval(
-    parameter: Parameter,
+    param: Parameter,
     {
       level,
       activity,
@@ -264,29 +251,42 @@ export class Runner {
     // const id = this.actionCount++;
     const id = this._incSteps();
 
-    if (!logger) logger = new Logger({ id, level });
+    if (!logger) logger = new Logger({id, level});
+    // logger.debug(`eval: parameter:`, parameter);
 
-    if (isAtom(parameter)) {
-      logger.debug(`eval atom (${typeof parameter}) "${String(parameter)}"`);
+    if (isAtom(param)) {
+      logger.debug(`eval atom (${typeof param}) "${String(param)}"`);
 
-      if (typeof parameter === 'string') {
-        parameter = stringUtils.literalTemplate(
-          parameter,
+      if (typeof param === 'string') {
+        param = stringUtils.literalTemplate(
+          param,
           // ! This is not effective
           this.scopes.merged()._scope
         );
       }
 
-      return parameter;
+      return param;
     } else {
-      const { name, executor, parameters } =
-        this.getActionImplementation(parameter);
+      logger.debug(`eval: parameter:`, param);
+      const {name, executor, params} = this.getActionImplementation(
+        param,
+        logger
+      );
+      logger.debug(`eval: executor:`, executor);
+      logger.debug(`eval: parameters:`, params);
 
       const execActionImpl = async (): Promise<Parameter> => {
         const newLevel = level + 1;
-        const newLogger = logger.new({ id, level: newLevel, name });
+        const newName = logger._prefix.name
+          ? logger._prefix.name + '/' + name
+          : name;
+        const newLogger = logger.new({
+          id,
+          level: newLevel,
+          name: newName,
+        });
 
-        const evState = { activity, level: newLevel, logger: newLogger };
+        const evState = {activity, level: newLevel, logger: newLogger};
         const evaluate = async (p: Parameter) => await this.eval(p, evState);
 
         if (typeof executor === 'function') {
@@ -303,42 +303,43 @@ export class Runner {
             runner: this,
             // logger: newLogger,
           };
-          return await executor(name, parameters, exState);
+          return await executor(name, params, exState);
           //
         } else if (isList(executor)) {
           logger.debug(`eval list "${name}"`);
+          // logger.debug(`eval list "${name}": executor:`, executor);
           return await this.eval(executor, evState);
           //
-        // } else if (typeof executor === 'string') {
-        //   logger.debug(`eval string "${executor}"`);
-        //   const {
-        //     name,
-        //     executor: newExecutor,
-        //     parameters,
-        //   } = this.getActionImplementation(executor);
-        //   return await execActionImpl();
-        //   //
+          // } else if (typeof executor === 'string') {
+          //   logger.debug(`eval string "${executor}"`);
+          //   const {
+          //     name,
+          //     executor: newExecutor,
+          //     parameters,
+          //   } = this.getActionImplementation(executor);
+          //   return await execActionImpl();
+          //   //
         } else {
           throw new Error(
             `Unknown method at eval(): ${name} => ${JSON.stringify(executor)}`
           );
           //
         }
-      }
+      };
       return await execActionImpl();
     }
   }
 
   //
 
-  _incLevel(state: { level: number }) {
+  _incLevel(state: {level: number}) {
     if (++state.level > this.maxLevels)
       throw new Error(
         `JsonScript: Script stack overflow. Script went deeper than ${this.maxLevels} levels. You can increase this value by setting maxLevels value in options.`
       );
   }
 
-  _decLevel(state: { level: number }) {
+  _decLevel(state: {level: number}) {
     if (--state.level < 0)
       throw new Error(`JsonScript: Script stack underflow.`);
   }
@@ -351,12 +352,12 @@ export class Runner {
     return this.actionCount;
   }
 
-  _resetState(state: { level: number }): void {
+  _resetState(state: {level: number}): void {
     this.actionCount = 0;
     state.level = 0;
   }
 
-  _initState(): { level: number } {
+  _initState(): {level: number} {
     this.actionCount = 0;
     return {
       level: 0,

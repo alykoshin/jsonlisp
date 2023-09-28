@@ -1,4 +1,5 @@
-import { ActionMethodState, Parameters } from "../../lib/runner";
+/** @format */
+import { ActionMethodState, Parameters } from '../../lib/runner';
 export type EjsTemplatesActionConfig = {
     sourceDir: string;
     excludeDirs: string | string[];

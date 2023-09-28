@@ -6,7 +6,6 @@ import {
   Parameters,
   Runner,
 } from '../../lib/runner';
-import { parseJsonSourceFileConfigFileContent } from 'typescript';
 
 function fn_nth(n: Parameter, list: Parameter | Parameters) {
   // fn_check_params(parameters, {minCount: 2});

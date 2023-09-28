@@ -1,3 +1,4 @@
+/** @format */
 import { ScopeObject, Scopes } from '@utilities/object';
 import { Logger, LogPrefix } from './log';
 import { Activity } from './config';
@@ -25,6 +26,8 @@ export type ActionDefinition = ActionName | ActionListExecutor | ActionListDefin
 export type Actions = {
     [name: string]: ActionDefinition;
 };
+type ActionArg = string;
+type ActionWithParamsArg = string[];
 export declare class Runner {
     maxLevels: number;
     maxSteps: number;
@@ -35,17 +38,17 @@ export declare class Runner {
         maxLevels?: number;
         maxSteps?: number;
     });
-    getActionImplementation(actionDefinition: ActionDefinition): {
+    getActionImplementation(actionDefinition: ActionDefinition, logger: Logger<LogPrefix>): {
         name: ActionName;
         executor: ActionListExecutor;
-        parameters: Parameter[];
+        params: Parameter[];
     };
     start({ activity, action, scope, }: {
         activity: Activity;
-        action: string | string[];
+        action: ActionArg | ActionWithParamsArg;
         scope: ScopeObject<AtomDefinition>;
     }): Promise<void>;
-    eval(parameter: Parameter, { level, activity, logger, }: {
+    eval(param: Parameter, { level, activity, logger, }: {
         activity: Activity;
         level: number;
         logger: Logger<LogPrefix>;
@@ -64,3 +67,4 @@ export declare class Runner {
         level: number;
     };
 }
+export {};

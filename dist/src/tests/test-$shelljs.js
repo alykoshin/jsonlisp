@@ -6,14 +6,12 @@ exports.config = {
     version: '2.5.22',
     actions: {
         default: [
-            '$series',
-            ['$shelljs', 'echo', '\nthis is the output from shelljs echo method'],
+            'list',
+            ['$shelljs', 'echo', '\nThis is the output from shelljs echo method'],
             ['$shelljs', 'cd', 'dist'],
-            ['$expect',
-                ['$shelljs', 'pwd'], ['$cwd']],
+            ['assert-equal', ['$shelljs', 'pwd'], ['getcwd']],
             ['$shelljs', 'cd', '..'],
-            ['$expect',
-                ['$shelljs', 'pwd'], ['$cwd']],
+            ['assert-equal', ['$shelljs', 'pwd'], ['getcwd']],
         ],
     },
 };

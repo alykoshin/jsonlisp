@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const util_1 = require("../../lib/util");
+const print_1 = require("./helpers/print");
 function fn_nth(parameters) {
     (0, util_1.fn_check_params)(parameters, { minCount: 2 });
     const [n, list] = parameters;
@@ -39,10 +40,10 @@ exports.actions = {
         const pName = await runner.eval(parameters[0], state);
         const sName = String(pName);
         const pValue = await runner.eval(parameters[1], state);
-        const sValue = String(pValue);
         // let creates variable at local scope
-        scopes.current().set(sName, sValue);
-        return sValue;
+        scopes.current().set(sName, pValue);
+        logger.debug(`${sName} = ${(0, print_1.stringify)(pValue)}`);
+        return pValue;
     },
     "format": async function (action, parameters, { id, level, activity, scopes, runner, logger }) {
         throw new Error('Not implemented');

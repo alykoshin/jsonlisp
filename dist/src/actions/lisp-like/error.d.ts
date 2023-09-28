@@ -1,3 +1,3 @@
-import { Actions } from "../../lib/runner";
+import { Actions } from '../../lib/runner';
 export declare const actions: Actions;
 export default actions;

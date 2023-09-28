@@ -1,5 +1,5 @@
-import { type } from 'os';
-import { Parameter } from './runner';
+import { type } from "os";
+import { Parameter } from "./runner";
 
 export const fn_check_params = (
   parameters: Parameter | Parameter[],
@@ -11,22 +11,23 @@ export const fn_check_params = (
     // parameters: Parameter,
     exactCount?: number | number[];
     minCount?: number;
-    typ?: 'number' | 'string' | 'array';
+    typ?: "number" | "string" | "array";
   }
 ) => {
-  if (typeof parameters === 'undefined') {
-    throw new Error('Parameters must be provided');
+  if (typeof parameters === "undefined") {
+    throw new Error("Parameters must be provided");
   }
 
-  if (typeof exactCount !== 'undefined' || typeof minCount !== 'undefined') {
-    if (typeof typ === 'undefined') {
-      typ = 'array';
+  // default type is array
+  if (typeof exactCount !== "undefined" || typeof minCount !== "undefined") {
+    if (typeof typ === "undefined") {
+      typ = "array";
     }
   }
 
-  if ((typ === 'number' || typ === 'string') && typeof parameters !== typ) {
+  if ((typ === "number" || typ === "string") && typeof parameters !== typ) {
     throw new Error(`Expecting parameter of type "${typ}"`);
-  } else if (typ === 'array') {
+  } else if (typ === "array") {
     if (!Array.isArray(parameters)) {
       throw new Error(`Expecting array as parameter`);
     }
@@ -34,7 +35,7 @@ export const fn_check_params = (
     const len = parameters.length;
 
     if (
-      (typeof exactCount === 'number' && len !== exactCount) ||
+      (typeof exactCount === "number" && len !== exactCount) ||
       (Array.isArray(exactCount) && exactCount.indexOf(len) < 0)
     ) {
       throw new Error(
@@ -42,7 +43,7 @@ export const fn_check_params = (
       );
     }
 
-    if (typeof minCount !== 'undefined' && len < minCount) {
+    if (typeof minCount !== "undefined" && len < minCount) {
       throw new Error(
         `Invalid number of parameters, expected at least ${minCount}, found: ${len}`
       );

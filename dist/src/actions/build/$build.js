@@ -1,19 +1,25 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.$build = void 0;
-const util_1 = require("../../lib/util");
-async function $build(action, parameters, state) {
-    const { runner, logger } = state;
-    (0, util_1.fn_check_params)(parameters, { exactCount: 1 });
-    const [pConfig] = parameters;
-    const execDefinition = [
-        'shell-command', `webpack --mode production`,
-        {
-            ...pConfig,
-        },
-    ];
-    return await runner.eval(execDefinition, state);
-}
-exports.$build = $build;
-exports.default = $build;
+// import {fn_check_params} from "../../lib/util";
+// import {ActionListDefinition, ActionMethodState, Parameters} from "../../lib/runner";
+// type BuildActionConfig = {
+//   cwd: string
+//   env: { [key: string]: string }
+// }
+// export async function $build(
+//   action: string,
+//   parameters: Parameters,
+//   state: ActionMethodState
+// ) {
+//   const {runner, logger} = state;
+//   fn_check_params(parameters, {exactCount: 1})
+//   const [pConfig] = parameters;
+//   const execDefinition: ActionListDefinition = [
+//     'shell-command', `webpack --mode production`,
+//     {
+//       ...(pConfig as BuildActionConfig),
+//     },
+//   ]
+//   return await runner.eval(execDefinition, state);
+// }
+// export default $build;
 //# sourceMappingURL=$build.js.map

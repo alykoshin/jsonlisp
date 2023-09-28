@@ -3,28 +3,37 @@
   "version": "0.0.0",
   "actions": {
     "default": [ "print", "\nAction name is missing\n" ],
-    "^build": [ "$series",
+    "build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
+      ["clean-dist"],
+      ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ],
+      [ "$version", "patch" ]],
+    "clean-dist": [ "list",
       ["$shelljs", "rm", "-rf", "dist/*" ],
-      ["$shelljs", "mkdir", "-p", "dist" ],
-      ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ] ],
-    "^queryClean": [ "$series",
-      ["print", "Ensuring Git directory is clean..."],
+      ["$shelljs", "mkdir", "-p", "dist" ]],
+    "-test-git-clean": [ 
+      "list",
+      ["print", "Ensure Git directory is clean..."],
       [";", "shell-command", "git status --untracked-files=no --porcelain`"],
       ["shell-command", "git status --untracked-files=yes --porcelain"]
     ],
-    "^testClean": [
-      "if",
-        ["shell-command", "git status --untracked-files=no --porcelain"], 
-        ["echo", "TRUE"],
-        ["print", "FALSE"]
+    "assert-git-clean": [
+      "list",
+      [";","if"],
+      [";","shell-command", "sleep 5"],
+      ["print", "Check if Git directory is clean..."],
+      ["assert-true",
+        ["not", ["shell-command", "git status --untracked-files=no --porcelain"] ], 
+          "\n\nGit directory is not clean. Please check output of 'git status' for the details\n\n" ],
+      [";","print", "TRUE"],
+      [";","print", "FALSE"]
     ],
-    "^git-commit": ["shell-command", "git commit -am \"auto commit\""],
-    "^git-push": ["shell-command", "git push --follow-tags"],
-    "^build-commit-push": [ "$series",
-      ["^build"], 
-      ["^git-commit"], 
-      ["^git-push"]
-    ]
+    "git-commit": ["shell-command", "git commit -am \"auto commit\""],
+    "git-push":   ["shell-command", "git push --follow-tags"],
+    "build-commit-push": [ "list",
+      ["build"], 
+      ["git-commit"], 
+      ["assert-git-clean"],
+      ["git-push"] ]
   }
 }

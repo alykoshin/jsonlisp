@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,16 +8,22 @@ exports.Logger = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 function getLogStrs(color, prefix = '', data) {
     data = String(data);
-    return data
-        .split(/\r?\n/)
-        .map(line => {
+    return data.split(/\r?\n/).map((line) => {
         const colorPrefix = typeof prefix !== 'undefined' ? chalk_1.default.grey(prefix) + ' ' : '';
         const colorData = chalk_1.default[color](line);
         return colorPrefix + colorData + '\n';
-        // process.stdout.write(l + "\n")
+        // process.stdout.write(l + '\n')
     });
 }
-const errorTypes = ['success', 'fatal', 'error', 'warn', 'info', 'log', 'debug'];
+const errorTypes = [
+    'success',
+    'fatal',
+    'error',
+    'warn',
+    'info',
+    'log',
+    'debug',
+];
 const errorColors = {
     success: 'green',
     fatal: 'redBright',
@@ -26,13 +33,31 @@ const errorColors = {
     log: 'white',
     debug: 'grey',
 };
+const textPrefixes = {
+    // success: "",
+    fatal: 'FATAL',
+    error: 'ERROR',
+    warn: 'WARN',
+    // info: "",
+    // log: 'white',
+    // debug: 'grey',
+};
 function log_data(errorType, prefix = '', data) {
     const color = errorColors[errorType];
-    if (Array.isArray(data))
-        data = data.join(' ');
-    const l = getLogStrs(color, prefix, data);
-    l.forEach(s => process.stdout.write(s));
+    const data_ = Array.isArray(data) ? data : [data];
+    const txtPrefix = textPrefixes[errorType] || '';
+    const sData = data_.map((d) => debugParameter(d)).join(' ');
+    const l = getLogStrs(color, prefix, sData);
+    l.forEach((s) => process.stdout.write(s));
     return l.join('\n');
+}
+function debugParameter(value) {
+    if (typeof value === 'object') {
+        return JSON.stringify(value);
+    }
+    else {
+        return debugPrimitive(value);
+    }
 }
 function debugPrimitive(value) {
     let result = String(value);
@@ -75,7 +100,7 @@ class Logger {
     }
     fatal(...params) {
         const msg = log_data('fatal', this._prefixToString(this._prefix), params);
-        throw new Error(params.join('\n'));
+        throw new Error(params.join(' '));
     }
     error(...params) {
         log_data('error', this._prefixToString(this._prefix), params);

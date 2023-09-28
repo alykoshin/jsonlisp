@@ -1,5 +1,6 @@
 import {fn_check_params} from "../../lib/util";
 import {ActionMethodState, Actions, Parameter, Parameters, Runner} from "../../lib/runner";
+import { stringify } from "./helpers/print";
 
 function fn_nth(parameters: Parameters) {
   fn_check_params(parameters, {minCount: 2});
@@ -50,12 +51,12 @@ export const actions: Actions = {
     const sName = String(pName);
 
     const pValue = await runner.eval(parameters[1], state);
-    const sValue = String(pValue);
 
     // let creates variable at local scope
 
-    scopes.current().set(sName, sValue);
-    return sValue;
+    scopes.current().set(sName, pValue);
+    logger.debug(`${sName} = ${stringify(pValue)}`)
+    return pValue;
   },
 
   "format": async function (

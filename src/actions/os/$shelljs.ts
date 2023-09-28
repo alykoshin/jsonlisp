@@ -1,3 +1,5 @@
+/** @format */
+
 import shelljs, { ShellString } from 'shelljs';
 import { fn_check_params } from '../../lib/util';
 import { ActionMethodState, Actions, Parameters } from '../../lib/runner';

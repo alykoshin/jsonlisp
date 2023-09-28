@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,38 +28,6 @@ const isList = (value) => Array.isArray(value);
 // // true;
 const DEFAULT_MAX_STEPS = 1000;
 const DEFAULT_MAX_LEVELS = 100;
-/*
-export type TokenEvaluateFn = (this: JsonScript, args: TokenEvaluateFnArgs) => TokenEvaluateFnRes
-
-interface GenericScriptOptions {
-  beforeEach?: TokenEvaluateFn
-  afterEach?: TokenEvaluateFn
-}
-
-class GenericScript {
-  beforeEach: TokenEvaluateFn
-  afterEach: TokenEvaluateFn
-
-  constructor(
-  // actions: ActivityDefinition,
-options: GenericScriptOptions = {}) {
-
-  const {beforeEach, afterEach, maxSteps, maxLevels} = options;
-
-  this.beforeEach = beforeEach;
-  this.afterEach = afterEach;
-
-  this.maxSteps = (typeof maxSteps !== 'undefined') ? maxSteps : DEFAULT_MAX_STEPS;
-  this.maxLevels = (typeof maxLevels !== 'undefined') ? maxLevels : DEFAULT_MAX_LEVELS;
-  this._steps = 0; // counter to prevent infinite loops
-  this._level = 0; // counter to prevent stack overflow
-
-  //this.TOKEN_BASE_TYPES = {};
-  this.tokens = new TokenStorage();
-}
-
-}
-*/
 class Runner {
     maxLevels;
     maxSteps;
@@ -77,7 +46,7 @@ class Runner {
         this.scopes = new object_1.Scopes();
         this.actions = actions_1.actions;
     }
-    getActionImplementation(actionDefinition) {
+    getActionImplementation(actionDefinition, logger) {
         //     const name = Array.isArray(actionDefinition)
         //       ? actionDefinition[0]
         //       : actionDefinition.action;
@@ -94,41 +63,27 @@ class Runner {
         }
         else {
             [name, ...parameters] = actionDefinition;
+            if (typeof name !== 'string') {
+                let msg = [
+                    `Expect symbol (i.e.string), instead found:`,
+                    isList(name) ? `list (i.e.array)` : `"${typeof name}`,
+                    JSON.stringify(name),
+                    `, definition:`,
+                    JSON.stringify(actionDefinition),
+                ];
+                logger.fatal(...msg);
+            }
             // console.log('>>>', actionDefinition)
             executor = this.actions[name];
         }
         if (!executor) {
-            throw new Error(`Unknown action name: "${name}", definition: "${JSON.stringify(actionDefinition)}"`);
+            let msg = `Unknown action name: "${name}"`;
+            msg += `, definition: "${JSON.stringify(actionDefinition)}"`;
+            logger.fatal(...msg);
         }
-        return { name, executor, parameters };
+        return { name, executor, params: parameters };
     }
-    // _getConfigAction(fullConfig: FullConfig, name: keyof FullConfig['actions'] /*string*/ = 'default'): ActionDefinition {
-    //   // const startName: keyof FullConfig['actions'] = 'default';
-    //   // this.level = 0;
-    //   const action = this.actions[name];
-    //   if (!action) throw new Error(`Action "${name}" not found`);
-    //   return action;
-    // }
-    // async _start(filename: string, startName?: keyof FullConfig['actions'] /*string*/ /*= 'default'*/) {
-    //   this.actionCount = 0;
-    //   const id = this.actionCount++;
-    //   const level = 0;
-    //
-    //   this.log({id,level}, `Using config file "${filename}"`);
-    //   const fullConfig = await read_config(filename);
-    //
-    //   // const startName: keyof FullConfig['actions'] = 'default';
-    //   const actionDefinition = this._getConfigAction(fullConfig, startName);
-    //   // this.level = 0;
-    //   const result = await this.eval(actionDefinition, fullConfig, {level});
-    //
-    //   this.debug({id,level}, `Exited with result ${JSON.stringify(result)}`)
-    // }
-    async start(
-    // filename: string,
-    // startName: keyof typeof actions | keyof FullConfig['actions'], /*string*/ /*= 'default'*/
-    // startName: string = 'default',
-    { activity, action, scope, }) {
+    async start({ activity, action, scope, }) {
         // const id = this.actionCount++;
         // const level = 0;
         const state = this._initState();
@@ -165,25 +120,36 @@ class Runner {
     //   const result = await this.eval(actionDefinition, activity, {level: state.level, logger});
     //   return result;
     // }
-    async eval(parameter, { level, activity, logger, }) {
+    async eval(param, { level, activity, logger, }) {
         // const id = this.actionCount++;
         const id = this._incSteps();
         if (!logger)
             logger = new log_1.Logger({ id, level });
-        if (isAtom(parameter)) {
-            logger.debug(`eval atom (${typeof parameter}) "${String(parameter)}"`);
-            if (typeof parameter === 'string') {
-                parameter = string_1.default.literalTemplate(parameter, 
+        // logger.debug(`eval: parameter:`, parameter);
+        if (isAtom(param)) {
+            logger.debug(`eval atom (${typeof param}) "${String(param)}"`);
+            if (typeof param === 'string') {
+                param = string_1.default.literalTemplate(param, 
                 // ! This is not effective
                 this.scopes.merged()._scope);
             }
-            return parameter;
+            return param;
         }
         else {
-            const { name, executor, parameters } = this.getActionImplementation(parameter);
+            logger.debug(`eval: parameter:`, param);
+            const { name, executor, params } = this.getActionImplementation(param, logger);
+            logger.debug(`eval: executor:`, executor);
+            logger.debug(`eval: parameters:`, params);
             const execActionImpl = async () => {
                 const newLevel = level + 1;
-                const newLogger = logger.new({ id, level: newLevel, name });
+                const newName = logger._prefix.name
+                    ? logger._prefix.name + '/' + name
+                    : name;
+                const newLogger = logger.new({
+                    id,
+                    level: newLevel,
+                    name: newName,
+                });
                 const evState = { activity, level: newLevel, logger: newLogger };
                 const evaluate = async (p) => await this.eval(p, evState);
                 if (typeof executor === 'function') {
@@ -200,11 +166,12 @@ class Runner {
                         runner: this,
                         // logger: newLogger,
                     };
-                    return await executor(name, parameters, exState);
+                    return await executor(name, params, exState);
                     //
                 }
                 else if (isList(executor)) {
                     logger.debug(`eval list "${name}"`);
+                    // logger.debug(`eval list "${name}": executor:`, executor);
                     return await this.eval(executor, evState);
                     //
                     // } else if (typeof executor === 'string') {

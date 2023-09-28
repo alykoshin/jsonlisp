@@ -1,4 +1,5 @@
-import { Parameter } from "./runner";
+/** @format */
+import { Parameter } from './runner';
 type LogParam = Parameter;
 export interface LogPrefix {
     id: number | string;

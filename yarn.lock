@@ -913,6 +913,11 @@
   resolved "https://registry.npmjs.org/@types/ejs/-/ejs-3.1.2.tgz"
   integrity sha512-ZmiaE3wglXVWBM9fyVC17aGPkLo/UgaOjEiI2FXQfyczrCefORPxIe+2dVmnmk3zkVIbizjrlQzmPGhSYGXG5g==
 
+"@types/git-config@^0.0.30":
+  version "0.0.30"
+  resolved "https://registry.npmjs.org/@types/git-config/-/git-config-0.0.30.tgz"
+  integrity sha512-7QHiz4eUlgeEmUGM3acHCifXNp4C+BzJ6Tp56k2s6bm0LX2z53ro0AMW4n6YXcN55gTmSDTDnN/0B5mWGUbiAw==
+
 "@types/glob@~7.2.0":
   version "7.2.0"
   resolved "https://registry.npmjs.org/@types/glob/-/glob-7.2.0.tgz"
