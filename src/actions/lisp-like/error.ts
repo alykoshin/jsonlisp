@@ -1,6 +1,8 @@
+/** @format */
+
 import _ from 'lodash';
 
-import { fn_check_params } from '../../lib/util';
+import {fn_check_params} from '../../lib/util';
 import {
   ActionMethodState,
   Actions,
@@ -9,8 +11,8 @@ import {
 } from '../../lib/runner';
 
 export const actions: Actions = {
-  error: async function error(action, params, { evaluate, logger }) {
-    fn_check_params(params, { exactCount: 1 });
+  error: async function error(action, params, {evaluate, logger}) {
+    fn_check_params(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const sValue = String(pValue);
@@ -23,24 +25,31 @@ export const actions: Actions = {
    * https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node336.html
    *
    */
-  assert: async function (action, params, { evaluate, scopes, logger }) {
-    fn_check_params(params, { exactCount: [1, 2] });
+  assert: async function (action, params, {evaluate, scopes, logger}) {
+    fn_check_params(params, {minCount: 1});
 
-    const actual = await evaluate(params[0]);
+    const pActual = await evaluate(params[0]);
     // console.log('>>>', actual)
 
-    const res = !!actual;
-    const sValue = JSON.stringify(actual);
+    const bActual = !!pActual;
+    const sActual = JSON.stringify(pActual);
 
-    if (!res) {
-      let msg = `Assert failed: `;
-      msg += params[1] ? (msg = String(await evaluate(params[1]))) : sValue;
-      logger.fatal(msg);
+    if (!bActual) {
+      const printParams = params.slice(1);
+      ``;
+      const msgs = await Promise.all(
+        printParams.map(async (p) => await evaluate(['print', p]))
+      );
+      // }
+
+      let msg1 = [`Assert failed:`, sActual];
+      // msg += params[1] ? (msg = String(await evaluate(params[1]))) : sActual;
+      // msg += msgs.length > 0 ?  : sActual;
+      logger.fatal(...msg1, ...msgs);
     }
 
-    return res;
+    return bActual;
   },
-
 };
 
 export default actions;

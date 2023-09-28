@@ -1,0 +1,6 @@
+**/tests/**
+*.activity.js
+*.activity.ts
+*.activity.json
+*.activity.json5
+

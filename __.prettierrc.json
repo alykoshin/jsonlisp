@@ -1,0 +1,10 @@
+{
+  // "overrides": [
+  //   {
+  //     "files": ["*.activity.js"],
+  //     "options": {
+  //       "singleAttributePerLine": false
+  //     }
+  //   }
+  // ]
+}

@@ -161,6 +161,15 @@ export class Runner {
       executor = <ActionListExecutor>this.actions[name];
       parameters = <Parameter[]>[];
     } else {
+      if (!isList(actionDefinition)) {
+        let msg = [
+          `Expect list (i.e.array), instead found:`,
+          typeof actionDefinition,
+          JSON.stringify(actionDefinition),
+        ];
+        logger.fatal(...msg);
+      }
+
       [name, ...parameters] = actionDefinition;
       if (typeof name !== 'string') {
         let msg = [
@@ -176,8 +185,10 @@ export class Runner {
       executor = <ActionListExecutor>this.actions[name];
     }
     if (!executor) {
-      let msg = `Unknown action name: "${name}"`;
-      msg += `, definition: "${JSON.stringify(actionDefinition)}"`;
+      let msg = [
+        `Unknown action name: "${name}"`,
+        `, definition: "${JSON.stringify(actionDefinition)}"`,
+      ];
       logger.fatal(...msg);
     }
     return {name, executor, params: parameters};
