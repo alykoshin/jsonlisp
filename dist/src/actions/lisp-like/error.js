@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const util_1 = require("../../lib/util");
@@ -15,17 +16,22 @@ exports.actions = {
      *
      */
     assert: async function (action, params, { evaluate, scopes, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: [1, 2] });
-        const actual = await evaluate(params[0]);
+        (0, util_1.fn_check_params)(params, { minCount: 1 });
+        const pActual = await evaluate(params[0]);
         // console.log('>>>', actual)
-        const res = !!actual;
-        const sValue = JSON.stringify(actual);
-        if (!res) {
-            let msg = `Assert failed: `;
-            msg += params[1] ? (msg = String(await evaluate(params[1]))) : sValue;
-            logger.fatal(msg);
+        const bActual = !!pActual;
+        const sActual = JSON.stringify(pActual);
+        if (!bActual) {
+            const printParams = params.slice(1);
+            ``;
+            const msgs = await Promise.all(printParams.map(async (p) => await evaluate(['print', p])));
+            // }
+            let msg1 = [`Assert failed:`, sActual];
+            // msg += params[1] ? (msg = String(await evaluate(params[1]))) : sActual;
+            // msg += msgs.length > 0 ?  : sActual;
+            logger.fatal(...msg1, ...msgs);
         }
-        return res;
+        return bActual;
     },
 };
 exports.default = exports.actions;
