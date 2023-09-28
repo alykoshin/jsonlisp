@@ -23,7 +23,7 @@
       [";","shell-command", "sleep 5"],
       ["print", "Check if Git directory is clean..."],
       ["assert-true",
-        ["not", ["shell-command", "git status --untracked-files=true --porcelain"] ], 
+        ["not", ["shell-command", "git status --untracked-files=all --porcelain"] ], 
           "\n\nGit directory is not clean. Please check output of 'git status' for the details\n\n" ],
       [";","print", "TRUE"],
       [";","print", "FALSE"]
