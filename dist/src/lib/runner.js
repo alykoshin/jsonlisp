@@ -136,10 +136,10 @@ class Runner {
             return param;
         }
         else {
-            logger.debug(`eval: parameter:`, param);
+            // logger.debug(`eval: parameter:`, param);
             const { name, executor, params } = this.getActionImplementation(param, logger);
-            logger.debug(`eval: executor:`, executor);
-            logger.debug(`eval: parameters:`, params);
+            // logger.debug(`eval: executor:`, executor);
+            // logger.debug(`eval: parameters:`, params);
             const execActionImpl = async () => {
                 const newLevel = level + 1;
                 const newName = logger._prefix.name
