@@ -1,6 +1,14 @@
-import {fn_check_params} from "../../lib/util";
-import {ActionMethodState, Actions, Parameter, Parameters, Runner} from "../../lib/runner";
-import { stringify } from "./helpers/print";
+/** @format */
+
+import {fn_check_params} from '../../lib/util';
+import {
+  ActionMethodState,
+  Actions,
+  Parameter,
+  Parameters,
+  Runner,
+} from '../../lib/runner';
+import {stringify} from './helpers/print';
 
 function fn_nth(parameters: Parameters) {
   fn_check_params(parameters, {minCount: 2});
@@ -10,13 +18,17 @@ function fn_nth(parameters: Parameters) {
   fn_check_params(list, {minCount: n as number});
 
   return (list as Parameters)[n as number];
-};
+}
 
+/**
+ * Convert string (decimal, binary etc) to number
+ * stackoverflow.com/questions/57565902/convert-binary-string-to-number
+ * AutoCAD dialect: forums.autodesk.com/t5/visual-lisp-autolisp-and-general/convert-string-to-integer/td-p/817797
+ */
 
 export const actions: Actions = {
-
-  'parse-integer': async function(a,params,{evaluate}) {
-    return parseInt( String( await evaluate(params[0]) ) );
+  'parse-integer': async function (a, params, {evaluate}) {
+    return parseInt(String(await evaluate(params[0])));
   },
 
   /* let: async function let_(
@@ -39,7 +51,12 @@ export const actions: Actions = {
   },
 */
 
-  "setq": async function (
+  /**
+   * Difference between `set`, `setq`, and `setf` in Common Lisp?
+   * https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp
+   */
+
+  setq: async function (
     action: string,
     parameters: Parameters,
     state: ActionMethodState
@@ -55,24 +72,9 @@ export const actions: Actions = {
     // let creates variable at local scope
 
     scopes.current().set(sName, pValue);
-    logger.debug(`${sName} = ${stringify(pValue)}`)
+    logger.debug(`${sName} = ${stringify(pValue)}`);
     return pValue;
   },
-
-  "format": async function (
-    action: string,
-    parameters: Parameters,
-    {id, level, activity, scopes, runner, logger}: ActionMethodState
-  ) {
-    throw new Error('Not implemented');
- /*   fn_check_params(parameters, {exactCount: 2});
-    const destination = this._getNextParam(parameters) || '';
-    if (destination.toUpperCase() !== 'T') throw new Error('Invalid destination in format');
-    const controlString = this._getNextParam(parameters) || '';
-    console.log('format', controlString);
-    return result;
- */ },
-
-}
+};
 
 export default actions;

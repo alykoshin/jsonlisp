@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const util_1 = require("../../lib/util");
@@ -37,6 +38,19 @@ exports.actions = {
         const toPrint = (0, print_1.stringify)(pValue);
         (0, print_1.print)(toPrint, '\n');
         return pValue;
+    },
+    /**
+     * http://www.ulisp.com/show?3L#format
+     */
+    format: async function (action, parameters, { id, level, activity, scopes, runner, logger }) {
+        throw new Error('Not implemented');
+        /*   fn_check_params(parameters, {exactCount: 2});
+        const destination = this._getNextParam(parameters) || '';
+        if (destination.toUpperCase() !== 'T') throw new Error('Invalid destination in format');
+        const controlString = this._getNextParam(parameters) || '';
+        console.log('format', controlString);
+        return result;
+     */
     },
     /**
      * yes-or-no-p

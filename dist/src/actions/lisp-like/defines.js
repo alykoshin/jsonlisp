@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const util_1 = require("../../lib/util");
@@ -10,7 +11,11 @@ function fn_nth(parameters) {
     (0, util_1.fn_check_params)(list, { minCount: n });
     return list[n];
 }
-;
+/**
+ * Convert string (decimal, binary etc) to number
+ * stackoverflow.com/questions/57565902/convert-binary-string-to-number
+ * AutoCAD dialect: forums.autodesk.com/t5/visual-lisp-autolisp-and-general/convert-string-to-integer/td-p/817797
+ */
 exports.actions = {
     'parse-integer': async function (a, params, { evaluate }) {
         return parseInt(String(await evaluate(params[0])));
@@ -34,7 +39,11 @@ exports.actions = {
       return sValue;
     },
   */
-    "setq": async function (action, parameters, state) {
+    /**
+     * Difference between `set`, `setq`, and `setf` in Common Lisp?
+     * https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp
+     */
+    setq: async function (action, parameters, state) {
         const { activity, scopes, runner, logger } = state;
         (0, util_1.fn_check_params)(parameters, { exactCount: 2 });
         const pName = await runner.eval(parameters[0], state);
@@ -44,16 +53,6 @@ exports.actions = {
         scopes.current().set(sName, pValue);
         logger.debug(`${sName} = ${(0, print_1.stringify)(pValue)}`);
         return pValue;
-    },
-    "format": async function (action, parameters, { id, level, activity, scopes, runner, logger }) {
-        throw new Error('Not implemented');
-        /*   fn_check_params(parameters, {exactCount: 2});
-           const destination = this._getNextParam(parameters) || '';
-           if (destination.toUpperCase() !== 'T') throw new Error('Invalid destination in format');
-           const controlString = this._getNextParam(parameters) || '';
-           console.log('format', controlString);
-           return result;
-        */ 
     },
 };
 exports.default = exports.actions;

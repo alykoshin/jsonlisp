@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -206,6 +207,15 @@ const plog = function (logger) {
     };
 };
 //
+/**
+ * String concatenation
+ * In brief: `concatenate` & `strcat`
+ *
+ * http://www.ulisp.com/show?3L#concatenate
+ *
+ * https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp
+ * http://clhs.lisp.se/Body/f_concat.htm
+ */
 exports.actions = {
     '+': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p) => await evaluate(acc) + await evaluate(p), 0)),
     '-': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) - await evaluate(p), 0)),

@@ -1,6 +1,8 @@
-import Ajv, { Schema, JSONSchemaType, ValidateFunction } from 'ajv';
-import { JTDDataType } from 'ajv/dist/jtd';
-import { fn_check_params } from '../../lib/util';
+/** @format */
+
+import Ajv, {Schema, JSONSchemaType, ValidateFunction} from 'ajv';
+import {JTDDataType} from 'ajv/dist/jtd';
+import {fn_check_params} from '../../lib/util';
 import {
   ActionMethodState,
   Actions,
@@ -9,17 +11,17 @@ import {
   Parameters,
   Runner,
 } from '../../lib/runner';
-import { start } from 'repl';
-import { LogPrefix, Logger } from '../../lib/log';
+import {start} from 'repl';
+import {LogPrefix, Logger} from '../../lib/log';
 
 const schema: Schema = {
   type: 'array',
   minItems: 2,
-  items: [{ type: 'integer' }, { type: 'integer' }],
+  items: [{type: 'integer'}, {type: 'integer'}],
   additionalItems: false,
 };
 
-const ajv = new Ajv({ allowUnionTypes: true });
+const ajv = new Ajv({allowUnionTypes: true});
 let validate: ValidateFunction<JTDDataType<typeof schema>> =
   ajv.compile(schema);
 
@@ -133,7 +135,7 @@ function calcBinary(
   op: BiOps,
   val1: any,
   val2: any
-): { result: any; last: any; stop: boolean } {
+): {result: any; last: any; stop: boolean} {
   switch (op) {
     case '+':
     case '-':
@@ -151,7 +153,7 @@ function calcBinary(
         // throw new Error(`Invalid opCode "${op}"`);
       }
       const res = fn(val1, val2);
-      return { result: res, last: val2, stop: false };
+      return {result: res, last: val2, stop: false};
     default:
       throw new Error(`Invalid bi-nary operation ${op}`);
     // throw new Error(`Invalid opCode "${op}"`);
@@ -163,8 +165,8 @@ async function operators(
   params: Parameters,
   state: ActionMethodState
 ) {
-  const { runner } = state;
-  fn_check_params(params, { minCount: 1 });
+  const {runner} = state;
+  fn_check_params(params, {minCount: 1});
   // logger.debug(`operator ${[p1, ...p_rest].join(String(action))}`);
   // const v1 = await runner.eval(p1, state);
   if (params.length === 1) {
@@ -178,11 +180,7 @@ async function operators(
     // let v_prev = v1;
     for (const p_curr of p_rest) {
       const v_curr = await runner.eval(p_curr, state);
-      const { result, last, stop } = calcBinary(
-        action as BiOps,
-        v_prev,
-        v_curr
-      );
+      const {result, last, stop} = calcBinary(action as BiOps, v_prev, v_curr);
       res = result;
       if (stop) {
         break;
@@ -268,22 +266,33 @@ const plog = function (logger: Logger<LogPrefix>) {
     const result = await res;
     logger.log(result);
     return result;
-  }
-}
+  };
+};
 
 //
 
+/**
+ * String concatenation
+ * In brief: `concatenate` & `strcat`
+ *
+ * http://www.ulisp.com/show?3L#concatenate
+ *
+ * https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp
+ * http://clhs.lisp.se/Body/f_concat.htm
+ */
+
 export const actions: Actions = {
-  '+': async (action, params, { evaluate, logger }) =>
+  '+': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
         params,
-        async (acc, p) => <number>await evaluate(acc) + <number>await evaluate(p),
+        async (acc, p) =>
+          <number>await evaluate(acc) + <number>await evaluate(p),
         0
       )
     ),
 
-  '-': async (action, params, { evaluate, logger }) =>
+  '-': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
         params,
@@ -293,7 +302,7 @@ export const actions: Actions = {
       )
     ),
 
-  '*': async (action, params, { evaluate, logger }) =>
+  '*': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
         params,
@@ -303,7 +312,7 @@ export const actions: Actions = {
       )
     ),
 
-  '/': async (action, params, { evaluate, logger }) =>
+  '/': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
         params,
