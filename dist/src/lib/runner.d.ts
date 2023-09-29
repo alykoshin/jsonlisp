@@ -7,7 +7,6 @@ export interface ActionMethodState {
     evaluate: (parameter: Parameter) => Promise<Parameter>;
     id: number | string;
     level: number;
-    activity: Activity;
     scopes: Scopes<AtomDefinition>;
     runner: Runner;
     logger: Logger<LogPrefix>;
@@ -44,12 +43,11 @@ export declare class Runner {
         params: Parameter[];
     };
     start({ activity, action, scope, }: {
-        activity: Activity;
+        activity: Activity | undefined;
         action: ActionArg | ActionWithParamsArg;
         scope: ScopeObject<AtomDefinition>;
     }): Promise<void>;
-    eval(param: Parameter, { level, activity, logger, }: {
-        activity: Activity;
+    eval(param: Parameter, { level, logger, }: {
         level: number;
         logger: Logger<LogPrefix>;
     }): Promise<Parameter>;

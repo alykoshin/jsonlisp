@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -26,69 +27,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfigFilename = exports.write_config = exports.readActivityFile = exports.readToolsFile = void 0;
+exports.configWriter = exports.readActivityFile = exports.configReader = void 0;
+const json5_1 = __importDefault(require("json5"));
 const node_fs_1 = require("node:fs");
 const fs = __importStar(require("node:fs/promises"));
 const path = __importStar(require("path"));
-const json5_1 = __importDefault(require("json5"));
 const pkg = require('../../package.json');
-const CONFIG_MODE = '.ts'; // '.json5'; // '.json'
-function buildPathname(config_file) {
-    return path.join(process.cwd(), config_file);
+function replace_extname(pathname, extname) {
+    return path.join(path.dirname(pathname), path.basename(pathname, path.extname(pathname)) + extname);
 }
-async function readToolsFile(origPathname /*, extname?: string*/) {
-    if (!origPathname) {
-        return {};
-    }
-    const extname = path.extname(origPathname);
-    // const fileExtname = path.extname(origPathname);
-    // if (!extname) {
-    //   extname = fileExtname;
-    // } else {
-    //
-    // }
-    let pathname;
-    let content;
-    let data;
-    switch (extname) {
-        case '.ts':
-        case '.js':
-            // pathname = path.resolve('..', origPathname)
-            pathname = path.resolve(process.cwd(), origPathname);
-            console.log(`Importing file "${pathname}"`);
-            data = (await Promise.resolve(`${pathname}`).then(s => __importStar(require(s)))).default;
-            break;
-        case '.json':
-            // pathname = path.resolve(__dirname, '..', origPathname)
-            pathname = path.resolve(process.cwd(), origPathname);
-            console.log(`Reading and parsing file "${pathname}"`);
-            content = await fs.readFile(pathname, { encoding: 'utf8' });
-            data = JSON.parse(content);
-            break;
-        case '.json5':
-            // pathname = path.resolve(__dirname, '..', origPathname)
-            pathname = path.resolve(process.cwd(), origPathname);
-            console.log(`Reading and parsing file "${pathname}"`);
-            content = await fs.readFile(pathname, { encoding: 'utf8' });
-            data = json5_1.default.parse(content);
-            break;
-        default:
-            throw new Error(`Unsupported extension "${extname}" for "${origPathname}"`);
-    }
-    // const pathname = options.dataFile
-    // const pathname = '../'+options.dataFile
-    // const a = await import(pathname)
-    // console.log(`readToolsFile:`, data)
-    return data;
-}
-exports.readToolsFile = readToolsFile;
-const SUPPORTED_EXTENSIONS = [
-    '.ts',
-    '.js',
-    '.json',
-    '.json5',
-];
-const INDEX_FILE_BASENAME = 'index';
 function isDirectory(pathname) {
     try {
         return (0, node_fs_1.statSync)(pathname).isDirectory();
@@ -97,62 +44,126 @@ function isDirectory(pathname) {
         return false;
     }
 }
+function buildPathname(filename) {
+    const baseDir = process.cwd();
+    const pathname = path.join(baseDir, filename);
+    return path.resolve(pathname);
+}
+const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.json', '.json5'];
+const INDEX_FILE_BASENAME = 'index';
+class ConfigReader {
+    resolveFilename(pathname) {
+        // let pathname = buildPathname(fname)
+        let extname = path.extname(pathname);
+        if (!extname) {
+            /**
+             * look for 'index' file if the path to directory was passed
+             */
+            if (isDirectory(pathname)) {
+                pathname = path.join(pathname, INDEX_FILE_BASENAME);
+                // console.log(`Directory was passed; will look for 'index' file "${pathname}"`)
+            }
+            // console.log(`Will look for pathname "${pathname}"`)
+            /**
+             * try all supported extensions
+             */
+            for (const ext of SUPPORTED_EXTENSIONS) {
+                if ((0, node_fs_1.existsSync)(pathname + ext)) {
+                    extname = ext;
+                    break;
+                }
+            }
+            if (!extname) {
+                const exts = SUPPORTED_EXTENSIONS.join('|');
+                const msg = `Unable to find source file with any of ${exts} extnames`;
+                throw new Error(msg);
+            }
+            pathname = pathname + extname;
+        }
+        console.log(`Will process as "${extname}", Final pathname: "${pathname}"`);
+        return pathname;
+    }
+    async read(origPathname) {
+        if (!origPathname)
+            throw new Error('Pathname expected');
+        const extname = path.extname(origPathname);
+        // const baseDir = process.cwd()
+        let pathname = buildPathname(origPathname);
+        switch (extname) {
+            case '.ts':
+                return exports.configReader.readTs(pathname);
+            case '.js':
+                return exports.configReader.readJs(pathname);
+            case '.json':
+                return exports.configReader.readJson(pathname);
+            case '.json5':
+                return exports.configReader.readJson5(pathname);
+            default:
+                const msg = `Unsupported extension "${extname}" for "${origPathname}"`;
+                throw new Error(msg);
+        }
+    }
+    async readTs(pathname) {
+        console.log(`Importing file "${pathname}"`);
+        const data = (await Promise.resolve(`${pathname}`).then(s => __importStar(require(s)))).default;
+        return data;
+    }
+    async readJs(pathname) {
+        return this.readTs(pathname);
+    }
+    async readJson(pathname) {
+        console.log(`Reading and parsing file "${pathname}"`);
+        const content = await fs.readFile(pathname, { encoding: 'utf8' });
+        return JSON.parse(content);
+    }
+    async readJson5(pathname) {
+        console.log(`Reading and parsing file "${pathname}"`);
+        const content = await fs.readFile(pathname, { encoding: 'utf8' });
+        return json5_1.default.parse(content);
+    }
+}
+exports.configReader = new ConfigReader();
 async function readActivityFile(fname) {
     console.log(`Starting filename "${fname}"`);
-    let extname = path.extname(fname);
-    let pathname = buildPathname(fname);
-    if (!extname) {
-        // look for 'index' file if the path to directory was passed
-        if (isDirectory(pathname)) {
-            pathname = path.join(pathname, INDEX_FILE_BASENAME);
-            // console.log(`Directory was passed; will look for 'index' file "${pathname}"`)
-        }
-        // console.log(`Will look for pathname "${pathname}"`)
-        // try all supported extensions
-        for (const ext of SUPPORTED_EXTENSIONS) {
-            if ((0, node_fs_1.existsSync)(pathname + ext)) {
-                extname = ext;
-                break;
-            }
-        }
-        if (!extname) {
-            throw new Error(`Unable to find source file with any of ${SUPPORTED_EXTENSIONS.join('|')} extnames`);
-        }
-        pathname = pathname + extname;
-    }
-    console.log(`Will process as "${extname}"`);
-    pathname = path.resolve(pathname);
-    console.log(`Final pathname: "${pathname}"`);
-    return readToolsFile(pathname);
+    const pathname = exports.configReader.resolveFilename(fname);
+    return exports.configReader.read(pathname);
 }
 exports.readActivityFile = readActivityFile;
-async function write_config(config_file, config) {
-    if (CONFIG_MODE === '.ts') {
-        const dataContent = JSON.stringify(config, null, 2);
+class ConfigWriter {
+    async write(config_file, config) {
+        const extname = path.extname(config_file);
+        const baseDir = process.cwd();
+        // const pathname = path.resolve(baseDir, config_file)
+        const pathname = buildPathname(config_file);
+        switch (extname) {
+            case '.ts':
+                return exports.configWriter.writeTs(pathname, config);
+            case '.json':
+                return exports.configWriter.writeJson(pathname, config);
+            case '.json5':
+                return exports.configWriter.writeJson5(pathname, config);
+        }
+    }
+    async writeTs(pathname, data) {
+        const content = JSON.stringify(data, null, 2);
         const fullContent = `
 import {FullConfig} from "./src/lib/config";
 
-export const config: FullConfig = ${dataContent};
+export const config: FullConfig = ${content};
 
 export default config;
 `;
-        throw new Error('This may overwrite .ts file! and will definitely write it with wrong extension!');
-        await fs.writeFile(buildPathname(config_file), fullContent);
+        throw new Error('This may overwrite .ts file!');
+        return await fs.writeFile(pathname, fullContent);
     }
-    else {
-        await fs.writeFile(config_file, CONFIG_MODE === '.json5' ? json5_1.default.stringify(config, null, 2) : JSON.stringify(config, null, 2));
+    async writeJson(pathname, data) {
+        const content = JSON.stringify(data, null, 2);
+        return await fs.writeFile(pathname, content);
+    }
+    async writeJson5(pathname, data) {
+        const content = json5_1.default.stringify(data, null, 2);
+        return await fs.writeFile(pathname, content);
     }
 }
-exports.write_config = write_config;
-function replace_extname(pathname, extname) {
-    return path.join(path.dirname(pathname), path.basename(pathname, path.extname(pathname)) + extname);
-}
-function getConfigFilename() {
-    let config_file = process.argv[2];
-    if (!config_file) {
-        config_file = pkg.name + (CONFIG_MODE === '.json5' ? '.json5' : CONFIG_MODE === '.json' ? '.json' : '.ts');
-    }
-    return config_file;
-}
-exports.getConfigFilename = getConfigFilename;
+exports.configWriter = new ConfigWriter();
 //# sourceMappingURL=config.js.map

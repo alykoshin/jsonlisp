@@ -1,4 +1,5 @@
-import { ActionDefinition, Actions } from "./runner";
+/** @format */
+import { ActionDefinition, Actions } from './runner';
 export type ActivityActionsDefinition = Actions & {
     default: ActionDefinition;
 };
@@ -7,7 +8,21 @@ export interface Activity {
     version: string;
     actions: ActivityActionsDefinition;
 }
-export declare function readToolsFile(origPathname?: string): Promise<any>;
+declare class ConfigReader {
+    resolveFilename(pathname: string): string;
+    read(origPathname?: string): Promise<any>;
+    readTs(pathname: string): Promise<any>;
+    readJs(pathname: string): Promise<any>;
+    readJson(pathname: string): Promise<any>;
+    readJson5(pathname: string): Promise<any>;
+}
+export declare const configReader: ConfigReader;
 export declare function readActivityFile(fname: string): Promise<Activity>;
-export declare function write_config(config_file: string, config: Activity): Promise<void>;
-export declare function getConfigFilename(): string;
+declare class ConfigWriter {
+    write(config_file: string, config: Activity): Promise<void>;
+    writeTs(pathname: string, data: any): Promise<void>;
+    writeJson(pathname: string, data: any): Promise<void>;
+    writeJson5(pathname: string, data: any): Promise<void>;
+}
+export declare const configWriter: ConfigWriter;
+export {};

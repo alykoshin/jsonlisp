@@ -70,6 +70,7 @@ class Runner {
                 ];
                 logger.fatal(...msg);
             }
+            ;
             [name, ...parameters] = actionDefinition;
             if (typeof name !== 'string') {
                 let msg = [
@@ -105,17 +106,19 @@ class Runner {
         this.scopes.push(scope);
         // logger.debug(`Using config file "${activity}"`);
         // const fullConfig = await read_config(activity);
-        this.actions = {
-            ...this.actions,
-            ...activity.actions,
-        };
+        if (activity) {
+            this.actions = {
+                ...this.actions,
+                ...activity.actions,
+            };
+        }
         // const actionDefinition = this._getConfigAction(activity, action);
         logger.debug(`Starting action "${action}"`);
         // const actionDefinition = this.getActionImplementation(action);
         // logger.debug(`Eval "${JSON.stringify(actionDefinition)}"`);
         const a = Array.isArray(action) ? action : [action];
         const result = await this.eval(a, {
-            activity,
+            // activity,
             level: state.level,
             logger,
         });
@@ -130,7 +133,9 @@ class Runner {
     //   const result = await this.eval(actionDefinition, activity, {level: state.level, logger});
     //   return result;
     // }
-    async eval(param, { level, activity, logger, }) {
+    async eval(param, { level, 
+    // activity,
+    logger, }) {
         // const id = this.actionCount++;
         const id = this._incSteps();
         if (!logger)
@@ -160,7 +165,11 @@ class Runner {
                     level: newLevel,
                     name: newName,
                 });
-                const evState = { activity, level: newLevel, logger: newLogger };
+                const evState = {
+                    // activity,
+                    level: newLevel,
+                    logger: newLogger,
+                };
                 const evaluate = async (p) => await this.eval(p, evState);
                 if (typeof executor === 'function') {
                     logger.debug(`eval function "${name}"`);

@@ -42,7 +42,7 @@ exports.actions = {
     /**
      * http://www.ulisp.com/show?3L#format
      */
-    format: async function (action, parameters, { id, level, activity, scopes, runner, logger }) {
+    format: async function (action, parameters, { evaluate, logger }) {
         throw new Error('Not implemented');
         /*   fn_check_params(parameters, {exactCount: 2});
         const destination = this._getNextParam(parameters) || '';

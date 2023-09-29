@@ -12,13 +12,12 @@ const util_1 = require("../../lib/util");
 //   action: 'zip',
 //   config: ZipActionConfig
 // ]
-async function $zip(action, parameters, state) {
-    const { activity, runner, logger } = state;
-    (0, util_1.fn_check_params)(parameters, { exactCount: 1 });
-    const [pConfig] = parameters;
+async function $zip(action, params, state) {
+    const { runner, logger } = state;
+    (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    const [pConfig] = params;
     const version = await _version_1.default.$version(action, [], state);
     const { file_names, archive_prefix, out_dir, exclude_files } = pConfig;
-    let a = 1;
     const date = new Date()
         .toISOString()
         .replace(/[:T]/g, '-')
@@ -43,7 +42,7 @@ async function $zip(action, parameters, state) {
     ];
     const command_line = [zip_exe, args].join(' ');
     const options = {
-        cwd: activity.base_dir,
+    // cwd: activity.base_dir,
     };
     const r = await (0, exec_1.execute)(command_line, options, { logger });
     return r.stdout;

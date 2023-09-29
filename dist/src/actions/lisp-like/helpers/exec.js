@@ -4,7 +4,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = void 0;
 const child_process_1 = require("child_process");
 async function execute(command_line, spawnOptions, execOptions) {
-    const logger = execOptions.logger;
+    const defaultLogger = execOptions.logger;
+    const stdoutLogger = defaultLogger.new({
+        name: execOptions.logger._prefix.name + '/' + 'stdout',
+    });
+    const stderrLogger = defaultLogger.new({
+        name: execOptions.logger._prefix.name + '/' + 'stderr',
+    });
     return new Promise((resolve, reject) => {
         if (!execOptions.encoding)
             execOptions.encoding = 'utf8';
@@ -30,19 +36,19 @@ async function execute(command_line, spawnOptions, execOptions) {
         p.stderr.setEncoding(execOptions.encoding); //'utf8');
         p.stdout.on('data', function (data) {
             data = data.toString();
-            logger.log(`[stdout] ` + data);
+            stdoutLogger.log(data);
             results.stdout += data;
         });
         p.stderr.on('data', function (data) {
             data = data.toString();
-            logger.log(`[stderr] ` + data);
+            stderrLogger.log(data);
             results.stderr += data;
         });
         function debugExit(event, code, signal) {
             let message = `[${event}] child process ${event} with code ${code}`;
             if (typeof signal !== 'undefined')
                 message += ` and signal ${signal}`;
-            logger.debug(message);
+            defaultLogger.debug(message);
             results.signal = signal;
             results.message = message;
         }
@@ -65,7 +71,7 @@ async function execute(command_line, spawnOptions, execOptions) {
             // override what we set earlier with latest values
             results.code = code;
             // results.message = message;
-            logger.debug(`doExit`);
+            defaultLogger.debug(`doExit`);
             if (code === 0) {
                 resolve(results);
             }
@@ -87,8 +93,8 @@ async function execute(command_line, spawnOptions, execOptions) {
         });
         if (execOptions.timeout !== 0) {
             setTimeout(() => {
-                logger.warn(`[timeout] child process timed out in ${execOptions.timeout} ms`);
-                logger.warn(`WARN: Force kill not implemented`);
+                defaultLogger.warn(`[timeout] child process timed out in ${execOptions.timeout} ms`);
+                defaultLogger.warn(`WARN: Force kill not implemented`);
             }, execOptions.timeout);
         }
     });

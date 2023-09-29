@@ -1,149 +1,139 @@
-import { fn_check_params } from '../../lib/util';
+/** @format */
+
+import {fn_check_params} from '../../lib/util'
 import {
   ActionMethodState,
   Actions,
   Parameter,
   Parameters,
   Runner,
-} from '../../lib/runner';
+} from '../../lib/runner'
 
 function fn_nth(n: Parameter, list: Parameter | Parameters) {
-  // fn_check_params(parameters, {minCount: 2});
-  // const [n, list] = parameters;
+  // fn_check_params(params, {minCount: 2});
+  // const [n, list] = params;
 
-  fn_check_params(n, { typ: 'number' });
-  fn_check_params(list, { minCount: n as number });
+  fn_check_params(n, {typ: 'number'})
+  fn_check_params(list, {minCount: n as number})
 
-  return (list as Parameters)[n as number];
+  return (list as Parameters)[n as number]
 }
 
 function fn_rest(list: Parameter | Parameters) {
-  fn_check_params(list, { minCount: 1 });
-  return (list as Parameters).slice(1);
+  fn_check_params(list, {minCount: 1})
+  return (list as Parameters).slice(1)
 }
 
 export const actions: Actions = {
   list: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { activity, scopes, runner, logger } = state;
-    fn_check_params(parameters, { minCount: 0 });
+    fn_check_params(params, {minCount: 0})
 
-    const evaluated: Parameters = [];
-    for (const p of parameters) {
-      const pValue = await runner.eval(p, state);
-      evaluated.push(pValue);
+    const evaluated: Parameters = []
+    for (const p of params) {
+      const pValue = await evaluate(p)
+      evaluated.push(pValue)
     }
     // if (!Array.isArray(evaluated)) throw new Error('Expecting array');
 
-    return evaluated;
+    return evaluated
   },
 
   length: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { activity, scopes, runner, logger } = state;
-    fn_check_params(parameters, { exactCount: 1 });
+    fn_check_params(params, {exactCount: 1})
 
-    const array = await runner.eval(parameters[0], state);
+    const array = await evaluate(params[0])
 
-    if (!Array.isArray(array)) throw new Error('Expecting array');
-    return array.length;
+    if (!Array.isArray(array)) throw new Error('Expecting array')
+    return array.length
   },
 
   nth: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 2 });
+    fn_check_params(params, {exactCount: 2})
+    const n = await evaluate(params[0])
+    const list = await evaluate(params[1])
 
-    const n = await runner.eval(parameters[0], state);
-    const list = await runner.eval(parameters[1], state);
-
-    return fn_nth(n, list);
+    return fn_nth(n, list)
   },
 
   first: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    return fn_nth(0, list);
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_nth(0, list)
   },
 
   car: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    return fn_nth(0, list);
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_nth(0, list)
   },
 
   //
 
   second: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    return fn_nth(1, list);
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_nth(1, list)
   },
 
   third: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    return fn_nth(2, list);
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_nth(2, list)
   },
 
   //
 
   cdr: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    const res = fn_rest(list);
-    return res;
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_rest(list)
   },
 
   // rest: 'cdr'
 
   rest: async function (
     action: string,
-    parameters: Parameters,
-    state: ActionMethodState
+    params: Parameters,
+    {evaluate, logger}: ActionMethodState
   ) {
-    const { runner } = state;
-    fn_check_params(parameters, { exactCount: 1 });
-    const list = await runner.eval(parameters[0], state);
-    const res = fn_rest(list);
-    return res;
+    fn_check_params(params, {exactCount: 1})
+    const list = await evaluate(params[0])
+    return fn_rest(list)
   },
 
   //
-};
+}
 
-export default actions;
+export default actions

@@ -1,9 +1,9 @@
 /** @format */
 
-import {fn_check_params} from '../../lib/util';
-import {ActionMethodState, Actions, Parameters} from '../../lib/runner';
-import {print, stringify} from './helpers/print';
-import {confirm as confirm_} from './helpers/confirm';
+import {fn_check_params} from '../../lib/util'
+import {ActionMethodState, Actions, Parameters} from '../../lib/runner'
+import {print, stringify} from './helpers/print'
+import {confirm as confirm_} from './helpers/confirm'
 
 /**
  * The Common Lisp Cookbook – Files and Directories
@@ -20,32 +20,32 @@ import {confirm as confirm_} from './helpers/confirm';
  */
 export const actions: Actions = {
   prin1: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    fn_check_params(params, {exactCount: 1})
 
-    const pValue = await evaluate(params[0]);
-    const toPrint = stringify(pValue);
+    const pValue = await evaluate(params[0])
+    const toPrint = stringify(pValue)
 
-    print(toPrint);
-    return pValue;
+    print(toPrint)
+    return pValue
   },
 
   princ: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    fn_check_params(params, {exactCount: 1})
 
-    const pValue = await evaluate(params[0]);
+    const pValue = await evaluate(params[0])
 
-    print(pValue, '\n');
-    return pValue;
+    print(pValue, '\n')
+    return pValue
   },
 
   print: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    fn_check_params(params, {exactCount: 1})
 
-    const pValue = await evaluate(params[0]);
-    const toPrint = stringify(pValue);
+    const pValue = await evaluate(params[0])
+    const toPrint = stringify(pValue)
 
-    print(toPrint, '\n');
-    return pValue;
+    print(toPrint, '\n')
+    return pValue
   },
 
   /**
@@ -54,9 +54,9 @@ export const actions: Actions = {
   format: async function (
     action: string,
     parameters: Parameters,
-    {id, level, activity, scopes, runner, logger}: ActionMethodState
+    {evaluate, logger}: ActionMethodState
   ) {
-    throw new Error('Not implemented');
+    throw new Error('Not implemented')
     /*   fn_check_params(parameters, {exactCount: 2});
     const destination = this._getNextParam(parameters) || '';
     if (destination.toUpperCase() !== 'T') throw new Error('Invalid destination in format');
@@ -77,18 +77,18 @@ export const actions: Actions = {
     parameters: Parameters,
     state: ActionMethodState
   ) {
-    const {runner, logger} = state;
-    fn_check_params(parameters, {exactCount: [0, 1]});
+    const {runner, logger} = state
+    fn_check_params(parameters, {exactCount: [0, 1]})
 
     const value =
       parameters.length === 1
         ? String(await runner.eval(parameters[0], state))
-        : 'Confirm y/[N]?';
-    const res = await confirm_(value);
+        : 'Confirm y/[N]?'
+    const res = await confirm_(value)
 
-    logger.info(`confirm: ${res}`);
-    return res;
+    logger.info(`confirm: ${res}`)
+    return res
   },
-};
+}
 
-export default actions;
+export default actions

@@ -1,23 +1,23 @@
 /** @format */
 
-import {fn_check_params} from '../../lib/util';
+import {fn_check_params} from '../../lib/util'
 import {
   ActionMethodState,
   Actions,
   Parameter,
   Parameters,
   Runner,
-} from '../../lib/runner';
-import {stringify} from './helpers/print';
+} from '../../lib/runner'
+import {stringify} from './helpers/print'
 
 function fn_nth(parameters: Parameters) {
-  fn_check_params(parameters, {minCount: 2});
-  const [n, list] = parameters;
+  fn_check_params(parameters, {minCount: 2})
+  const [n, list] = parameters
 
-  fn_check_params(n, {typ: 'number'});
-  fn_check_params(list, {minCount: n as number});
+  fn_check_params(n, {typ: 'number'})
+  fn_check_params(list, {minCount: n as number})
 
-  return (list as Parameters)[n as number];
+  return (list as Parameters)[n as number]
 }
 
 /**
@@ -28,7 +28,7 @@ function fn_nth(parameters: Parameters) {
 
 export const actions: Actions = {
   'parse-integer': async function (a, params, {evaluate}) {
-    return parseInt(String(await evaluate(params[0])));
+    return parseInt(String(await evaluate(params[0])))
   },
 
   /* let: async function let_(
@@ -59,22 +59,21 @@ export const actions: Actions = {
   setq: async function (
     action: string,
     parameters: Parameters,
-    state: ActionMethodState
+    {evaluate, scopes, logger}: ActionMethodState
   ) {
-    const {activity, scopes, runner, logger} = state;
-    fn_check_params(parameters, {exactCount: 2});
+    fn_check_params(parameters, {exactCount: 2})
 
-    const pName = await runner.eval(parameters[0], state);
-    const sName = String(pName);
+    const pName = await evaluate(parameters[0])
+    const sName = String(pName)
 
-    const pValue = await runner.eval(parameters[1], state);
+    const pValue = await evaluate(parameters[1])
 
     // let creates variable at local scope
 
-    scopes.current().set(sName, pValue);
-    logger.debug(`${sName} = ${stringify(pValue)}`);
-    return pValue;
+    scopes.current().set(sName, pValue)
+    logger.debug(`${sName} = ${stringify(pValue)}`)
+    return pValue
   },
-};
+}
 
-export default actions;
+export default actions

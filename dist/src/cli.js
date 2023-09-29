@@ -1,5 +1,5 @@
 "use strict";
-// #!/usr/bin/env ts-node
+/** @format */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -38,20 +38,33 @@ program
     .description(package_json_1.default.description)
     .version(package_json_1.default.version)
     .argument('<activity>', 'Activity filename to load')
-    .argument('[action]', 'Activity\' action name to run', 'default')
+    .argument('[action]', "Activity' action name to run", 'default')
     .argument('[parameters...]', 'Parameters to pass to the action', [])
     .option('-f, --data-file <filename>', 'Optional file with data object to pass to the action; supported types: .ts, .js, .json .json5')
     .option('-j, --data-json <json>', 'Optional data (stringified JSON) to pass to the action (deeply overrides --data-file)')
     .option('-5, --data-json5 <json5>', 'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)')
     .action(async (activityName, actionName, parameters, options) => {
-    console.log(`Starting activity: "${activityName}", action: "${actionName}", ` +
-        `parameters: ${JSON.stringify(parameters)}, options: ${JSON.stringify(options)}`);
-    const activityData = await (0, config_1.readActivityFile)(activityName);
-    const fileData = await (0, config_1.readToolsFile)(options.dataFile);
+    console.log(`Starting ` +
+        `activity: "${activityName}", ` +
+        `action: "${actionName}", ` +
+        `parameters: ${JSON.stringify(parameters)}, ` +
+        `options: ${JSON.stringify(options)}`);
+    const activityData = activityName
+        ? await (0, config_1.readActivityFile)(activityName)
+        : undefined;
+    const fileData = options.dataFile
+        ? await config_1.configReader.read(options.dataFile)
+        : {};
     console.log(`fileData: "${JSON.stringify(fileData)}"`);
-    if (options.dataJson && options.dataJson5)
-        throw new Error(`Options --data-json and --data-json5 are mutually exclusive`);
-    const cmdlineData = options.dataJson ? JSON.parse(options.dataJson) : options.dataJson ? JSON.parse(options.dataJson5) : {};
+    if (options.dataJson && options.dataJson5) {
+        const msg = `Options --data-json and --data-json5 are mutually exclusive`;
+        throw new Error(msg);
+    }
+    const cmdlineData = options.dataJson
+        ? JSON.parse(options.dataJson)
+        : options.dataJson
+            ? JSON.parse(options.dataJson5)
+            : {};
     console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
     const finalData = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
     console.log(`finalData: "${JSON.stringify(finalData)}"`);
