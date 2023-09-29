@@ -1,11 +1,14 @@
 /** @format */
 
+import * as path from 'path'
+
 import {execute} from '../lisp-like/helpers/exec'
 import $versionActions from '../build/$version'
 import {fn_check_params} from '../../lib/util'
 import {
   ActionListExecutor,
   ActionMethodState,
+  Actions,
   Parameters,
 } from '../../lib/runner'
 
@@ -45,17 +48,17 @@ export async function $zip(
     .replace(/\..+/, '')
 
   // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-  const zip_exe = 'c:/Program Files/7-Zip/7z.exe'
+  const zip_exe = '"c:/Program Files/7-Zip/7z.exe"'
 
   const archive_name = `${archive_prefix}-v${version}-${date}.zip`
-  const archive_pathname = [out_dir, archive_name].join('/')
+  const archive_pathname = path.join(out_dir, archive_name)
 
   const sFileNames = file_names.join(' ')
 
   // prettier-ignore
   const switches = [
     '-r',
-  '-tzip',
+    '-t'+'zip',
     ...exclude_files.map(f => `-x!${f}`),
   ]
   // prettier-ignore
@@ -66,7 +69,7 @@ export async function $zip(
     sFileNames,
   ];
 
-  const command_line = [zip_exe, args].join(' ')
+  const command_line = [zip_exe, ...args].join(' ')
 
   const options = {
     // cwd: activity.base_dir,
@@ -76,4 +79,8 @@ export async function $zip(
   return r.stdout
 }
 
-export default $zip
+// export const actions: Actions = {
+// $zip: $zip,
+// }
+
+// export default actions

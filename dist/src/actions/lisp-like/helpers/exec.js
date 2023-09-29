@@ -4,7 +4,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = void 0;
 const child_process_1 = require("child_process");
 async function execute(command_line, spawnOptions, execOptions) {
-    const defaultLogger = execOptions.logger;
+    const defaultLogger = execOptions.logger.new({
+        name: execOptions.logger._prefix.name + '/' + 'execute',
+    });
     const stdoutLogger = defaultLogger.new({
         name: execOptions.logger._prefix.name + '/' + 'stdout',
     });
@@ -18,6 +20,7 @@ async function execute(command_line, spawnOptions, execOptions) {
             execOptions.timeout = 0;
         if (!execOptions.trim)
             execOptions.trim = true;
+        defaultLogger.debug(command_line, spawnOptions);
         spawnOptions.shell = true;
         const p = (0, child_process_1.spawn)(command_line, [], spawnOptions);
         const outStreamNames = ['stdout', 'stderr'];

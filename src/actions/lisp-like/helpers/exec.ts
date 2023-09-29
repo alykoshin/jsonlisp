@@ -36,7 +36,9 @@ export async function execute(
     logger: Logger<LogPrefix>
   }
 ): Promise<ExecResult> {
-  const defaultLogger = execOptions.logger
+  const defaultLogger = execOptions.logger.new({
+    name: execOptions.logger._prefix.name + '/' + 'execute',
+  })
   const stdoutLogger = defaultLogger.new({
     name: execOptions.logger._prefix.name + '/' + 'stdout',
   })
@@ -48,6 +50,7 @@ export async function execute(
     if (!execOptions.encoding) execOptions.encoding = 'utf8'
     if (!execOptions.timeout) execOptions.timeout = 0
     if (!execOptions.trim) execOptions.trim = true
+    defaultLogger.debug(command_line, spawnOptions)
 
     spawnOptions.shell = true
 

@@ -7,4 +7,3 @@ export type ZipActionConfig = {
     exclude_files: string[];
 };
 export declare function $zip(action: string, params: Parameters, state: ActionMethodState): Promise<string>;
-export default $zip;
