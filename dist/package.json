@@ -1,6 +1,6 @@
 {
     "name": "tools-runner",
-    "version": "0.0.18",
+    "version": "0.0.19",
     "description": "tools-runner",
     "type": "commonjs",
     "main": "dist/index.js",
