@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "name": "dist-v0.0.18-2023-09-29-23-06-18.zip",
+      "uri": "zip:d:\\dev\\npm\\tools-runner\\src\\tests\\data\\out\\dist-v0.0.18-2023-09-29-23-06-18.zip"
+    }
+  ],
+  "settings": {
+    "cSpell.words": ["CLISP", "LISPWORKS", "progn", "tspegjs", "UIOP"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_plugins": ["jsdoc-plugin-typescript"],
+  "plugins": ["node_modules/better-docs/typescript"],
+  "source": {
+    "_includePattern": ".+\\.(j|t)s(doc|x)?$",
+    "includePattern": "\\.(jsx|js|ts|tsx)$"
+  },
+  "opts": {
+    "destination": "./jsdoc/",
+    "recurse": true,
+    "template": "node_modules/better-docs"
+  },
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "typescript": {
+    "moduleRoot": "src"
+  }
+}
