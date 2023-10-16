@@ -2,28 +2,41 @@
 
 import _ from 'lodash';
 
-import {fn_check_params} from '../../lib/util';
+import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionMethodState,
   Actions,
-  AtomDefinition,
+  Atom,
   Parameters,
-} from '../../lib/runner';
+} from '../../apps/runner/lib/types';
 import {Scope, Scopes} from '@utilities/object';
+
+/**
+ * @module lisp-unit
+ *
+ * @description
+ * lisp-unit -- Common Lisp library that supports unit testing --
+ * {@link https://www.quicklisp.org/beta/UNOFFICIAL/docs/lisp-unit/doc/index.html} <br>
+ * <br>
+ * == alternative doc == <br>
+ * <br>
+ * CLUnit -- Common Lisp Unit Test Framework --
+ * {@link https://tgutu.github.io/clunit/} <br>
+ * <br>
+ * What's the difference between `eq`, `eql`, `equal` and `equalp`, in Common Lisp? --
+ * {@link https://stackoverflow.com/questions/547436/whats-the-difference-between-eq-eql-equal-and-equalp-in-common-lisp} <br>
+ */
 
 class Counter {
   name: string;
-  scopes?: Scopes<AtomDefinition>;
-  scope?: Scope<AtomDefinition>;
+  scopes?: Scopes<Atom>;
+  scope?: Scope<Atom>;
   constructor({name}: {name: string}) {
     this.name = name;
     // this.scopes = scopes;
     // this.scope = scopes.global();
   }
-  setDefault(
-    {scopes}: {scopes: Scopes<AtomDefinition>},
-    defaultValue?: AtomDefinition
-  ) {
+  setDefault({scopes}: {scopes: Scopes<Atom>}, defaultValue?: Atom) {
     this.scopes = scopes;
     this.scope = scopes.global();
     if (typeof this.scope?.get(this.name) === 'undefined') {
@@ -33,15 +46,12 @@ class Counter {
       );
     }
   }
-  reset(
-    {scopes}: {scopes: Scopes<AtomDefinition>},
-    defaultValue?: AtomDefinition
-  ) {
+  reset({scopes}: {scopes: Scopes<Atom>}, defaultValue?: Atom) {
     this.scopes = scopes;
     this.scope = scopes.global();
     this.scope?.set(this.name, defaultValue ? defaultValue : 0);
   }
-  inc({scopes}: {scopes: Scopes<AtomDefinition>}, num?: number) {
+  inc({scopes}: {scopes: Scopes<Atom>}, num?: number) {
     this.scopes = scopes;
     this.scope = scopes.global();
     const value = this.scope.get(this.name, 0);
@@ -52,23 +62,8 @@ class Counter {
 const okCounter = new Counter({name: 'assert_ok_count'});
 const failCounter = new Counter({name: 'assert_fail_count'});
 
-/**
- *
- * lisp-unit -- Common Lisp library that supports unit testing
- * https://www.quicklisp.org/beta/UNOFFICIAL/docs/lisp-unit/doc/index.html
- *
- * What's the difference between `eq`, `eql`, `equal` and `equalp`, in Common Lisp? -- https://stackoverflow.com/questions/547436/whats-the-difference-between-eq-eql-equal-and-equalp-in-common-lisp
- *
- *
- * == alternative ==
- *
- * CLUnit -- Common Lisp Unit Test Framework
- * https://tgutu.github.io/clunit/
- *
- *
- */
-
 export const actions: Actions = {
+  /** @name assert-true */
   'assert-true': async function (action, params, {evaluate, scopes, logger}) {
     fn_check_params(params, {minCount: 1});
 
@@ -98,6 +93,7 @@ export const actions: Actions = {
     return bActual;
   },
 
+  /** @name assert-false */
   'assert-false': async function (action, params, {evaluate}) {
     fn_check_params(params, {minCount: 1});
 
@@ -106,6 +102,7 @@ export const actions: Actions = {
     return evaluate(['assert-true', !cond, ...params.slice(1)]);
   },
 
+  /** @name assert-equal */
   'assert-equal': async function (action, params, {evaluate, logger}) {
     fn_check_params(params, {exactCount: [2, 3]});
 

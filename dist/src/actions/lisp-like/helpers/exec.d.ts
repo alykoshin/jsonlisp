@@ -4,6 +4,12 @@
 /// <reference types="node" />
 import { SpawnOptionsWithoutStdio } from 'child_process';
 import { Logger, LogPrefix } from '../../../lib/log';
+export type ExecActionConfig = {
+    cwd: string;
+    env: {
+        [key: string]: string;
+    };
+};
 type ExitCode = number | null;
 type ExitSignal = NodeJS.Signals | null | undefined;
 type ExecResult = {

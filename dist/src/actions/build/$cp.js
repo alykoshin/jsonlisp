@@ -7,9 +7,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.$cp = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const util_1 = require("../../lib/util");
-async function $cp(action, params, { logger }) {
-    (0, util_1.fn_check_params)(params, { exactCount: 1 });
-    const { source, dest, dry: dry_ } = params[0];
+/**
+ * @module $build
+ */
+/**
+ * @name $cp
+ */
+const $cp = async function (_, args, { logger }) {
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const { source, dest, dry: dry_ } = args[0];
     const dry = typeof dry_ !== 'undefined' ? dry_ : false;
     const sources = Array.isArray(source) ? source : [source];
     for (let src of sources) {
@@ -22,7 +28,8 @@ async function $cp(action, params, { logger }) {
         }
     }
     logger.debug(`copied ${sources.length} dirs/files`);
-}
+    return true;
+};
 exports.$cp = $cp;
-exports.default = $cp;
+exports.default = exports.$cp;
 //# sourceMappingURL=$cp.js.map

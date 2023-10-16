@@ -1,7 +1,7 @@
 /** @format */
 
 import chalk from 'chalk';
-import {AtomDefinition, Parameter} from './runner';
+import {Atom, Parameter} from '../apps/runner/lib/types';
 import {type} from 'os';
 
 /*
@@ -33,10 +33,10 @@ function getLogStrs(
 }
 
 const errorTypes = [
-  'success',
   'fatal',
   'error',
   'warn',
+  'success',
   'info',
   'log',
   'debug',
@@ -47,10 +47,10 @@ type ErrorType = (typeof errorTypes)[number];
 type ErrorColorsMap = Record<ErrorType, typeof chalk.Color>;
 
 const errorColors: ErrorColorsMap = {
-  success: 'green',
   fatal: 'redBright',
   error: 'red',
   warn: 'yellow',
+  success: 'green',
   info: 'whiteBright',
   log: 'white',
   debug: 'grey',
@@ -83,7 +83,7 @@ function log_data(
   return l.join('\n');
 }
 
-function debugParameter(value: AtomDefinition): string {
+function debugParameter(value: Atom): string {
   if (typeof value === 'object') {
     return JSON.stringify(value);
   } else {
@@ -91,7 +91,7 @@ function debugParameter(value: AtomDefinition): string {
   }
 }
 
-function debugPrimitive(value: AtomDefinition): string {
+function debugPrimitive(value: Atom): string {
   let result = String(value);
   if (typeof value === 'string') result = `"${result}"`;
   return result;
@@ -100,9 +100,74 @@ function debugPrimitive(value: AtomDefinition): string {
 //
 
 export interface LogPrefix {
-  id: number | string;
+  id: number;
   level: number;
-  name?: string;
+  name: string;
+}
+
+export class SimpleLogger {
+  _level: ErrorType;
+  _prefix: string;
+  constructor(prefix: string, level: ErrorType = 'debug') {
+    this._level = level;
+    this._prefix = prefix;
+    // this.prefix(prefix);
+  }
+
+  prefix(prefix: T) {
+    this._prefix = prefix;
+  }
+
+  _prefixToString(prefix: T) {
+    let p = `${this._prefix.level}/${this._prefix.id}`;
+
+    // let namePart = prefix.name ? `/${prefix.name}` : ``;
+    let namePart = prefix.name ? prefix.name : ``;
+
+    return `[${p}] [${namePart}]`;
+  }
+
+  isLevelEnabled(level: ErrorType) {
+    return errorTypes.indexOf(this._level) >= errorTypes.indexOf(level);
+  }
+
+  //
+
+  fatal(...params: LogParam[]): never {
+    const msg = log_data('fatal', this._prefix, params);
+    throw new Error(params.join(' '));
+  }
+
+  error(...params: LogParam[]): this {
+    if (this.isLevelEnabled('error')) log_data('error', this._prefix, params);
+    return this;
+  }
+
+  warn(...params: LogParam[]): this {
+    if (this.isLevelEnabled('warn')) log_data('warn', this._prefix, params);
+    return this;
+  }
+
+  success(...params: LogParam[]): this {
+    if (this.isLevelEnabled('success'))
+      log_data('success', this._prefix, params);
+    return this;
+  }
+
+  info(...params: LogParam[]): this {
+    if (this.isLevelEnabled('info')) log_data('info', this._prefix, params);
+    return this;
+  }
+
+  log(...params: LogParam[]): this {
+    if (this.isLevelEnabled('log')) log_data('log', this._prefix, params);
+    return this;
+  }
+
+  debug(...params: LogParam[]): this {
+    if (this.isLevelEnabled('debug')) log_data('debug', this._prefix, params);
+    return this;
+  }
 }
 
 /**
@@ -116,11 +181,24 @@ export interface LogPrefix {
   logger2 = logger({id: 2}).log('abc').debug('def')
  */
 
-export class Logger<T extends {[key: string]: any}> {
-  _prefix: T;
+function _prefixToString(prefix: LogPrefix): string {
+  let p = `${prefix.level}/${prefix.id}`;
 
-  constructor(prefix: T) {
+  // let namePart = prefix.name ? `/${prefix.name}` : ``;
+  let namePart = prefix.name ? prefix.name : ``;
+
+  return `[${p}] [${namePart}]`;
+}
+
+export class GenericLogger<T extends {[key: string]: any}> {
+  _level: ErrorType;
+  _prefix: T;
+  logger: SimpleLogger;
+  constructor(prefix: T, level: ErrorType = 'debug') {
+    this._level = level;
     this._prefix = prefix;
+    const sPrefix = this._prefixToString(prefix);
+    this.logger = new SimpleLogger(sPrefix, level);
     // this.prefix(prefix);
   }
 
@@ -128,11 +206,7 @@ export class Logger<T extends {[key: string]: any}> {
     this._prefix = prefix;
   }
 
-  new(prefix: Partial<T>) {
-    return new Logger({...this._prefix, ...prefix});
-  }
-
-  _prefixToString(prefix: T) {
+  _prefixToString(prefix: T): string {
     let p = `${this._prefix.level}/${this._prefix.id}`;
 
     // let namePart = prefix.name ? `/${prefix.name}` : ``;
@@ -142,38 +216,93 @@ export class Logger<T extends {[key: string]: any}> {
   }
 
   //
-  success(...params: LogParam[]): this {
-    log_data('success', this._prefixToString(this._prefix), params);
-    return this;
-  }
-
   fatal(...params: LogParam[]): never {
-    const msg = log_data('fatal', this._prefixToString(this._prefix), params);
-    throw new Error(params.join(' '));
+    return this.logger.fatal(...params);
   }
 
   error(...params: LogParam[]): this {
-    log_data('error', this._prefixToString(this._prefix), params);
-    return this;
+    return this.logger.error(...params);
   }
 
   warn(...params: LogParam[]): this {
-    log_data('warn', this._prefixToString(this._prefix), params);
+    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('warn'))
+      log_data('warn', this._prefixToString(this._prefix), params);
+    return this;
+  }
+
+  success(...params: LogParam[]): this {
+    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('success'))
+      log_data('success', this._prefixToString(this._prefix), params);
     return this;
   }
 
   info(...params: LogParam[]): this {
-    log_data('info', this._prefixToString(this._prefix), params);
+    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('info'))
+      log_data('info', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  log(...params: LogParam[]): Logger<T> {
-    log_data('log', this._prefixToString(this._prefix), params);
+  log(...params: LogParam[]): this {
+    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('log'))
+      log_data('log', this._prefixToString(this._prefix), params);
     return this;
   }
 
-  debug(...params: LogParam[]): Logger<T> {
-    log_data('debug', this._prefixToString(this._prefix), params);
+  debug(...params: LogParam[]): this {
+    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('debug'))
+      log_data('debug', this._prefixToString(this._prefix), params);
     return this;
+  }
+}
+
+export class Logger extends GenericLogger<LogPrefix> {
+  new(prefix: Partial<LogPrefix>, level: ErrorType = this._level) {
+    return new Logger({...this._prefix, ...prefix}, level);
+  }
+
+  newNext(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+    const res = new Logger(
+      {
+        ...this._prefix,
+        ...prefix,
+      },
+      level
+    );
+    res.next();
+    return res;
+  }
+
+  newUp(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+    const res = new Logger(
+      {
+        ...this._prefix,
+        ...prefix,
+      },
+      level
+    );
+    res.up();
+    return res;
+  }
+
+  newNextUp(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+    const res = new Logger(
+      {
+        ...this._prefix,
+        ...prefix,
+      },
+      level
+    );
+    res.next();
+    res.up();
+    return res;
+  }
+
+  next() {
+    this._prefix.id += 1;
+    // return this;
+  }
+  up() {
+    this._prefix.level += 1;
+    // return this;
   }
 }

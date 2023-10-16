@@ -2,6 +2,12 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$rm = void 0;
+/**
+ * @module $build
+ */
+/**
+ * @name $version
+ */
 async function $rm(action, params, { evaluate }) {
     // const { runner, logger } = state;
     // fn_check_params(parameters, { minCount: 1 });

@@ -1,4 +1,10 @@
 /** @format */
-import { ActionMethodState, Parameters } from '../../lib/runner';
-export declare function $cp(action: string, params: Parameters, { logger }: ActionMethodState): Promise<void>;
+import { ActionListExecutor } from '../../lib/types';
+/**
+ * @module $build
+ */
+/**
+ * @name $cp
+ */
+export declare const $cp: ActionListExecutor;
 export default $cp;

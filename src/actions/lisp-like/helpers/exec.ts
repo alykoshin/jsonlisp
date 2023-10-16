@@ -1,8 +1,8 @@
 /** @format */
 
-import {spawn, SpawnOptionsWithoutStdio} from 'child_process'
-import {Logger, LogPrefix} from '../../../lib/log'
-import {sign} from 'crypto'
+import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
+import {Logger, LogPrefix} from '../../../lib/log';
+import {sign} from 'crypto';
 
 // export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
 //   log(command_line);
@@ -13,50 +13,60 @@ import {sign} from 'crypto'
 //   await p;
 // }
 
-type ExitCode = number | null
-type ExitSignal = NodeJS.Signals | null | undefined
+export type ExecActionConfig = {
+  cwd: string;
+  env: {
+    [key: string]: string;
+  };
+};
+
+type ExitCode = number | null;
+type ExitSignal = NodeJS.Signals | null | undefined;
 
 type ExecResult = {
-  stdout: string
-  stderr: string
-  message: string
-  code: ExitCode
-  signal: ExitSignal
-}
+  stdout: string;
+  stderr: string;
+  message: string;
+  code: ExitCode;
+  signal: ExitSignal;
+};
 
-export type ExecSpawnOptions = Pick<SpawnOptionsWithoutStdio, 'cwd' | 'env'>
+export type ExecSpawnOptions = Pick<SpawnOptionsWithoutStdio, 'cwd' | 'env'>;
 
 export async function execute(
   command_line: string,
   spawnOptions: SpawnOptionsWithoutStdio,
   execOptions: {
-    encoding?: BufferEncoding
-    timeout?: number
-    trim?: boolean
-    logger: Logger<LogPrefix>
+    encoding?: BufferEncoding;
+    timeout?: number;
+    trim?: boolean;
+    logger: Logger;
   }
 ): Promise<ExecResult> {
   const defaultLogger = execOptions.logger.new({
     name: execOptions.logger._prefix.name + '/' + 'execute',
-  })
+  });
   const stdoutLogger = defaultLogger.new({
     name: execOptions.logger._prefix.name + '/' + 'stdout',
-  })
+  });
   const stderrLogger = defaultLogger.new({
     name: execOptions.logger._prefix.name + '/' + 'stderr',
-  })
+  });
 
   return new Promise((resolve, reject) => {
-    if (!execOptions.encoding) execOptions.encoding = 'utf8'
-    if (!execOptions.timeout) execOptions.timeout = 0
-    if (!execOptions.trim) execOptions.trim = true
-    defaultLogger.debug(command_line, spawnOptions)
+    if (!execOptions.encoding) execOptions.encoding = 'utf8';
+    if (!execOptions.timeout) execOptions.timeout = 0;
+    if (!execOptions.trim) execOptions.trim = true;
+    defaultLogger.debug(
+      `command_line: "${command_line}", spawnOptions:`,
+      spawnOptions
+    );
 
-    spawnOptions.shell = true
+    spawnOptions.shell = true;
 
-    const p = spawn(command_line, [], spawnOptions)
+    const p = spawn(command_line, [], spawnOptions);
 
-    const outStreamNames = ['stdout', 'stderr'] as const
+    const outStreamNames = ['stdout', 'stderr'] as const;
 
     let results: ExecResult = {
       //{[key in (typeof outStreamNames)[number]]: string} = {
@@ -65,37 +75,37 @@ export async function execute(
       code: 0,
       signal: undefined,
       message: '',
-    }
+    };
 
     if (!p || !p.stdout || !p.stderr) {
-      throw new Error('Error creating ChildProcess')
+      throw new Error('Error creating ChildProcess');
     }
 
-    p.stdout.setEncoding(execOptions.encoding) //'utf8');
-    p.stderr.setEncoding(execOptions.encoding) //'utf8');
+    p.stdout.setEncoding(execOptions.encoding); //'utf8');
+    p.stderr.setEncoding(execOptions.encoding); //'utf8');
 
     p.stdout.on('data', function (data) {
-      data = data.toString()
-      stdoutLogger.log(data)
-      results.stdout += data
-    })
+      data = data.toString();
+      stdoutLogger.log(data);
+      results.stdout += data;
+    });
 
     p.stderr.on('data', function (data) {
-      data = data.toString()
-      stderrLogger.log(data)
-      results.stderr += data
-    })
+      data = data.toString();
+      stderrLogger.log(data);
+      results.stderr += data;
+    });
 
     function debugExit(
       event: 'close' | 'exit',
       code: ExitCode,
       signal?: ExitSignal
     ) {
-      let message = `[${event}] child process ${event} with code ${code}`
-      if (typeof signal !== 'undefined') message += ` and signal ${signal}`
-      defaultLogger.debug(message)
-      results.signal = signal
-      results.message = message
+      let message = `[${event}] child process ${event} with code ${code}`;
+      if (typeof signal !== 'undefined') message += ` and signal ${signal}`;
+      defaultLogger.debug(message);
+      results.signal = signal;
+      results.message = message;
     }
 
     function doExit(
@@ -111,17 +121,17 @@ export async function execute(
       // }
     ) {
       if (execOptions.trim) {
-        results.stdout = results.stdout.trim()
-        results.stderr = results.stderr.trim()
+        results.stdout = results.stdout.trim();
+        results.stderr = results.stderr.trim();
       }
       // override what we set earlier with latest values
-      results.code = code
+      results.code = code;
       // results.message = message;
-      defaultLogger.debug(`doExit`)
+      defaultLogger.debug(`doExit`);
       if (code === 0) {
-        resolve(results)
+        resolve(results);
       } else {
-        reject(results)
+        reject(results);
       }
     }
 
@@ -131,21 +141,21 @@ export async function execute(
     // so we need to store the info and wait until `close`
     //
     p.on('exit', (code: number | null, signal: ExitSignal) => {
-      debugExit('exit', code, signal)
-    })
+      debugExit('exit', code, signal);
+    });
 
     p.on('close', (code: number | null) => {
-      debugExit('close', code)
-      doExit(code)
-    })
+      debugExit('close', code);
+      doExit(code);
+    });
 
     if (execOptions.timeout !== 0) {
       setTimeout(() => {
         defaultLogger.warn(
           `[timeout] child process timed out in ${execOptions.timeout} ms`
-        )
-        defaultLogger.warn(`WARN: Force kill not implemented`)
-      }, execOptions.timeout)
+        );
+        defaultLogger.warn(`WARN: Force kill not implemented`);
+      }, execOptions.timeout);
     }
-  })
+  });
 }

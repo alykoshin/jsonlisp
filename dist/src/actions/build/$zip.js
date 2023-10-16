@@ -32,15 +32,17 @@ const path = __importStar(require("path"));
 const exec_1 = require("../lisp-like/helpers/exec");
 const _version_1 = __importDefault(require("../build/$version"));
 const util_1 = require("../../lib/util");
-// export type ZipAction = [
-//   action: 'zip',
-//   config: ZipActionConfig
-// ]
+/**
+ * @module $zip
+ */
+/**
+ * @name $zip
+ */
 async function $zip(action, params, state) {
     const { runner, logger } = state;
     (0, util_1.fn_check_params)(params, { exactCount: 1 });
     const [pConfig] = params;
-    const version = await _version_1.default.$version(action, [], state);
+    const version = await _version_1.default.$version.call(state, action, [], state);
     const { file_names, archive_prefix, out_dir, exclude_files } = pConfig;
     const date = new Date()
         .toISOString()

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
-    base_dir: './demo',
+    base_dir: '.',
     version: '2.5.23',
     actions: {
         default: ['list',

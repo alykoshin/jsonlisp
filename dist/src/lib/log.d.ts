@@ -1,6 +1,8 @@
 /** @format */
-import { Parameter } from './runner';
+import { Parameter } from './types';
 type LogParam = Parameter;
+declare const errorTypes: readonly ["fatal", "error", "warn", "success", "info", "log", "debug"];
+type ErrorType = (typeof errorTypes)[number];
 export interface LogPrefix {
     id: number | string;
     level: number;
@@ -19,15 +21,16 @@ export interface LogPrefix {
 export declare class Logger<T extends {
     [key: string]: any;
 }> {
+    _level: ErrorType;
     _prefix: T;
-    constructor(prefix: T);
+    constructor(prefix: T, level?: ErrorType);
     prefix(prefix: T): void;
-    new(prefix: Partial<T>): Logger<T & Partial<T>>;
+    new(prefix: Partial<T>, level?: ErrorType): Logger<T & Partial<T>>;
     _prefixToString(prefix: T): string;
-    success(...params: LogParam[]): this;
     fatal(...params: LogParam[]): never;
     error(...params: LogParam[]): this;
     warn(...params: LogParam[]): this;
+    success(...params: LogParam[]): this;
     info(...params: LogParam[]): this;
     log(...params: LogParam[]): Logger<T>;
     debug(...params: LogParam[]): Logger<T>;

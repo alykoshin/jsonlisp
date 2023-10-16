@@ -5,8 +5,13 @@ import fs from 'fs/promises';
 import ejs from 'ejs';
 
 import {getFilesRecursive} from '../build/helpers/fsUtils';
-import {fn_check_params} from '../../lib/util';
-import {ActionMethodState, Parameters} from '../../lib/runner';
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Parameter,
+  Parameters,
+} from '../../apps/runner/lib/types';
 
 const DEBUG = false;
 
@@ -21,19 +26,26 @@ export type EjsTemplatesActionConfig = {
 //   config: EjsTemplatesActionConfig
 // ]
 
-export async function $ejsTemplates(
-  action: string,
-  parameters: Parameters,
-  state: ActionMethodState
+/**
+ * @module $build
+ */
+
+/**
+ * @name $ejsTemplates
+ */
+export const $ejsTemplates: ActionListExecutor = async function (
+  _,
+  args,
+  state
 ) {
   const {runner, logger} = state;
-  fn_check_params(parameters, {exactCount: 1});
+  fn_check_params(args, {exactCount: 1});
 
   const {
     sourceDir,
     excludeDirs: excludeDirs_,
     targetDir,
-  } = parameters[0] as EjsTemplatesActionConfig;
+  } = args[0] as EjsTemplatesActionConfig;
   const excludeDirs = Array.isArray(excludeDirs_)
     ? excludeDirs_
     : [excludeDirs_];
@@ -91,6 +103,7 @@ export async function $ejsTemplates(
     //
     await fs.writeFile(currTargetPathname, html, 'utf8');
   }
-}
+  return true;
+};
 
 export default $ejsTemplates;

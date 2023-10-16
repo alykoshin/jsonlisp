@@ -9,22 +9,27 @@ const promises_1 = __importDefault(require("fs/promises"));
 const util_1 = require("../../lib/util");
 const path_1 = __importDefault(require("path"));
 /**
- * The Common Lisp Cookbook – Files and Directories -- Writing content to a file
- * https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file
+ * @module file-system
  *
- * uiop:copy-file
- * https://stackoverflow.com/questions/66173218/easiest-way-to-copy-a-file-from-one-directory-to-another-in-common-lisp
- * UIOP -- UIOP Manual -- UIOP/FILESYSTEM --
- * https://asdf.common-lisp.dev/uiop.html#UIOP_002fFILESYSTEM
- *
- *  LispWorks User Guide and Reference Manual > 34 The LISPWORKS Package -- copy-file
- * http://www.lispworks.com/documentation/lw61/LW/html/lw-893.htm#pgfId-1774263
+ * @see *
+ * - The Common Lisp Cookbook – Files and Directories -- Writing content to a file <br>
+ * {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
+ * <br>
+ * - uiop:copy-file --
+ * {@link https://stackoverflow.com/questions/66173218/easiest-way-to-copy-a-file-from-one-directory-to-another-in-common-lisp} <br>
+ * - UIOP -- UIOP Manual -- UIOP/FILESYSTEM --
+ * {@link https://asdf.common-lisp.dev/uiop.html#UIOP_002fFILESYSTEM} <br>
+ * <br>
+ * - LispWorks User Guide and Reference Manual > 34 The LISPWORKS Package -- copy-file --
+ * {@link http://www.lispworks.com/documentation/lw61/LW/html/lw-893.htm#pgfId-1774263} <br>
  */
 exports.actions = {
     /**
+     * @name rename-file
+     * @see
      * Common Lisp the Language, 2nd Edition
      * 23.3. Renaming, Deleting, and Other File Operations
-     * https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node216.html
+     * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node216.html}
      */
     'rename-file': async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: 2 });
@@ -33,6 +38,9 @@ exports.actions = {
         const r = await promises_1.default.rename(String(await evaluate(source)), String(await evaluate(dest)));
         logger.debug(`Moved 1 dir/file`);
     },
+    /**
+     * @name delete-file
+     */
     'delete-file': async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: 1 });
         const [source] = params;
@@ -41,6 +49,9 @@ exports.actions = {
         logger.debug(`Deleted 1 dir/file`);
         return;
     },
+    /**
+     * @name probe-file
+     */
     'probe-file': async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: 1 });
         const [source] = params;
@@ -65,9 +76,11 @@ exports.actions = {
         return res;
     },
     /**
+     * @name probe-file
+     * @see
      * Common Lisp the Language, 2nd Edition
      * 23.5. Accessing Directories
-     * https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000
+     * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000}
      */
     directory: async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: 1 });

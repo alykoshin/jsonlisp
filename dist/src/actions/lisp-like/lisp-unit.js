@@ -7,6 +7,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const util_1 = require("../../lib/util");
+/**
+ * @module lisp-unit
+ *
+ * @description
+ * lisp-unit -- Common Lisp library that supports unit testing --
+ * {@link https://www.quicklisp.org/beta/UNOFFICIAL/docs/lisp-unit/doc/index.html} <br>
+ * <br>
+ * == alternative doc == <br>
+ * <br>
+ * CLUnit -- Common Lisp Unit Test Framework --
+ * {@link https://tgutu.github.io/clunit/} <br>
+ * <br>
+ * What's the difference between `eq`, `eql`, `equal` and `equalp`, in Common Lisp? --
+ * {@link https://stackoverflow.com/questions/547436/whats-the-difference-between-eq-eql-equal-and-equalp-in-common-lisp} <br>
+ */
 class Counter {
     name;
     scopes;
@@ -37,22 +52,8 @@ class Counter {
 }
 const okCounter = new Counter({ name: 'assert_ok_count' });
 const failCounter = new Counter({ name: 'assert_fail_count' });
-/**
- *
- * lisp-unit -- Common Lisp library that supports unit testing
- * https://www.quicklisp.org/beta/UNOFFICIAL/docs/lisp-unit/doc/index.html
- *
- * What's the difference between `eq`, `eql`, `equal` and `equalp`, in Common Lisp? -- https://stackoverflow.com/questions/547436/whats-the-difference-between-eq-eql-equal-and-equalp-in-common-lisp
- *
- *
- * == alternative ==
- *
- * CLUnit -- Common Lisp Unit Test Framework
- * https://tgutu.github.io/clunit/
- *
- *
- */
 exports.actions = {
+    /** @name assert-true */
     'assert-true': async function (action, params, { evaluate, scopes, logger }) {
         (0, util_1.fn_check_params)(params, { minCount: 1 });
         const pActual = await evaluate(params[0]);
@@ -78,11 +79,13 @@ exports.actions = {
         }
         return bActual;
     },
+    /** @name assert-false */
     'assert-false': async function (action, params, { evaluate }) {
         (0, util_1.fn_check_params)(params, { minCount: 1 });
         const cond = await evaluate(params[0]);
         return evaluate(['assert-true', !cond, ...params.slice(1)]);
     },
+    /** @name assert-equal */
     'assert-equal': async function (action, params, { evaluate, logger }) {
         (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
         const actual = await evaluate(params[0]);

@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,6 +11,7 @@ const documentation_1 = __importDefault(require("./documentation"));
 const file_system_1 = __importDefault(require("./file-system"));
 const error_1 = __importDefault(require("./error"));
 const input_output_1 = __importDefault(require("./input-output"));
+const iteration_and_mapping_1 = __importDefault(require("./iteration-and-mapping"));
 const lisp_unit_1 = __importDefault(require("./lisp-unit"));
 const lists_1 = __importDefault(require("./lists"));
 const operators_1 = __importDefault(require("./operators"));
@@ -24,6 +26,7 @@ exports.actions = {
     ...error_1.default,
     ...file_system_1.default,
     ...input_output_1.default,
+    ...iteration_and_mapping_1.default,
     ...lisp_unit_1.default,
     ...lists_1.default,
     ...operators_1.default,

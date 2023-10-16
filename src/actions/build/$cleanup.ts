@@ -1,18 +1,28 @@
+/** @format */
+
 import {
   ActionListExecutor,
   ActionMethodState,
   Parameter,
   Parameters,
-} from "../../lib/runner";
-import { removeDirRecursive } from "./helpers/fsUtils";
-import { fn_check_params } from "../../lib/util";
+} from '../../apps/runner/lib/types';
+import {removeDirRecursive} from './helpers/fsUtils';
+import {fn_check_params} from '../../apps/runner/lib/util';
+
+/**
+ * @module $build
+ */
+
+/**
+ * @name $cleanup
+ */
 
 export const $cleanup: ActionListExecutor = async function (
-  action: string,
-  parameters: Parameters,
-  { evaluate, logger }: ActionMethodState
-): Promise<Parameter> {
-  fn_check_params(parameters, { minCount: 1 });
+  _,
+  args,
+  {evaluate, logger}
+) {
+  fn_check_params(args, {minCount: 1});
 
   // const result: Parameters = [];
   // for (const p of parameters) {
@@ -24,7 +34,7 @@ export const $cleanup: ActionListExecutor = async function (
 
   //   result.push(sDirname);
   // }
-  return evaluate(["print", ...parameters]);
+  return evaluate(['print', ...args]);
 };
 
 export default $cleanup;

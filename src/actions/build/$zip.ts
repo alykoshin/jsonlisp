@@ -1,59 +1,62 @@
 /** @format */
 
-import * as path from 'path'
+import * as path from 'path';
 
-import {execute} from '../lisp-like/helpers/exec'
-import $versionActions from '../build/$version'
-import {fn_check_params} from '../../lib/util'
+import {execute} from '../lisp-like/helpers/exec';
+import $versionActions from '../build/$version';
+import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
   ActionMethodState,
   Actions,
   Parameters,
-} from '../../lib/runner'
+} from '../../apps/runner/lib/types';
 
 export type ZipActionConfig = {
-  file_names: string[]
-  archive_prefix: string
-  out_dir: string
-  exclude_files: string[]
-}
+  file_names: string[];
+  archive_prefix: string;
+  out_dir: string;
+  exclude_files: string[];
+};
 
-// export type ZipAction = [
-//   action: 'zip',
-//   config: ZipActionConfig
-// ]
+/**
+ * @module $zip
+ */
 
-export async function $zip(
-  action: string,
-  params: Parameters,
-  state: ActionMethodState
+/**
+ * @name $zip
+ */
+export const $zip: ActionListExecutor = async function (
+  action,
+  args,
+  state
 ): Promise<string> {
-  const {runner, logger} = state
-  fn_check_params(params, {exactCount: 1})
-  const [pConfig] = params
+  const {runner, logger} = state;
+  fn_check_params(args, {exactCount: 1});
+  const [pConfig] = args;
 
-  const version = await ($versionActions.$version as ActionListExecutor)(
+  const version = await ($versionActions.$version as ActionListExecutor).call(
+    state,
     action,
     [],
     state
-  )
+  );
 
   const {file_names, archive_prefix, out_dir, exclude_files} =
-    pConfig as ZipActionConfig
+    pConfig as ZipActionConfig;
 
   const date = new Date()
     .toISOString()
     .replace(/[:T]/g, '-')
-    .replace(/\..+/, '')
+    .replace(/\..+/, '');
 
   // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-  const zip_exe = '"c:/Program Files/7-Zip/7z.exe"'
+  const zip_exe = '"c:/Program Files/7-Zip/7z.exe"';
 
-  const archive_name = `${archive_prefix}-v${version}-${date}.zip`
-  const archive_pathname = path.join(out_dir, archive_name)
+  const archive_name = `${archive_prefix}-v${version}-${date}.zip`;
+  const archive_pathname = path.join(out_dir, archive_name);
 
-  const sFileNames = file_names.join(' ')
+  const sFileNames = file_names.join(' ');
 
   // prettier-ignore
   const switches = [
@@ -62,22 +65,22 @@ export async function $zip(
     ...exclude_files.map(f => `-x!${f}`),
   ]
   // prettier-ignore
-  const args = [
+  const zip_args = [
     'a', //  a : Add files to archive
     ...switches,
     archive_pathname,
     sFileNames,
   ];
 
-  const command_line = [zip_exe, ...args].join(' ')
+  const command_line = [zip_exe, ...zip_args].join(' ');
 
   const options = {
     // cwd: activity.base_dir,
-  }
+  };
 
-  const r = await execute(command_line, options, {logger})
-  return r.stdout
-}
+  const r = await execute(command_line, options, {logger});
+  return r.stdout;
+};
 
 // export const actions: Actions = {
 // $zip: $zip,

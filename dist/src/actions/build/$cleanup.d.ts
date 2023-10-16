@@ -1,3 +1,10 @@
-import { ActionListExecutor } from "../../lib/runner";
+/** @format */
+import { ActionListExecutor } from '../../lib/types';
+/**
+ * @module $build
+ */
+/**
+ * @name $cleanup
+ */
 export declare const $cleanup: ActionListExecutor;
 export default $cleanup;

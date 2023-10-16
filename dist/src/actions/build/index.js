@@ -25,9 +25,9 @@ exports.actions = {
     $yarnInstallProd: _yarnInstallProd_1.$yarnInstallProd,
     $ensureFile: _ensureFile_1.$ensureFile,
     $ensureNoFile: _ensureNoFile_1.$ensureNoFile,
-    cleanup: _cleanup_1.$cleanup,
-    cp: _cp_1.$cp,
-    copyResourcesRecursive: _copyResourcesRecursive_1.$copyResourcesRecursive,
+    $cleanup: _cleanup_1.$cleanup,
+    $cp: _cp_1.$cp,
+    $copyResourcesRecursive: _copyResourcesRecursive_1.$copyResourcesRecursive,
     $rm: _rm_1.$rm,
     $zip: _zip_1.$zip,
 };

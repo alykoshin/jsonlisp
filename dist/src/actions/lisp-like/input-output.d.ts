@@ -1,6 +1,9 @@
 /** @format */
-import { Actions } from '../../lib/runner';
+import { Actions } from '../../lib/types';
 /**
+ * @module input-output
+ *
+ * @see
  * The Common Lisp Cookbook – Files and Directories
  * https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file
  *

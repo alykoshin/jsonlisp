@@ -1,14 +1,29 @@
-import {fn_check_params} from "../../lib/util";
-import {ActionMethodState, Parameters} from "../../lib/runner";
+/** @format */
 
-export async function $copyBuildPkg(
-  action: string,
-  parameters: Parameters,
-  state: ActionMethodState
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Parameter,
+  Parameters,
+} from '../../apps/runner/lib/types';
+
+/**
+ * @module $build
+ */
+
+/**
+ * @name $copyBuildPkg
+ */
+
+export const $copyBuildPkg: ActionListExecutor = async function (
+  _,
+  args,
+  state
 ) {
   const {runner, logger} = state;
-  fn_check_params(parameters, {exactCount: 0})
+  fn_check_params(args, {exactCount: 0});
   throw new Error(`Not implemented`);
-}
+};
 
-export default $copyBuildPkg
+export default $copyBuildPkg;

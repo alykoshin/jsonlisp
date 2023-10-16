@@ -1,28 +1,32 @@
 /** @format */
-import { Actions } from '../../lib/runner';
+import { ActionListExecutor, Actions } from '../../lib/types';
 /**
- * simple-parallel-tasks
- * https://codeberg.org/glv/simple-parallel-tasks
+ * @module sb-posix
  *
- * The simple-parallel-tasks Reference Manual
- * https://quickref.common-lisp.net/simple-parallel-tasks.html
+ * @see Package: SB-POSIX -- {@list https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/}
+ */
+/**
+ * @name setenv
+ *
+ * @see Function: SB-POSIX:SETENV -- https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html
+ */
+export declare const setenv: ActionListExecutor;
+/**
+ * @name getenv
+ * @see   Function: SB-POSIX:GETENV {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html}
+ */
+export declare const getenv: ActionListExecutor;
+/**
+ * @name mkdir
+ * @see Function: SB-POSIX:MKDIR --
+ * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
+ * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
  *
  */
+export declare const chdir: ActionListExecutor;
 /**
- * Package: SB-POSIX
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/
+ * @name getcwd
  */
-/**
- * Function: SB-POSIX:SETENV
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html
- */
-/**
- * Function: SB-POSIX:GETENV
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html
- */
-/**
- * Function: SB-POSIX:MKDIR
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html
- */
+export declare const getcwd: ActionListExecutor;
 export declare const actions: Actions;
 export default actions;

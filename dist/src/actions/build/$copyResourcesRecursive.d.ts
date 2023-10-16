@@ -1,7 +1,14 @@
-import { ActionMethodState, Parameters } from "../../lib/runner";
+/** @format */
+import { ActionListExecutor } from '../../lib/types';
 export type CopyResourcesRecursiveActionConfig = {
     sourceDir: string;
     excludeDirs: string[];
     targetDir: string;
 };
-export declare function $copyResourcesRecursive(action: string, parameters: Parameters, state: ActionMethodState): Promise<void>;
+/**
+ * @module $build
+ */
+/**
+ * @name $copyResourcesRecursive
+ */
+export declare const $copyResourcesRecursive: ActionListExecutor;

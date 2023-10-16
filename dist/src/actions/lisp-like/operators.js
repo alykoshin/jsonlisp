@@ -7,6 +7,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const ajv_1 = __importDefault(require("ajv"));
 const util_1 = require("../../lib/util");
+/**
+ * @module operators
+ */
 const schema = {
     type: 'array',
     minItems: 2,
@@ -211,29 +214,59 @@ const plog = function (logger) {
  * String concatenation
  * In brief: `concatenate` & `strcat`
  *
- * http://www.ulisp.com/show?3L#concatenate
+ * @name concatenate
+ * @description
+ * {@link http://www.ulisp.com/show?3L#concatenate}
  *
- * https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp
- * http://clhs.lisp.se/Body/f_concat.htm
+ * {@link https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp}
+ * {@link http://clhs.lisp.se/Body/f_concat.htm}
  */
 exports.actions = {
+    /** @name + */
     '+': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p) => await evaluate(acc) + await evaluate(p), 0)),
+    /** @name - */
     '-': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) - await evaluate(p), 0)),
+    /** @name * */
     '*': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) * await evaluate(p), 1)),
+    /** @name / */
     '/': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) / await evaluate(p), 1)),
+    /** @name 1+ */
+    '1+': async (action, params, { evaluate, logger }) => {
+        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        return evaluate(['+', ...params, 1]);
+    },
+    /** @name 1- */
+    '1-': async (action, params, { evaluate, logger }) => {
+        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        return evaluate(['-', ...params, 1]);
+    },
+    /** @name % */
     '%': operators,
+    /** @name = */
     '=': operators,
+    /** @name /= */
     '/=': operators,
+    /** @name > */
     '>': operators,
+    /** @name < */
     '<': operators,
+    /** @name >= */
     '>=': operators,
+    /** @name <= */
     '<=': operators,
+    /** @name min */
     min: operators,
+    /** @name max */
     max: operators,
+    /** @name mod */
     mod: operators,
+    /** @name rem */
     rem: operators,
+    /** @name and */
     and: operators,
+    /** @name or */
     or: operators,
+    /** @name not */
     not: operators,
 };
 exports.default = exports.actions;

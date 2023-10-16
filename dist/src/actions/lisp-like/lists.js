@@ -1,77 +1,169 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = void 0;
+exports.actions = exports.nullp = exports.listp = exports.consp = exports.cdr = exports.nthcdr = exports.third = exports.second = exports.car = exports.nth = exports.length = exports.list = exports.quote = void 0;
 const util_1 = require("../../lib/util");
-function fn_nth(n, list) {
-    // fn_check_params(params, {minCount: 2});
-    // const [n, list] = params;
-    (0, util_1.fn_check_params)(n, { typ: 'number' });
-    (0, util_1.fn_check_params)(list, { minCount: n });
-    return list[n];
+const types_1 = require("../../lib/types");
+const series_1 = require("./helpers/series");
+/**
+ * @module list
+ */
+/**
+ *
+ */
+const _nth = async function (idx, list) {
+    return list.length > idx ? list[idx] : types_1.NIL;
+};
+const _rest = async function (idx, list) {
+    // return list.slice(index);
+    return (0, types_1.isEmptyList)(list) ? types_1.NIL : list.slice(idx);
+};
+const _consp = async function (p) {
+    return (0, types_1.isList)(p) && !(0, types_1.isEmptyList)(p);
+};
+const _listp = async function (p) {
+    return (0, types_1.isList)(p);
+};
+const _nullp = async function (p) {
+    return (0, types_1.isList)(p) && (0, types_1.isEmptyList)(p);
+};
+//===========================================================================//
+// async function fn_nth(
+//   index: Expression, // Parameter,
+//   list: Expression, // /* Parameter |  */ Parameters,
+//   evaluate: EvaluateFn
+// ): Promise<Expression> {
+//   const n = await evaluate(index);
+//   ensureNumber(n);
+//   const l = await evaluate(list);
+//   ensureList(l);
+//   return _nth(n, l);
+// }
+async function fn_rest(index, list, evaluate) {
+    const n = await evaluate(index);
+    (0, types_1.ensureNumber)(n);
+    const l = await evaluate(list);
+    (0, types_1.ensureList)(l);
+    return _rest(n, l);
 }
-function fn_rest(list) {
-    (0, util_1.fn_check_params)(list, { minCount: 1 });
-    return list.slice(1);
-}
+//===========================================================================//
+/** @name quote */
+const quote = async (_, params, { evaluate }) => {
+    (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    // return first argument without evaluation
+    return params[0];
+};
+exports.quote = quote;
+/** @name list */
+const list = async (_, params, { evaluate }) => {
+    // return all args evaluated
+    return (0, series_1.series)(params, evaluate);
+};
+exports.list = list;
+/** @name length */
+const length = async (_, args, { evaluate }) => {
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const a0 = await evaluate(args[0]);
+    (0, types_1.ensureList)(a0);
+    return a0.length;
+};
+exports.length = length;
+/** @name nth */
+const nth = async (_, args, { evaluate }) => {
+    (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    // return fn_nth(params[0], params[1], evaluate);
+    const idx = await evaluate(args[0]);
+    (0, types_1.ensureNumber)(idx);
+    const list = await evaluate(args[1]);
+    (0, types_1.ensureList)(list);
+    return _nth(idx, list);
+};
+exports.nth = nth;
+/** @name car */
+const car = async (_, args, { evaluate }) => {
+    // fn_check_params(args, {exactCount: 1});
+    // const list = await evaluate(args[1]);
+    // ensureList(list);
+    // return nth(_, [0, args[0]], state);
+    return evaluate(['nth', 0, ...args]);
+};
+exports.car = car;
+/** @name second */
+const second = async (_, args, { evaluate }) => {
+    // fn_check_params(args, {exactCount: 1});
+    // return nth(_, [1, args[0]], state);
+    //
+    return evaluate(['nth', 1, ...args]);
+    //
+    // return;
+};
+exports.second = second;
+/** @name third */
+const third = async (_, args, { evaluate }) => {
+    // fn_check_params(args, {exactCount: 1});
+    // return nth(_, [2, args[0]], args);
+    return evaluate(['nth', 2, ...args]);
+};
+exports.third = third;
+//
+/** @name nthcdr */
+const nthcdr = async (_, args, { evaluate }) => {
+    // fn_check_params(args, {exactCount: 2});
+    return fn_rest(args[0], args[1], evaluate);
+    // return evaluate(['rest', ...args]);
+};
+exports.nthcdr = nthcdr;
+/** @name cdr */
+const cdr = async (_, args, { evaluate }) => {
+    // fn_check_params(args, {exactCount: 1});
+    return fn_rest(1, args[0], evaluate);
+    // return evaluate(['rest', ...args]);
+};
+exports.cdr = cdr;
+//
+/** @name consp */
+const consp = async (_, args, { evaluate }) => {
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const a0 = await evaluate(args[0]);
+    // return isList(a0) && !isEmptyList(a0);
+    return _consp(a0);
+};
+exports.consp = consp;
+/** @name listp */
+const listp = async (_, args, { evaluate }) => {
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const a0 = await evaluate(args[0]);
+    // return isList(a0);
+    return _listp(a0);
+};
+exports.listp = listp;
+/** @name nullp */
+const nullp = async (_, args, { evaluate }) => {
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const a0 = await evaluate(args[0]);
+    // return isList(a0) && isEmptyList(a0);
+    return _nullp(a0);
+};
+exports.nullp = nullp;
+//===========================================================================//
 exports.actions = {
-    list: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { minCount: 0 });
-        const evaluated = [];
-        for (const p of params) {
-            const pValue = await evaluate(p);
-            evaluated.push(pValue);
-        }
-        // if (!Array.isArray(evaluated)) throw new Error('Expecting array');
-        return evaluated;
-    },
-    length: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const array = await evaluate(params[0]);
-        if (!Array.isArray(array))
-            throw new Error('Expecting array');
-        return array.length;
-    },
-    nth: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 2 });
-        const n = await evaluate(params[0]);
-        const list = await evaluate(params[1]);
-        return fn_nth(n, list);
-    },
-    first: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_nth(0, list);
-    },
-    car: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_nth(0, list);
-    },
+    quote: exports.quote,
+    list: exports.list,
+    length: exports.length,
     //
-    second: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_nth(1, list);
-    },
-    third: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_nth(2, list);
-    },
+    nth: exports.nth,
+    car: exports.car,
+    first: exports.car,
+    second: exports.second,
+    third: exports.third,
     //
-    cdr: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_rest(list);
-    },
-    // rest: 'cdr'
-    rest: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const list = await evaluate(params[0]);
-        return fn_rest(list);
-    },
+    nthcdr: exports.nthcdr,
+    cdr: exports.cdr,
+    rest: exports.cdr,
     //
+    consp: exports.consp,
+    listp: exports.listp,
+    nullp: exports.nullp,
 };
 exports.default = exports.actions;
 //# sourceMappingURL=lists.js.map

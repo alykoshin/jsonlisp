@@ -1,13 +1,14 @@
 "use strict";
-// export const print = (...args: any[]) => {
-//   // process.s
-//   console.log(...args);
-// }
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stringify = exports.print = void 0;
+exports.stringify = exports.print = exports.atBOL = exports.EOL = void 0;
+exports.EOL = '\n';
+exports.atBOL = false;
 const print = (...args) => {
     const s = args.join(' ');
-    process.stdout.write(args.join(' '));
+    const lastCh = s[s.length - 1];
+    process.stdout.write(s);
+    exports.atBOL = lastCh === '\n';
     return s;
 };
 exports.print = print;

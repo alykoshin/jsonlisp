@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -31,7 +32,7 @@ function parse_sbcl_bool(lisp_bool, { logger } = {}) {
 exports.parse_sbcl_bool = parse_sbcl_bool;
 const LBRACKET = '(';
 const RBRACKET = ')';
-/**
+/*
  * !!! Strings are not supported !!!
  */
 function parse_sbcl_list(str, { logger }) {

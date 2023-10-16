@@ -9,20 +9,7 @@ const string_1 = __importDefault(require("@utilities/string"));
 const object_1 = require("@utilities/object");
 const log_1 = require("./log");
 const actions_1 = require("../actions/");
-const atomDefinitionTypes = [
-    'undefined',
-    'boolean',
-    'number',
-    'bigint',
-    'string',
-    'symbol',
-    'object',
-];
-const isAtom = (value) => 
-// atomDefinitionTypes.indexOf(typeof value) >= 0 ||
-// value === null
-!Array.isArray(value);
-const isList = (value) => Array.isArray(value);
+const types_1 = require("./types");
 // const DEFAULT_DEBUG =
 //   false;
 // // true;
@@ -50,39 +37,28 @@ class Runner {
         //     const name = Array.isArray(actionDefinition)
         //       ? actionDefinition[0]
         //       : actionDefinition.action;
-        let name, executor, parameters;
+        let name;
+        let executor;
+        let parameters;
         if (typeof actionDefinition === 'function') {
+            logger.debug('found js function "${name}"');
             executor = actionDefinition;
             name = actionDefinition.name;
             parameters = [];
         }
         else if (typeof actionDefinition === 'string') {
+            logger.debug('found string action name"${name}"');
             name = actionDefinition;
             executor = this.actions[name];
             parameters = [];
         }
         else {
-            if (!isList(actionDefinition)) {
-                let msg = [
-                    `Expect list (i.e.array), instead found:`,
-                    typeof actionDefinition,
-                    JSON.stringify(actionDefinition),
-                ];
-                logger.fatal(...msg);
-            }
-            ;
+            (0, types_1.ensureList)(actionDefinition);
+            logger.debug('found list');
+            (0, types_1.ensureString)(actionDefinition[0]);
             [name, ...parameters] = actionDefinition;
-            if (typeof name !== 'string') {
-                let msg = [
-                    `Expect symbol (i.e.string), instead found:`,
-                    isList(name) ? `list (i.e.array)` : `"${typeof name}`,
-                    JSON.stringify(name),
-                    `, definition:`,
-                    JSON.stringify(actionDefinition),
-                ];
-                logger.fatal(...msg);
-            }
-            // console.log('>>>', actionDefinition)
+            (0, types_1.ensureString)(name);
+            logger.debug(`List starts with "${name}"`);
             executor = this.actions[name];
         }
         if (!executor) {
@@ -112,6 +88,7 @@ class Runner {
                 ...activity.actions,
             };
         }
+        logger.debug(`this.actions: ${Object.keys(this.actions).join(',')}`);
         // const actionDefinition = this._getConfigAction(activity, action);
         logger.debug(`Starting action "${action}"`);
         // const actionDefinition = this.getActionImplementation(action);
@@ -141,7 +118,7 @@ class Runner {
         if (!logger)
             logger = new log_1.Logger({ id, level });
         // logger.debug(`eval: parameter:`, parameter);
-        if (isAtom(param)) {
+        if ((0, types_1.isAtom)(param)) {
             logger.debug(`eval atom (${typeof param}) "${String(param)}"`);
             if (typeof param === 'string') {
                 param = string_1.default.literalTemplate(param, 
@@ -185,10 +162,10 @@ class Runner {
                         runner: this,
                         // logger: newLogger,
                     };
-                    return await executor(name, params, exState);
+                    return await executor.call(exState, name, params, exState);
                     //
                 }
-                else if (isList(executor)) {
+                else if ((0, types_1.isList)(executor)) {
                     logger.debug(`eval list "${name}"`);
                     // logger.debug(`eval list "${name}": executor:`, executor);
                     return await this.eval(executor, evState);

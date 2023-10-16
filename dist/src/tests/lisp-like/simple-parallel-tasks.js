@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 exports.config = {
-    base_dir: './demo',
-    version: '2.5.22',
+    base_dir: '.',
+    version: '0.0.0',
     actions: {
         default: ['list',
             // ['test-plist1'],

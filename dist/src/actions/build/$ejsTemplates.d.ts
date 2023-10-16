@@ -1,9 +1,15 @@
 /** @format */
-import { ActionMethodState, Parameters } from '../../lib/runner';
+import { ActionListExecutor } from '../../lib/types';
 export type EjsTemplatesActionConfig = {
     sourceDir: string;
     excludeDirs: string | string[];
     targetDir: string;
 };
-export declare function $ejsTemplates(action: string, parameters: Parameters, state: ActionMethodState): Promise<void>;
+/**
+ * @module $build
+ */
+/**
+ * @name $ejsTemplates
+ */
+export declare const $ejsTemplates: ActionListExecutor;
 export default $ejsTemplates;

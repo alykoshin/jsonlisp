@@ -1,53 +1,101 @@
 /** @format */
 
-import {fn_check_params} from '../../lib/util';
-import {ActionMethodState, Actions, Parameters} from '../../lib/runner';
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Actions,
+  Parameters,
+  ensureString,
+} from '../../apps/runner/lib/types';
 import {stringify} from './helpers/print';
+import {series} from './helpers/series';
 
 /**
- * simple-parallel-tasks
- * https://codeberg.org/glv/simple-parallel-tasks
+ * @module sb-posix
  *
- * The simple-parallel-tasks Reference Manual
- * https://quickref.common-lisp.net/simple-parallel-tasks.html
+ * @see Package: SB-POSIX -- {@list https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/}
+ */
+
+/**
+ * @name setenv
+ *
+ * @see
+ * - Function: SB-POSIX:SETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
+ */
+export const setenv: ActionListExecutor = async function (
+  _,
+  params,
+  {evaluate, logger}
+) {
+  fn_check_params(params, {exactCount: [2, 3]});
+  // const [pName, pValue, pOverwrite] = await series(params, evaluate);
+  const [pName, pValue, pOverwrite] = params;
+  const eName = await evaluate(pName);
+  ensureString(eName);
+  const eValue = await evaluate(pValue);
+  const eOverwrite = await evaluate(pOverwrite);
+  const res = process.env[eName];
+  logger.debug(`$${eName}="${eName}"`);
+  return res;
+};
+
+/**
+ * @name getenv
+ * @see
+ * - Function: SB-POSIX:GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html} <br>
+ * - Function: SB-EXT:POSIX-GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-ext/function/POSIX-GETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp#L966C19-L966C19} <br>
+ */
+export const getenv: ActionListExecutor = async function (
+  _,
+  params,
+  {evaluate, logger}
+) {
+  fn_check_params(params, {exactCount: 1});
+  const [pName] = params;
+  const eName = await evaluate(pName);
+  ensureString(eName);
+  const res = process.env[eName];
+  logger.debug(`$${eName}="${eName}"`);
+  return res;
+};
+
+/**
+ * @name chdir
+ * @see Function: SB-POSIX:MKDIR --
+ * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
+ * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
  *
  */
+export const chdir: ActionListExecutor = async function (
+  _,
+  params,
+  {evaluate}
+) {
+  fn_check_params(params, {exactCount: 1});
+  const dir = await evaluate(params[0]);
+  ensureString(dir);
+  const res = process.chdir(dir);
+  return 0;
+};
 
 /**
- * Package: SB-POSIX
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/
+ * @name getcwd
  */
-
-/**
- * Function: SB-POSIX:SETENV
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html
- */
-
-/**
- * Function: SB-POSIX:GETENV
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html
- */
-
-/**
- * Function: SB-POSIX:MKDIR
- * https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html
- */
+export const getcwd: ActionListExecutor = async function (_, params, {logger}) {
+  fn_check_params(params, {exactCount: 0});
+  const res = process.cwd();
+  logger.debug(stringify(res));
+  return res;
+};
 
 export const actions: Actions = {
-  chdir: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
-    const pCwd = await evaluate(params[0]);
-    const sCwd = String(pCwd);
-    const res = process.chdir(sCwd);
-    return res;
-  },
-
-  getcwd: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 0});
-    const res = process.cwd();
-    logger.debug(stringify(res));
-    return res;
-  },
+  setenv,
+  getenv,
+  chdir,
+  getcwd,
 };
 
 export default actions;

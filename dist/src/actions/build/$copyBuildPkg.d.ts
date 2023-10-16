@@ -1,3 +1,10 @@
-import { ActionMethodState, Parameters } from "../../lib/runner";
-export declare function $copyBuildPkg(action: string, parameters: Parameters, state: ActionMethodState): Promise<void>;
+/** @format */
+import { ActionListExecutor } from '../../lib/types';
+/**
+ * @module $build
+ */
+/**
+ * @name $copyBuildPkg
+ */
+export declare const $copyBuildPkg: ActionListExecutor;
 export default $copyBuildPkg;

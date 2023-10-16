@@ -1,13 +1,21 @@
+/** @format */
+
 // export const print = (...args: any[]) => {
 //   // process.s
 //   console.log(...args);
 // }
 
-import { Parameter } from "../../../lib/runner";
+import {Parameter} from '../../../apps/runner/lib/types';
+
+export const EOL = '\n';
+
+export let atBOL = false;
 
 export const print = (...args: any[]) => {
   const s = args.join(' ');
-  process.stdout.write(args.join(' '));
+  const lastCh = s[s.length - 1];
+  process.stdout.write(s);
+  atBOL = lastCh === '\n';
   return s;
 };
 

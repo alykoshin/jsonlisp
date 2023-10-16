@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
     "declaration": false,
-    "lib": [
-      "es2022"
-    ],
+    "lib": ["es2022"],
     "module": "commonjs",
-//    "module": "nod",
+    //    "module": "nod",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
@@ -14,17 +12,13 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "strict": true,
-//    "target": "es5",
+    //    "target": "es5",
     "target": "esnext",
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "plugins": []
   },
-  "exclude": [
-    "dist",
-    "example",
-    "node_modules",
-    "_archive"
-  ],
+  "exclude": ["dist", "example", "node_modules", "_archive"],
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"

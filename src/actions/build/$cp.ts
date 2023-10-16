@@ -1,8 +1,13 @@
 /** @format */
 
 import fs from 'fs/promises';
-import {fn_check_params} from '../../lib/util';
-import {ActionMethodState, Parameters} from '../../lib/runner';
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Parameter,
+  Parameters,
+} from '../../apps/runner/lib/types';
 
 type CpActionConfig = {
   source: string | string[];
@@ -10,13 +15,16 @@ type CpActionConfig = {
   dry?: boolean;
 };
 
-export async function $cp(
-  action: string,
-  params: Parameters,
-  {logger}: ActionMethodState
-) {
-  fn_check_params(params, {exactCount: 1});
-  const {source, dest, dry: dry_} = params[0] as CpActionConfig;
+/**
+ * @module $build
+ */
+
+/**
+ * @name $cp
+ */
+export const $cp: ActionListExecutor = async function (_, args, {logger}) {
+  fn_check_params(args, {exactCount: 1});
+  const {source, dest, dry: dry_} = args[0] as CpActionConfig;
   const dry = typeof dry_ !== 'undefined' ? dry_ : false;
   const sources = Array.isArray(source) ? source : [source];
 
@@ -29,6 +37,7 @@ export async function $cp(
     }
   }
   logger.debug(`copied ${sources.length} dirs/files`);
-}
+  return true;
+};
 
 export default $cp;

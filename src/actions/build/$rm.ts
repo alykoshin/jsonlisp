@@ -1,14 +1,21 @@
 /** @format */
 
 import fs from 'fs/promises';
-import {fn_check_params} from '../../lib/util';
-import {ActionMethodState, Parameter, Parameters} from '../../lib/runner';
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Parameter,
+  Parameters,
+} from '../../apps/runner/lib/types';
+/**
+ * @module $build
+ */
+/**
+ * @name $version
+ */
 
-export async function $rm(
-  action: string,
-  params: Parameters,
-  {evaluate}: ActionMethodState
-): Promise<Parameter> {
+export const $rm: ActionListExecutor = async function (_, args, {evaluate}) {
   // const { runner, logger } = state;
   // fn_check_params(parameters, { minCount: 1 });
 
@@ -20,7 +27,7 @@ export async function $rm(
   //   await fs.rm(sPathname);
   // }
   // logger.debug(`deleted ${parameters.length} dirs/files`);
-  return evaluate(['delete-file', ...params]);
-}
+  return evaluate(['delete-file', ...args]);
+};
 
 export default $rm;

@@ -1,139 +1,215 @@
 /** @format */
 
-import {fn_check_params} from '../../lib/util'
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {Runner} from '../../apps/runner/runner';
 import {
+  ActionListExecutor,
   ActionMethodState,
   Actions,
+  EvaluateFn,
+  Expression,
+  List,
+  NIL,
   Parameter,
   Parameters,
-  Runner,
-} from '../../lib/runner'
+  ensureList,
+  ensureNumber,
+  isEmptyList,
+  isList,
+} from '../../apps/runner/lib/types';
+import {series, series1, series2, seriesn} from './helpers/series';
 
-function fn_nth(n: Parameter, list: Parameter | Parameters) {
-  // fn_check_params(params, {minCount: 2});
-  // const [n, list] = params;
+/**
+ * @module list
+ */
 
-  fn_check_params(n, {typ: 'number'})
-  fn_check_params(list, {minCount: n as number})
+/**
+ *
+ */
+const _nth = async function (
+  idx: number,
+  list: Parameter[]
+): Promise<Expression> {
+  return list.length > idx ? list[idx] : NIL;
+};
 
-  return (list as Parameters)[n as number]
+const _rest = async function (
+  idx: number,
+  list: Expression[]
+): Promise<Expression> {
+  // return list.slice(index);
+  return isEmptyList(list) ? NIL : list.slice(idx);
+};
+
+const _consp = async function (p: Parameter): Promise<boolean> {
+  return isList(p) && !isEmptyList(p);
+};
+
+const _listp = async function (p: Parameter): Promise<boolean> {
+  return isList(p);
+};
+
+const _nullp = async function (p: Parameter): Promise<boolean> {
+  return isList(p) && isEmptyList(p);
+};
+
+//===========================================================================//
+
+// async function fn_nth(
+//   index: Expression, // Parameter,
+//   list: Expression, // /* Parameter |  */ Parameters,
+//   evaluate: EvaluateFn
+// ): Promise<Expression> {
+//   const n = await evaluate(index);
+//   ensureNumber(n);
+//   const l = await evaluate(list);
+//   ensureList(l);
+//   return _nth(n, l);
+// }
+
+async function fn_rest(
+  index: Expression,
+  list: Expression,
+  evaluate: EvaluateFn
+): Promise<Expression> {
+  const n = await evaluate(index);
+  ensureNumber(n);
+  const l = await evaluate(list);
+  ensureList(l);
+  return _rest(n, l);
 }
 
-function fn_rest(list: Parameter | Parameters) {
-  fn_check_params(list, {minCount: 1})
-  return (list as Parameters).slice(1)
-}
+//===========================================================================//
+
+/** @name quote */
+export const quote: ActionListExecutor = async (_, params, {evaluate}) => {
+  fn_check_params(params, {exactCount: 1});
+  // return first argument without evaluation
+  return params[0];
+};
+
+/** @name list */
+export const list: ActionListExecutor = async (_, params, {evaluate}) => {
+  // return all args evaluated
+  return series(params, evaluate);
+};
+
+/** @name length */
+export const length: ActionListExecutor = async (_, args, {evaluate}) => {
+  fn_check_params(args, {exactCount: 1});
+  const a0 = await evaluate(args[0]);
+  ensureList(a0);
+  return a0.length;
+};
+
+/** @name nth */
+export const nth: ActionListExecutor = async (_, args, {evaluate}) => {
+  fn_check_params(args, {exactCount: 2});
+  console.log('nth:args:', JSON.stringify(args));
+  // return fn_nth(params[0], params[1], evaluate);
+
+  const idx = await evaluate(args[0]);
+  ensureNumber(idx);
+  console.log('nth:idx:', JSON.stringify(idx));
+
+  const list = await evaluate(args[1]);
+  ensureList(list);
+  console.log('nth:list:', JSON.stringify(list));
+
+  const res = await evaluate(await _nth(idx, list));
+  console.log('nth:res:', JSON.stringify(res));
+
+  return res;
+};
+
+/** @name car */
+export const car: ActionListExecutor = async (_, args, {evaluate}) => {
+  // fn_check_params(args, {exactCount: 1});
+  // const list = await evaluate(args[1]);
+  // ensureList(list);
+  // return nth(_, [0, args[0]], state);
+  return evaluate(['nth', 0, ...args]);
+};
+
+/** @name second */
+export const second: ActionListExecutor = async (_, args, {evaluate}) => {
+  // fn_check_params(args, {exactCount: 1});
+  // return nth(_, [1, args[0]], state);
+  //
+  return evaluate(['nth', 1, ...args]);
+  //
+  // return;
+};
+
+/** @name third */
+export const third: ActionListExecutor = async (_, args, {evaluate}) => {
+  // fn_check_params(args, {exactCount: 1});
+  // return nth(_, [2, args[0]], args);
+  return evaluate(['nth', 2, ...args]);
+};
+
+//
+
+/** @name nthcdr */
+export const nthcdr: ActionListExecutor = async (_, args, {evaluate}) => {
+  // fn_check_params(args, {exactCount: 2});
+  return fn_rest(args[0], args[1], evaluate);
+  // return evaluate(['rest', ...args]);
+};
+
+/** @name cdr */
+export const cdr: ActionListExecutor = async (_, args, {evaluate}) => {
+  // fn_check_params(args, {exactCount: 1});
+  return fn_rest(1, args[0], evaluate);
+  // return evaluate(['rest', ...args]);
+};
+
+//
+
+/** @name consp */
+export const consp: ActionListExecutor = async (_, args, {evaluate}) => {
+  fn_check_params(args, {exactCount: 1});
+  const a0 = await evaluate(args[0]);
+  // return isList(a0) && !isEmptyList(a0);
+  return _consp(a0);
+};
+
+/** @name listp */
+export const listp: ActionListExecutor = async (_, args, {evaluate}) => {
+  fn_check_params(args, {exactCount: 1});
+  const a0 = await evaluate(args[0]);
+  // return isList(a0);
+  return _listp(a0);
+};
+
+/** @name nullp */
+export const nullp: ActionListExecutor = async (_, args, {evaluate}) => {
+  fn_check_params(args, {exactCount: 1});
+  const a0 = await evaluate(args[0]);
+  // return isList(a0) && isEmptyList(a0);
+  return _nullp(a0);
+};
+
+//===========================================================================//
 
 export const actions: Actions = {
-  list: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {minCount: 0})
-
-    const evaluated: Parameters = []
-    for (const p of params) {
-      const pValue = await evaluate(p)
-      evaluated.push(pValue)
-    }
-    // if (!Array.isArray(evaluated)) throw new Error('Expecting array');
-
-    return evaluated
-  },
-
-  length: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-
-    const array = await evaluate(params[0])
-
-    if (!Array.isArray(array)) throw new Error('Expecting array')
-    return array.length
-  },
-
-  nth: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 2})
-    const n = await evaluate(params[0])
-    const list = await evaluate(params[1])
-
-    return fn_nth(n, list)
-  },
-
-  first: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_nth(0, list)
-  },
-
-  car: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_nth(0, list)
-  },
-
+  quote,
+  list,
+  length,
   //
-
-  second: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_nth(1, list)
-  },
-
-  third: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_nth(2, list)
-  },
-
+  nth,
+  car,
+  first: car,
+  second,
+  third,
   //
-
-  cdr: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_rest(list)
-  },
-
-  // rest: 'cdr'
-
-  rest: async function (
-    action: string,
-    params: Parameters,
-    {evaluate, logger}: ActionMethodState
-  ) {
-    fn_check_params(params, {exactCount: 1})
-    const list = await evaluate(params[0])
-    return fn_rest(list)
-  },
-
+  nthcdr,
+  cdr,
+  rest: cdr,
   //
-}
+  consp,
+  listp,
+  nullp,
+};
 
-export default actions
+export default actions;

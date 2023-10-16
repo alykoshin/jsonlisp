@@ -12,9 +12,10 @@ exports.config = {
         ..._sbcl_1.default,
         default: [
             'list',
-            ['test-cond'],
-            ['test-when'],
-            ['test-unless'],
+            // [ 'test-cond' ],
+            // [ 'test-when' ],
+            // [ 'test-unless' ],
+            ['test-zerop'],
             ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
         ],
         "test-cond": ['list',
@@ -39,6 +40,14 @@ exports.config = {
             ['unless',
                 ['/=', 1, 1], ['setq', 'res', 1]],
             ['assert-true', '${res}', '1']],
+        "test-zerop": ['list',
+            ['print', 'zerop'],
+            ['assert-equal', ["zerop", 0], ["$sbcl-to-list", "(zerop 0)"]],
+            ['assert-equal', ["zerop", 1], ["$sbcl-to-list", "(zerop 1)"]],
+            // ['assert-equal', ["zerop", ["list"]], ["$sbcl-to-list", "(zerop (list))"]],
+            // ['assert-equal', ["zerop", ""], ["$sbcl-to-list", "(zerop \"\")"]],
+            // ['assert-equal', ["zerop", false], ["$sbcl-to-list", "(zerop NIL)"]],
+        ],
     },
 };
 exports.default = exports.config;

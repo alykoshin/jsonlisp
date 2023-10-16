@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
 const _sbcl_1 = __importDefault(require("../actions/$sbcl/"));
 exports.config = {
-    base_dir: './demo',
-    version: '2.5.22',
+    base_dir: '.',
+    version: '0.0.0',
     actions: {
         ..._sbcl_1.default,
         default: ['list',

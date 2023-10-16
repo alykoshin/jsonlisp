@@ -9,6 +9,12 @@ function installDepsCmd() {
     const keys = ['--production=true'];
     return `${program} ${keys.join(' ')}`;
 }
+/**
+ * @module $build
+ */
+/**
+ * @module $yarnInstallProd
+ */
 async function $yarnInstallProd(action, params, { logger }) {
     (0, util_1.fn_check_params)(params, { exactCount: 1 });
     const { cwd, env } = params[0];

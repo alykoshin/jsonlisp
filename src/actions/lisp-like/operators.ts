@@ -2,17 +2,22 @@
 
 import Ajv, {Schema, JSONSchemaType, ValidateFunction} from 'ajv';
 import {JTDDataType} from 'ajv/dist/jtd';
-import {fn_check_params} from '../../lib/util';
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {Runner} from '../../apps/runner/runner';
 import {
+  ActionListExecutor,
   ActionMethodState,
   Actions,
-  AtomDefinition,
+  Atom,
   Parameter,
   Parameters,
-  Runner,
-} from '../../lib/runner';
+} from '../../apps/runner/lib/types';
 import {start} from 'repl';
 import {LogPrefix, Logger} from '../../lib/log';
+
+/**
+ * @module operators
+ */
 
 const schema: Schema = {
   type: 'array',
@@ -160,26 +165,22 @@ function calcBinary(
   }
 }
 
-async function operators(
-  action: string,
-  params: Parameters,
-  state: ActionMethodState
-) {
-  const {runner} = state;
-  fn_check_params(params, {minCount: 1});
+const operators: ActionListExecutor = async function (action, args, state) {
+  const {evaluate} = state;
+  fn_check_params(args, {minCount: 1});
   // logger.debug(`operator ${[p1, ...p_rest].join(String(action))}`);
   // const v1 = await runner.eval(p1, state);
-  if (params.length === 1) {
-    const v1 = await runner.eval(params[0], state);
+  if (args.length === 1) {
+    const v1 = await evaluate(args[0]);
     return calcUnary(action, v1);
     // return calcUnary(action, await runner.eval(params[0], state));
   } else {
     let res;
-    const [p1, ...p_rest] = params;
-    let v_prev = await runner.eval(p1, state);
+    const [p1, ...p_rest] = args;
+    let v_prev = await evaluate(p1);
     // let v_prev = v1;
     for (const p_curr of p_rest) {
-      const v_curr = await runner.eval(p_curr, state);
+      const v_curr = await evaluate(p_curr);
       const {result, last, stop} = calcBinary(action as BiOps, v_prev, v_curr);
       res = result;
       if (stop) {
@@ -189,7 +190,7 @@ async function operators(
     }
     return res;
   }
-}
+};
 
 type Reducer<T, U> = (
   previousValue: U,
@@ -229,18 +230,18 @@ const reduce = /*async*/ function <T extends U, U>(
 const pReduce = async function <T>(
   ...args: [
     arr: Parameter[],
-    reducer: Reducer<Parameter, AtomDefinition>,
+    reducer: Reducer<Parameter, Atom>,
     // initial?: AtomDefinition,
-    dflt?: AtomDefinition
+    dflt?: Atom,
   ]
-): Promise<AtomDefinition> {
+): Promise<Atom> {
   const [arr, reducer, /* initial, */ dflt] = args;
   if (arr.length === 0) {
     return dflt;
   } else if (arr.length === 1) {
     return reducer(dflt, arr[0], 0, arr, () => undefined);
   }
-  return reduce<Parameter, AtomDefinition>(arr, reducer);
+  return reduce<Parameter, Atom>(arr, reducer);
 
   // let start = 0;
   // // let acc = typeof initial === 'undefined' ? await evaluate(arr[start++]) : await evaluate(initial);
@@ -261,7 +262,7 @@ const pReduce = async function <T>(
 
 //
 
-const plog = function (logger: Logger<LogPrefix>) {
+const plog = function (logger: Logger) {
   return async function (res: Promise<Parameter>): Promise<Parameter> {
     const result = await res;
     logger.log(result);
@@ -275,13 +276,16 @@ const plog = function (logger: Logger<LogPrefix>) {
  * String concatenation
  * In brief: `concatenate` & `strcat`
  *
- * http://www.ulisp.com/show?3L#concatenate
+ * @name concatenate
+ * @description
+ * {@link http://www.ulisp.com/show?3L#concatenate}
  *
- * https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp
- * http://clhs.lisp.se/Body/f_concat.htm
+ * {@link https://stackoverflow.com/questions/53043195/string-addition-assignment-in-lisp}
+ * {@link http://clhs.lisp.se/Body/f_concat.htm}
  */
 
 export const actions: Actions = {
+  /** @name + */
   '+': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
@@ -292,6 +296,7 @@ export const actions: Actions = {
       )
     ),
 
+  /** @name - */
   '-': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
@@ -302,6 +307,7 @@ export const actions: Actions = {
       )
     ),
 
+  /** @name * */
   '*': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
@@ -312,6 +318,7 @@ export const actions: Actions = {
       )
     ),
 
+  /** @name / */
   '/': async (action, params, {evaluate, logger}) =>
     plog(logger)(
       pReduce(
@@ -322,19 +329,45 @@ export const actions: Actions = {
       )
     ),
 
+  /** @name 1+ */
+  '1+': async (action, params, {evaluate, logger}) => {
+    fn_check_params(params, {exactCount: 1});
+    return evaluate(['+', ...params, 1]);
+  },
+
+  /** @name 1- */
+  '1-': async (action, params, {evaluate, logger}) => {
+    fn_check_params(params, {exactCount: 1});
+    return evaluate(['-', ...params, 1]);
+  },
+
+  /** @name % */
   '%': operators,
+  /** @name = */
   '=': operators,
+  /** @name /= */
   '/=': operators,
+  /** @name > */
   '>': operators,
+  /** @name < */
   '<': operators,
+  /** @name >= */
   '>=': operators,
+  /** @name <= */
   '<=': operators,
+  /** @name min */
   min: operators,
+  /** @name max */
   max: operators,
+  /** @name mod */
   mod: operators,
+  /** @name rem */
   rem: operators,
+  /** @name and */
   and: operators,
+  /** @name or */
   or: operators,
+  /** @name not */
   not: operators,
 };
 export default actions;

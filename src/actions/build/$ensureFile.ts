@@ -1,25 +1,38 @@
-import { fn_check_params } from "../../lib/util";
-import {ensureFile} from "./helpers/fsUtils";
-import {ActionListExecutor, ActionMethodState, Parameters} from "../../lib/runner";
+/** @format */
 
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {ensureFile} from './helpers/fsUtils';
+import {
+  ActionListExecutor,
+  ActionMethodState,
+  Atom,
+  Parameters,
+} from '../../apps/runner/lib/types';
+
+/**
+ * @module $build
+ */
+
+/**
+ * @name $ensureFile
+ */
 export const $ensureFile: ActionListExecutor = async function (
-  action: string,
-  parameters: Parameters,
-  state: ActionMethodState
-): Promise<Parameters> {
-  const {runner, logger} = state;
-  fn_check_params(parameters, {minCount: 1});
+  _,
+  args,
+  {evaluate, logger}
+) {
+  fn_check_params(args, {minCount: 1});
 
-  logger.debug(`$ensureFile: parameters: ${JSON.stringify(parameters)}`);
+  logger.debug(`$ensureFile: parameters: ${JSON.stringify(args)}`);
   const result: Parameters = [];
-  for (const p of parameters) {
-    const pFilename = await runner.eval(p, state);
+  for (const p of args) {
+    const pFilename = await evaluate(p);
     const sFilename = String(pFilename);
 
-    logger.debug(`$ensureFile ${sFilename}`)
+    logger.debug(`$ensureFile ${sFilename}`);
     await ensureFile(sFilename);
 
     result.push(sFilename);
   }
   return result;
-}
+};

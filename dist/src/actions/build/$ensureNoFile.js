@@ -1,8 +1,15 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureNoFile = void 0;
 const fsUtils_1 = require("./helpers/fsUtils");
 const util_1 = require("../../lib/util");
+/**
+ * @module $build
+ */
+/**
+ * @name $ensureNoFile
+ */
 const $ensureNoFile = async function (action, parameters, state) {
     const { runner, logger } = state;
     (0, util_1.fn_check_params)(parameters, { minCount: 1 });

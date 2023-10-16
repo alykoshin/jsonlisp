@@ -15,10 +15,16 @@ const DEBUG = false;
 //   action: 'ejsTemplates',
 //   config: EjsTemplatesActionConfig
 // ]
-async function $ejsTemplates(action, parameters, state) {
+/**
+ * @module $build
+ */
+/**
+ * @name $ejsTemplates
+ */
+const $ejsTemplates = async function (_, args, state) {
     const { runner, logger } = state;
-    (0, util_1.fn_check_params)(parameters, { exactCount: 1 });
-    const { sourceDir, excludeDirs: excludeDirs_, targetDir, } = parameters[0];
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const { sourceDir, excludeDirs: excludeDirs_, targetDir, } = args[0];
     const excludeDirs = Array.isArray(excludeDirs_)
         ? excludeDirs_
         : [excludeDirs_];
@@ -69,7 +75,8 @@ async function $ejsTemplates(action, parameters, state) {
         //
         await promises_1.default.writeFile(currTargetPathname, html, 'utf8');
     }
-}
+    return true;
+};
 exports.$ejsTemplates = $ejsTemplates;
-exports.default = $ejsTemplates;
+exports.default = exports.$ejsTemplates;
 //# sourceMappingURL=$ejsTemplates.js.map

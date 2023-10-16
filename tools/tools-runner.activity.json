@@ -6,18 +6,53 @@
     "build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
       ["clean-dist"],
-      ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ],
-      [ "$version", "patch" ]],
+      ["tsc"], 
+      ["$version", "patch" ]],
     "clean-dist": [ "list",
       ["$shelljs", "rm", "-rf", "dist/*" ],
-      ["$shelljs", "mkdir", "-p", "dist" ]],
-    "-test-git-clean": [ 
+      ["$shelljs", "mkdir", "-p", "dist" ]], 
+    "tsc": [ "list",
+      ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ]
+    ],
+
+    "_save": [";", "$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"],
+
+    "rebuild-grammar": [
+      "list",
+      ["$shelljs", "mkdir", "-p", "./resources/downloads/" ],
+      ["plist",
+        ["list",
+          ["write-string-into-file",  "./resources/downloads/lisp.pegjs", 
+            ["$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"]],
+          ["plist",
+            ["shell-command", "node_modules\\.bin\\peggy -o resources/lisp.js resources/downloads/lisp.pegjs"],
+            ["shell-command", "node_modules\\.bin\\peggy --plugin ./node_modules/ts-pegjs/dist/tspegjs -o resources/downloads/lisp.ts resources/lisp.pegjs"]]],
+        ["list",
+          ["write-string-into-file",  "./resources/downloads/grammar.pegjs", 
+            ["$axios", "get", "https://raw.githubusercontent.com/honza/inertia/master/inertia/grammar.pegjs"]],
+          ["plist",
+            ["shell-command", "node_modules\\.bin\\peggy -o resources/grammar.js resources/downloads/grammar.pegjs"],
+            ["shell-command", "node_modules\\.bin\\peggy --plugin ./node_modules/ts-pegjs/dist/tspegjs -o resources/grammar.ts resources/downloads/grammar.pegjs"]]]
+      ]
+    ],
+
+    "dl-3rd": [
+      "list",
+      ["setq", "$$path", "./resources/downloads/" ],
+      ["$shelljs", "mkdir", "-p", "${ $$path }" ],
+      [ "plist",
+        ["write-string-into-file",  "${ $$path }sourceforge.net_p_sbcl_sbcl_ci_master_tree_src_code_pred.lisp", 
+          ["$axios", "get", "https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/pred.lisp?format=raw"]]
+      ]
+    ],
+
+    "-test-git-clean": [
       "list",
       ["print", "Ensure Git directory is clean..."],
       [";", "shell-command", "git status --untracked-files=no --porcelain`"],
       ["shell-command", "git status --untracked-files=yes --porcelain"]
     ],
-    "assert-git-clean": [
+    "git-assert-clean": [
       "list",
       [";","if"],
       [";","shell-command", "sleep 5"],
@@ -30,10 +65,23 @@
     ],
     "git-commit": ["shell-command", "git commit -am \"auto commit\""],
     "git-push":   ["shell-command", "git push --follow-tags"],
+    "jsdoc":      [
+      "list",
+      ["$shelljs", "rm", "-rf", "jsdoc/*" ],
+      ["shell-command", 
+        ".\\node_modules\\.bin\\jsdoc ./src/actions/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
+    "test-core-primitives": [
+      "list",
+      ["shell-command", 
+        "ts-node ./src/tests/lisp-like/core/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
+    "test-main": [
+      "list",
+      ["shell-command", 
+        "ts-node ./src/cli.ts ./src/tests/lisp-like/conditionals.jl.ts", { "cwd": "./", "env": {} } ]],
     "build-commit-push": [ "list",
       ["build"], 
       ["git-commit"], 
-      ["assert-git-clean"],
+      ["git-assert-clean"],
       ["git-push"] ]
   }
 }

@@ -1,5 +1,8 @@
-import {Activity} from "../../lib/config";
+/** @format */
 
+import {Activity} from '../../apps/runner/lib/config';
+
+// prettier-ignore
 export const config: Activity = {
   base_dir: './',
   version: '0.0.0',

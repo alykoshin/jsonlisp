@@ -1,8 +1,15 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 const helpers_1 = require("./helpers");
+/**
+ * @module $sbcl
+ */
+/**
+ * @name $sbcl
+ */
 const actions = {
-    '$sbcl': async function (a, params, { evaluate }) {
+    $sbcl: async function (a, params, { evaluate }) {
         const line = await evaluate(params[0]);
         // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
         const res = await evaluate([`shell-command`, (0, helpers_1.get_sbcl_cmd)(String(line))]);
@@ -34,7 +41,7 @@ const actions = {
     //   // else return null;
     //   return parse_sbcl_list(res, {logger});
     // },
-    // 
+    //
     // '$sbcl-to-list': async function(a,params,{evaluate}) {
     //   return await evaluate(
     //     [ '$parse-sbcl-list',
@@ -42,7 +49,9 @@ const actions = {
     //     );
     // },
     '$sbcl-to-list': async function (a, params, { evaluate, logger }) {
-        return (0, helpers_1.parse_sbcl_list)(String(await evaluate([`$sbcl`, params[0]])), { logger });
+        return (0, helpers_1.parse_sbcl_list)(String(await evaluate([`$sbcl`, params[0]])), {
+            logger,
+        });
     },
 };
 exports.default = actions;

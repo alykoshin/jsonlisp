@@ -2,16 +2,13 @@
 
 // #!/usr/bin/env ts-node
 
-import * as path from 'path'
-import * as _ from 'lodash'
-import {Command} from 'commander'
-import pkg from '../package.json'
-import fs from 'fs/promises'
-import json5 from 'json5'
-import {Runner} from './lib/runner'
-import {configReader, Activity, readActivityFile} from './lib/config'
+import * as _ from 'lodash';
+import {Command} from 'commander';
+import pkg from '../package.json';
+import {Runner} from './apps/runner/runner';
+import {configReader, readActivityFile} from './apps/runner/lib/config';
 
-const program = new Command()
+const program = new Command();
 
 program
   .name(pkg.name)
@@ -39,37 +36,37 @@ program
         `action: "${actionName}", ` +
         `parameters: ${JSON.stringify(parameters)}, ` +
         `options: ${JSON.stringify(options)}`
-    )
+    );
 
     const activityData = activityName
       ? await readActivityFile(activityName)
-      : undefined
+      : undefined;
 
     const fileData = options.dataFile
       ? await configReader.read(options.dataFile)
-      : {}
-    console.log(`fileData: "${JSON.stringify(fileData)}"`)
+      : {};
+    console.log(`fileData: "${JSON.stringify(fileData)}"`);
 
     if (options.dataJson && options.dataJson5) {
-      const msg = `Options --data-json and --data-json5 are mutually exclusive`
-      throw new Error(msg)
+      const msg = `Options --data-json and --data-json5 are mutually exclusive`;
+      throw new Error(msg);
     }
     const cmdlineData = options.dataJson
       ? JSON.parse(options.dataJson)
       : options.dataJson
       ? JSON.parse(options.dataJson5)
-      : {}
-    console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`)
+      : {};
+    console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
 
-    const finalData = _.defaultsDeep({}, fileData, cmdlineData) //, {test: 'test-value'}),
-    console.log(`finalData: "${JSON.stringify(finalData)}"`)
+    const finalData = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
+    console.log(`finalData: "${JSON.stringify(finalData)}"`);
 
-    const runner = new Runner()
+    const runner = new Runner();
     await runner.start({
       activity: activityData,
       action: [actionName, ...parameters],
       scope: finalData,
-    })
+    });
   })
   .addHelpText(
     'after',
@@ -83,9 +80,9 @@ program
     Example calls (Linux):
       $ yarn run start -- tools-runner.ts default ttt '{"test": "test-value"}'
  `
-  )
+  );
 
-program.parse()
+program.parse();
 
 /*
 async function start() {

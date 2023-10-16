@@ -1,34 +1,34 @@
 /** @format */
 
-import {fn_check_params} from '../../lib/util'
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {Runner} from '../../apps/runner/runner';
 import {
   ActionMethodState,
   Actions,
   Parameter,
   Parameters,
-  Runner,
-} from '../../lib/runner'
-import {stringify} from './helpers/print'
-
-function fn_nth(parameters: Parameters) {
-  fn_check_params(parameters, {minCount: 2})
-  const [n, list] = parameters
-
-  fn_check_params(n, {typ: 'number'})
-  fn_check_params(list, {minCount: n as number})
-
-  return (list as Parameters)[n as number]
-}
+} from '../../apps/runner/lib/types';
+import {stringify} from './helpers/print';
 
 /**
- * Convert string (decimal, binary etc) to number
- * stackoverflow.com/questions/57565902/convert-binary-string-to-number
- * AutoCAD dialect: forums.autodesk.com/t5/visual-lisp-autolisp-and-general/convert-string-to-integer/td-p/817797
+ * @module defines
+ * @see
+ * - LispWorks -- Common Lisp HyperSpec -- Macro DEFPARAMETER, DEFVAR --
+ *   {@link http://clhs.lisp.se/Body/m_defpar.htm} <br>
+ * - LispWorks -- Common Lisp HyperSpec -- Special Operator LET, LET* --
+ *   {@link http://www.lispworks.com/documentation/lw60/CLHS/Body/s_let_l.htm} <br>
  */
 
 export const actions: Actions = {
+  /**
+   * @name parse-integer
+   * @summary Convert string (decimal, binary etc) to number
+   * @see
+   * {@link https://stackoverflow.com/questions/57565902/convert-binary-string-to-number}<br>
+   * AutoCAD dialect: {@link https://forums.autodesk.com/t5/visual-lisp-autolisp-and-general/convert-string-to-integer/td-p/817797} <br>
+   */
   'parse-integer': async function (a, params, {evaluate}) {
-    return parseInt(String(await evaluate(params[0])))
+    return parseInt(String(await evaluate(params[0])));
   },
 
   /* let: async function let_(
@@ -52,28 +52,25 @@ export const actions: Actions = {
 */
 
   /**
+   * @name setq
+   * @see
    * Difference between `set`, `setq`, and `setf` in Common Lisp?
-   * https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp
+   * {@link https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp}
    */
+  setq: async function (_, args, {evaluate, scopes, logger}) {
+    fn_check_params(args, {exactCount: 2});
 
-  setq: async function (
-    action: string,
-    parameters: Parameters,
-    {evaluate, scopes, logger}: ActionMethodState
-  ) {
-    fn_check_params(parameters, {exactCount: 2})
+    const pName = await evaluate(args[0]);
+    const sName = String(pName);
 
-    const pName = await evaluate(parameters[0])
-    const sName = String(pName)
+    const pValue = await evaluate(args[1]);
 
-    const pValue = await evaluate(parameters[1])
+    // creates variable at local scope
+    scopes.current().set(sName, pValue);
 
-    // let creates variable at local scope
-
-    scopes.current().set(sName, pValue)
-    logger.debug(`${sName} = ${stringify(pValue)}`)
-    return pValue
+    logger.debug(`${sName} = ${stringify(pValue)}`);
+    return pValue;
   },
-}
+};
 
-export default actions
+export default actions;

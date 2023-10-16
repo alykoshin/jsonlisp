@@ -1,20 +1,23 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = void 0;
+exports.actions = exports.plist = void 0;
 const util_1 = require("../../lib/util");
 /**
- * simple-parallel-tasks
- * https://codeberg.org/glv/simple-parallel-tasks
- *
- * The simple-parallel-tasks Reference Manual
- * https://quickref.common-lisp.net/simple-parallel-tasks.html
+ * @module simple-parallel-tasks
+ * @description <br>
+ * - {@link https://codeberg.org/glv/simple-parallel-tasks} <br>
+ * - The simple-parallel-tasks Reference Manual {@link https://quickref.common-lisp.net/simple-parallel-tasks.html}
  */
+/** @name plist */
+const plist = async function (_, args, { evaluate }) {
+    (0, util_1.fn_check_params)(args, { minCount: 2 });
+    const promises = args.map((a) => evaluate(a));
+    return await Promise.all(promises);
+};
+exports.plist = plist;
 exports.actions = {
-    'plist': async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { minCount: 2 });
-        const promises = params.map((a) => evaluate(a));
-        return await Promise.all(promises);
-    },
+    plist: exports.plist,
 };
 exports.default = exports.actions;
 //# sourceMappingURL=simple-parallel-tasks.js.map

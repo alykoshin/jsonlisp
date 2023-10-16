@@ -1,4 +1,6 @@
-import { Actions } from '../../lib/runner';
+/** @format */
+
+import {Actions} from '../../apps/runner/lib/types';
 
 import $shelljsActions from './$shelljs';
 

@@ -2,35 +2,13 @@
 import { ScopeObject, Scopes } from '@utilities/object';
 import { Logger, LogPrefix } from './log';
 import { Activity } from './config';
-export interface ActionMethodState {
-    name: string;
-    evaluate: (parameter: Parameter) => Promise<Parameter>;
-    id: number | string;
-    level: number;
-    scopes: Scopes<AtomDefinition>;
-    runner: Runner;
-    logger: Logger<LogPrefix>;
-}
-export type ActionListExecutor = (name: string, parameters: Parameters, state: ActionMethodState) => Promise<any>;
-export type AtomDefinition = undefined | boolean | number | bigint | string | null | object;
-export type Parameter = AtomDefinition | ActionListDefinition;
-export type Parameters = Parameter[];
-export type ActionName = string;
-export type ListDefinition = [...parameters: Parameter[]];
-export type ActionListDefinition = [
-    name: ActionName,
-    ...parameters: Parameter[]
-];
-export type ActionDefinition = ActionName | ActionListExecutor | ActionListDefinition;
-export type Actions = {
-    [name: string]: ActionDefinition;
-};
+import { Atom, Actions, ActionDefinition, ActionName, ActionListExecutor, Parameter } from './types';
 type ActionArg = string;
 type ActionWithParamsArg = string[];
 export declare class Runner {
     maxLevels: number;
     maxSteps: number;
-    scopes: Scopes<AtomDefinition>;
+    scopes: Scopes<Atom>;
     actions: Actions;
     actionCount: number;
     constructor(options?: {
@@ -45,7 +23,7 @@ export declare class Runner {
     start({ activity, action, scope, }: {
         activity: Activity | undefined;
         action: ActionArg | ActionWithParamsArg;
-        scope: ScopeObject<AtomDefinition>;
+        scope: ScopeObject<Atom>;
     }): Promise<void>;
     eval(param: Parameter, { level, logger, }: {
         level: number;

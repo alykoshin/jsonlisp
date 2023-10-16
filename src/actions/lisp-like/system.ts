@@ -1,17 +1,21 @@
-import { fn_check_params } from '../../lib/util';
-import { ActionMethodState, Actions, Parameters } from '../../lib/runner';
-import { execute } from './helpers/exec';
+/** @format */
 
-type ExecActionConfig = {
-  cwd: string;
-  env: {
-    [key: string]: string;
-  };
-};
+import {fn_check_params} from '../../apps/runner/lib/util';
+import {
+  ActionMethodState,
+  Actions,
+  Parameters,
+} from '../../apps/runner/lib/types';
+
+/**
+ * @module system
+ * @see ...
+ */
 
 export const actions: Actions = {
-  sleep: async function (action, params, { evaluate, logger }) {
-    fn_check_params(params, { exactCount: 1 });
+  /** @name sleep */
+  sleep: async function (action, params, {evaluate, logger}) {
+    fn_check_params(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const nValue = Number(pValue);
@@ -21,8 +25,9 @@ export const actions: Actions = {
     logger.log(`sleep done`);
   },
 
-  time: async function (action, params, { evaluate, logger }) {
-    fn_check_params(params, { exactCount: 1 });
+  /** @name time */
+  time: async function (action, params, {evaluate, logger}) {
+    fn_check_params(params, {exactCount: 1});
     const [pDuration] = params;
 
     const startTime = new Date();
@@ -36,7 +41,6 @@ export const actions: Actions = {
 
     return value;
   },
-
 };
 
 export default actions;

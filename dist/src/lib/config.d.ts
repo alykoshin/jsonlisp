@@ -1,5 +1,5 @@
 /** @format */
-import { ActionDefinition, Actions } from './runner';
+import { ActionDefinition, Actions } from './types';
 export type ActivityActionsDefinition = Actions & {
     default: ActionDefinition;
 };

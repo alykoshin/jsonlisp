@@ -1,24 +1,50 @@
-import {Parameters} from "../../lib/runner";
-import {Activity, ActivityActionsDefinition} from "../../lib/config";
-import $sbcl from "../../actions/$sbcl";
+/** @format */
 
+import {Parameters} from '../../apps/runner/lib/types';
+import {
+  Activity,
+  ActivityActionsDefinition,
+} from '../../apps/runner/lib/config';
+import $sbcl from '../../actions/$sbcl';
+
+// prettier-ignore
 const actions: ActivityActionsDefinition = {
   ...$sbcl,
   "default": ['list', ['print', 'This will test operators'],
+    // ['test-quote'],
     // ['test-list'],
     // ['test-length'],
     // ['test-nth'],
+    // ['test-nthcdr'],
     // ['test-cdr'],
     // ['test-rest'],
-    ['test-first'],
+    // ['test-first'],
+    ['test-consp'],
+    ['test-listp'],
+    ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
   ],
 
-  "test-list": ['list',
-    ['print', 'list'],
+  "test-quote": ['list',
+    ['assert-equal', ["quote", 1], ["$sbcl-to-list", "(quote 1)"]],
+    ['assert-equal', [ "quote", [1, 2, 3] ], [ "$sbcl-to-list",  "(quote (1 2 3) )" ] ],
+  ],
 
-    ['assert-equal', [ "list" ], [ "list" ] ],
-    ['assert-equal', [ "list", 1 ], [ "list", 1 ] ],
-    ['assert-equal', [ "list", 1, 2, 3 ], [ "list", 1, 2, 3 ] ],
+/*(print (quote 5) )
+; (print quote (6) )
+; (print 'quote (7) )
+; (print (8) )
+(print (list 8 8) )
+; (print (quote 9 9) )
+(print (quote (10 10) ) )*/
+
+
+  "test-list": ['list',
+    ['print', 'list. In LISP empty list evaluates to NIL, so I\'m not sure what has to correspond to it here (next test case fails because of it'],
+    //
+    ['assert-equal', [ "list" ], [ "$sbcl-to-list",  "(list)" ] ],
+    //
+    ['assert-equal', ["list", 1], ["$sbcl-to-list", "(list 1)"]],
+    ['assert-equal', [ "list", 1, 2, 3 ], [ "$sbcl-to-list",  "(list 1 2 3)" ] ],
   ],
 
   "test-length": ['list',
@@ -31,34 +57,55 @@ const actions: ActivityActionsDefinition = {
 
   "test-nth": ['list',
     ['print', 'nth'],
-    ['assert-equal', [ "nth", 1, [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(nth 1 (list 11 22 33))" ] ],
+    ['assert-equal', [ "nth", 1, [ "list", 11, 22, 33, 44 ] ], [ "$sbcl-to-list",  "(nth 1 (list 11 22 33 44))" ] ],
   ],
 
   "test-cdr": ['list',
     ['print', 'cdr'],
-    ['assert-equal', [ "cdr", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(cdr (list 11 22 33))" ] ],
+    ['assert-equal', [ "cdr", [ "list", 11, 22, 33, 44 ] ], [ "$sbcl-to-list",  "(cdr (list 11 22 33 44))" ] ],
+  ],
+
+  "test-nthcdr": ['list',
+    ['print', 'nthcdr'],
+    ['assert-equal', [ "nthcdr", 2, [ "list", 11, 22, 33, 44 ] ], [ "$sbcl-to-list",  "(nthcdr 2 (list 11 22 33 44))" ] ],
   ],
 
   "test-rest": ['list',
     ['print', 'rest'],
-    ['assert-equal', [ "rest", [ "list", 11, 22, 33 ] ], [ "list", 22, 33 ] ],
+    ['assert-equal', [ "rest", [ "list", 11, 22, 33, 44 ] ], [ "list", 22, 33, 44 ] ],
     // ['assert-equal', [ "rest", [ "list", 11, 22, 33 ] ], [ "cdr", [ "list", 11, 22, 33 ] ] ],
   ],
 
   "test-first": ['list',
     ['print', 'first'],
-    ['assert-equal', [ "first", [ "list", 11, 22, 33 ] ], 11 ],
-    ['assert-equal', [ "first", [ "list", 11, 22, 33 ] ], [ "$sbcl-to-list",  "(first (list 11 22 33))" ] ],
+    ['assert-equal', [ "first", [ "list", 11, 22, 33, 44 ] ], 11 ],
+    ['assert-equal', [ "first", [ "list", 11, 22, 33, 44 ] ], [ "$sbcl-to-list",  "(first (list 11 22 33 44))" ] ],
   ],
-
+  
+  "test-consp": ['list',
+    ['print', 'consp'],
+    ['assert-equal',["consp", 1],["$sbcl-to-list","(consp 1)"]],
+    ['assert-equal',["consp", ["list"]],["$sbcl-to-list","(consp (list))"]],
+    ['assert-equal',["consp", ["list", 11]],["$sbcl-to-list","(consp (list 11))"]],
+    ['assert-equal',["consp", ["list", 11, 22]],["$sbcl-to-list","(consp (list 11 22))"]],
+  ],
+  
+  "test-listp": ['list',
+    ['print', 'listp'],
+    ['assert-equal',["listp", 1],["$sbcl-to-list","(listp 1)"]],
+    ['assert-equal',["listp", ["list"]],["$sbcl-to-list","(listp (list))"]],
+    ['assert-equal',["listp", ["list", 11]],["$sbcl-to-list","(listp (list 11))"]],
+    ['assert-equal',["listp", ["list", 11, 22]],["$sbcl-to-list","(listp (list 11 22))"]],
+  ],
+  
 }
 
 export const activity: Activity = {
-  base_dir: './demo',
-  version: '2.5.22',
+  base_dir: '.',
+  version: '0.0.0',
   actions: {
     ...actions,
-  }
-}
+  },
+};
 
 export default activity;

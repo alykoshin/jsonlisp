@@ -16,19 +16,19 @@ function getLogStrs(color, prefix = '', data) {
     });
 }
 const errorTypes = [
-    'success',
     'fatal',
     'error',
     'warn',
+    'success',
     'info',
     'log',
     'debug',
 ];
 const errorColors = {
-    success: 'green',
     fatal: 'redBright',
     error: 'red',
     warn: 'yellow',
+    success: 'green',
     info: 'whiteBright',
     log: 'white',
     debug: 'grey',
@@ -76,16 +76,18 @@ function debugPrimitive(value) {
   logger2 = logger({id: 2}).log('abc').debug('def')
  */
 class Logger {
+    _level;
     _prefix;
-    constructor(prefix) {
+    constructor(prefix, level = 'debug') {
+        this._level = level;
         this._prefix = prefix;
         // this.prefix(prefix);
     }
     prefix(prefix) {
         this._prefix = prefix;
     }
-    new(prefix) {
-        return new Logger({ ...this._prefix, ...prefix });
+    new(prefix, level = this._level) {
+        return new Logger({ ...this._prefix, ...prefix }, level);
     }
     _prefixToString(prefix) {
         let p = `${this._prefix.level}/${this._prefix.id}`;
@@ -94,32 +96,38 @@ class Logger {
         return `[${p}] [${namePart}]`;
     }
     //
-    success(...params) {
-        log_data('success', this._prefixToString(this._prefix), params);
-        return this;
-    }
     fatal(...params) {
         const msg = log_data('fatal', this._prefixToString(this._prefix), params);
         throw new Error(params.join(' '));
     }
     error(...params) {
-        log_data('error', this._prefixToString(this._prefix), params);
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('error'))
+            log_data('error', this._prefixToString(this._prefix), params);
         return this;
     }
     warn(...params) {
-        log_data('warn', this._prefixToString(this._prefix), params);
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('warn'))
+            log_data('warn', this._prefixToString(this._prefix), params);
+        return this;
+    }
+    success(...params) {
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('success'))
+            log_data('success', this._prefixToString(this._prefix), params);
         return this;
     }
     info(...params) {
-        log_data('info', this._prefixToString(this._prefix), params);
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('info'))
+            log_data('info', this._prefixToString(this._prefix), params);
         return this;
     }
     log(...params) {
-        log_data('log', this._prefixToString(this._prefix), params);
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('log'))
+            log_data('log', this._prefixToString(this._prefix), params);
         return this;
     }
     debug(...params) {
-        log_data('debug', this._prefixToString(this._prefix), params);
+        if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('debug'))
+            log_data('debug', this._prefixToString(this._prefix), params);
         return this;
     }
 }

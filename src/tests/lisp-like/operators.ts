@@ -1,7 +1,13 @@
-import {Parameters} from "../../lib/runner";
-import {Activity, ActivityActionsDefinition} from "../../lib/config";
-import $sbcl from "../../actions/$sbcl/";
+/** @format */
 
+import {Parameters} from '../../apps/runner/lib/types';
+import {
+  Activity,
+  ActivityActionsDefinition,
+} from '../../apps/runner/lib/config';
+import $sbcl from '../../actions/$sbcl/';
+
+// prettier-ignore
 const actions: ActivityActionsDefinition = {
   ...$sbcl,
   default: ['list', ['print', 'This will test operators'],
@@ -11,6 +17,8 @@ const actions: ActivityActionsDefinition = {
     // ['test-div'],
     // ['test-eq'],
     ['test-neq'],
+    ['test-1+'],
+    ['test-1-'],
     ['princ', 'assert-x:\n'+'  OK:   ${ assert_ok_count }\n'+'  FAIL: ${ assert_fail_count }'],
   ],
   "test-plus": ['list',
@@ -84,14 +92,22 @@ const actions: ActivityActionsDefinition = {
     ['assert-equal', ["/=", 2, 1, 1], [ "$sbcl-to-list",  "(/= 2 1 1)" ]],
     ['assert-equal', ["/=", 1, 2, 1], [ "$sbcl-to-list",  "(/= 1 2 1)" ]],
   ],
+ "test-1+": ['list',
+    ['print', '1+'],
+    ['assert-equal', ["1+", 10], [ "$sbcl-to-list",  "(1+ 10)" ]],
+  ],
+ "test-1-": ['list',
+    ['print', '1-'],
+    ['assert-equal', ["1-", 10], [ "$sbcl-to-list",  "(1- 10)" ]],
+  ],
 }
 
 export const activity: Activity = {
-  base_dir: './demo',
-  version: '2.5.22',
+  base_dir: '.',
+  version: '0.0.0',
   actions: {
     ...actions,
-  }
-}
+  },
+};
 
 export default activity;
