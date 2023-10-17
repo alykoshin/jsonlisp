@@ -89,13 +89,30 @@ symbol
       c2 = unzip(c2)
       // return { type: 'READER_COMMENT', value: [c0, c1, c2.join(''), c3] } 
       return { type: 'READER_COMMENT', value: c2.join('') } 
-    }
-  / c0:CH_SHARPSIGN c1:CH_DIGIT* c2:CH_SHARPSIGN_OTHER
+    } 
+    //                                                                     
+    // #p - pathname
+    // https://franz.com/support/documentation/10.1/ansicl/subsubse/sharpsi3.htm  
+    //
+    // Test: (asdf:system-relative-pathname :trivial-download #p"README.md")
+    //                              
+    // !!! Need to find clean way to define it because
+    // !!! expr is stored as sub object 
+    // !!! and later translated to JL as [object Object]
+  / c0:CH_SHARPSIGN c1:[Pp] c2:expr 
     { return { type: "READER", value: [c0, c1, c2] } }
-//  / c0:CH_SHARPSIGN c1:CH_BACKSLASH c2:CH_SYMBOL |2..|
-//    { return { type: "READER", value: [c0, c1,  c2] } }
+
+// Following lines produces invalid output for some lisp files
+// 
+// / c0:CH_SHARPSIGN c1:CH_BACKSLASH c2:CH_SYMBOL |2..|
+//   { return { type: "READER", value: [c0, c1,  c2] } }
+//
+
   / c0:CH_SHARPSIGN c1:CH_BACKSLASH c2:.
     { return { type: "READER", value: [c0, c1,  c2] } }
+    
+  / c0:CH_SHARPSIGN c1:CH_DIGIT* c2:CH_SHARPSIGN_OTHER
+    { return { type: "READER", value: [c0, c1.join(), c2] } }
   // Normal symbols
   / s:CH_SYMBOL+
     { return { type: "SYMBOL", value: s.join("") } }
@@ -121,17 +138,17 @@ symbol
 // " d \"{{{\" "
 // " \"  foo \" #\a #\d  \"food\""
 string
-  = '"' chars:DoubleStringCharacter* '"' { return chars.join(''); }
+  = '"' chars:DoubleStringCharacter* '"' 
+    { return { type: 'STRING', value: chars.join('') } }
   
 DoubleStringCharacter
   = !('"' / "\\") char:. { return char; }
   / "\\" sequence:EscapeSequence { return sequence; }
 
 EscapeSequence
-  = "'"
-  / '"'
-  / "\\"
-  / s:. { return `\\${s}` }
+  = s:CH_DOUBLEQUOTE { return '"' }
+  / "\\" //{ return '\\' }
+  / s:. //{ return `\\${s}` }
 //  / "b"  { return "\b";   }
 //  / "f"  { return "\f";   }
 //  / "n"  { return "\n";   }

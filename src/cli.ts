@@ -37,6 +37,7 @@ program
         `parameters: ${JSON.stringify(parameters)}, ` +
         `options: ${JSON.stringify(options)}`
     );
+    const action = [actionName, ...parameters];
 
     const activityData = activityName
       ? await readActivityFile(activityName)
@@ -62,11 +63,11 @@ program
     console.log(`finalData: "${JSON.stringify(finalData)}"`);
 
     const runner = new Runner();
-    await runner.start({
+    const st = await runner.init({
       activity: activityData,
-      action: [actionName, ...parameters],
       scope: finalData,
     });
+    await runner.start(action, st);
   })
   .addHelpText(
     'after',

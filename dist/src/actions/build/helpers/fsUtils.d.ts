@@ -1,3 +1,4 @@
+/** @format */
 /// <reference types="node" />
 export declare function removeDirRecursive(dirname: string): Promise<void>;
 interface GetFilesRecursiveOptions {

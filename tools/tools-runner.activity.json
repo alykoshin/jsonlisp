@@ -15,9 +15,16 @@
       ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ]
     ],
 
-    "_save": [";", "$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"],
+    "download-lisp-examples": [
+      "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator-downloader/download_lisp_examples.ts"
+    ],
+    "cl2jl": [
+      "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator/cl2jl.ts"
+    ],
 
-    "rebuild-grammar": [
+    "-save": [";", "$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"],
+
+    "-rebuild-grammar": [
       "list",
       ["$shelljs", "mkdir", "-p", "./resources/downloads/" ],
       ["plist",
@@ -36,11 +43,11 @@
       ]
     ],
 
-    "dl-3rd": [
+    "-dl-3rd": [
       "list",
       ["setq", "$$path", "./resources/downloads/" ],
       ["$shelljs", "mkdir", "-p", "${ $$path }" ],
-      [ "plist",
+      ["plist",
         ["write-string-into-file",  "${ $$path }sourceforge.net_p_sbcl_sbcl_ci_master_tree_src_code_pred.lisp", 
           ["$axios", "get", "https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/pred.lisp?format=raw"]]
       ]

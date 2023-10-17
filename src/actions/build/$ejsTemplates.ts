@@ -4,14 +4,14 @@ import path from 'path';
 import fs from 'fs/promises';
 import ejs from 'ejs';
 
-import {getFilesRecursive} from '../build/helpers/fsUtils';
+import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Parameter,
   Parameters,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 
 const DEBUG = false;
 

@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sanitizeArray = void 0;
 const sanitizeArray = (array, defaultValue) => {

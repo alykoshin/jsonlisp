@@ -3,11 +3,11 @@
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Actions,
   Parameters,
   ensureString,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {stringify} from './helpers/print';
 import {series} from './helpers/series';
 

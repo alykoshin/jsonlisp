@@ -1,13 +1,8 @@
 /** @format */
 
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionMethodState,
-  Actions,
-  NIL,
-  Parameters,
-  T,
-} from '../../apps/runner/lib/types';
+import {Actions, NIL, Parameters, T} from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {print, stringify, EOL, atBOL} from './helpers/print';
 import {confirm as confirm_} from './helpers/confirm';
 

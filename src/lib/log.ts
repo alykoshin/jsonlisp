@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import {Atom, Parameter} from '../apps/runner/lib/types';
-import {type} from 'os';
+import {Runner} from '../apps/runner/runner';
 
 /*
 debug(...args: any[]) {
@@ -114,19 +114,6 @@ export class SimpleLogger {
     // this.prefix(prefix);
   }
 
-  prefix(prefix: T) {
-    this._prefix = prefix;
-  }
-
-  _prefixToString(prefix: T) {
-    let p = `${this._prefix.level}/${this._prefix.id}`;
-
-    // let namePart = prefix.name ? `/${prefix.name}` : ``;
-    let namePart = prefix.name ? prefix.name : ``;
-
-    return `[${p}] [${namePart}]`;
-  }
-
   isLevelEnabled(level: ErrorType) {
     return errorTypes.indexOf(this._level) >= errorTypes.indexOf(level);
   }
@@ -182,7 +169,7 @@ export class SimpleLogger {
  */
 
 function _prefixToString(prefix: LogPrefix): string {
-  let p = `${prefix.level}/${prefix.id}`;
+  let p = `${prefix.id}/${prefix.level}`;
 
   // let namePart = prefix.name ? `/${prefix.name}` : ``;
   let namePart = prefix.name ? prefix.name : ``;
@@ -217,41 +204,36 @@ export class GenericLogger<T extends {[key: string]: any}> {
 
   //
   fatal(...params: LogParam[]): never {
-    return this.logger.fatal(...params);
+    this.logger.fatal(...params);
   }
 
-  error(...params: LogParam[]): this {
-    return this.logger.error(...params);
+  error(...params: LogParam[]): void {
+    this.logger.error(...params);
   }
 
-  warn(...params: LogParam[]): this {
+  warn(...params: LogParam[]): void {
     if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('warn'))
       log_data('warn', this._prefixToString(this._prefix), params);
-    return this;
   }
 
-  success(...params: LogParam[]): this {
+  success(...params: LogParam[]): void {
     if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('success'))
       log_data('success', this._prefixToString(this._prefix), params);
-    return this;
   }
 
-  info(...params: LogParam[]): this {
+  info(...params: LogParam[]): void {
     if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('info'))
       log_data('info', this._prefixToString(this._prefix), params);
-    return this;
   }
 
-  log(...params: LogParam[]): this {
+  log(...params: LogParam[]): void {
     if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('log'))
       log_data('log', this._prefixToString(this._prefix), params);
-    return this;
   }
 
-  debug(...params: LogParam[]): this {
+  debug(...params: LogParam[]): void {
     if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('debug'))
       log_data('debug', this._prefixToString(this._prefix), params);
-    return this;
   }
 }
 
@@ -260,23 +242,33 @@ export class Logger extends GenericLogger<LogPrefix> {
     return new Logger({...this._prefix, ...prefix}, level);
   }
 
-  newNext(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+  newNext(
+    prefix: Partial<LogPrefix> = {},
+    level: ErrorType = this._level,
+    runner: Runner
+  ) {
     const res = new Logger(
       {
         ...this._prefix,
         ...prefix,
+        name: this._prefix.name + '/' + prefix.name,
       },
       level
     );
-    res.next();
+    res.next(runner);
     return res;
   }
 
-  newUp(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+  newUp(
+    prefix: Partial<LogPrefix> = {},
+    level: ErrorType = this._level,
+    runner: Runner
+  ) {
     const res = new Logger(
       {
         ...this._prefix,
         ...prefix,
+        name: this._prefix.name + '/' + prefix.name,
       },
       level
     );
@@ -284,21 +276,27 @@ export class Logger extends GenericLogger<LogPrefix> {
     return res;
   }
 
-  newNextUp(prefix: Partial<LogPrefix> = {}, level: ErrorType = this._level) {
+  newNextUp(
+    runner: Runner,
+    prefix: Partial<LogPrefix> = {},
+    level: ErrorType = this._level
+  ) {
     const res = new Logger(
       {
         ...this._prefix,
         ...prefix,
+        name: this._prefix.name + '/' + prefix.name,
       },
       level
     );
-    res.next();
+    res.next(runner);
     res.up();
     return res;
   }
 
-  next() {
-    this._prefix.id += 1;
+  next(runner: Runner) {
+    runner.actionCount++;
+    this._prefix.id = runner.actionCount;
     // return this;
   }
   up() {

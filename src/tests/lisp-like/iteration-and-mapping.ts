@@ -10,16 +10,19 @@ import $sbcl from '../../actions/$sbcl';
 // prettier-ignore
 const actions: ActivityActionsDefinition = {
   ...$sbcl,
-  "default": ['list', ['print', 'This will test Iteration and mapping'],
-    // ['test-prog1'],
+  "default": [
+    'list',
+    ['print', 'This will test Iteration and mapping'],
+    ['test-prog1'],
     // ['test-prog2'],
     // ['test-progn'],
-    ['test-mapc'],
-    ['test-mapcar'],
-    ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
+    // ['test-mapc'],    
+    // ['test-mapcar'],
+    // ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
   ],
 
-  "test-prog1": ['list',
+  "test-prog1": [
+    'list',
     ['print', 'prog1'],
     ['assert-equal', [ "prog1", 1, 2, 3], [ "$sbcl-to-list",  "(prog1 1 2 3)" ] ],
   ],
@@ -36,9 +39,11 @@ const actions: ActivityActionsDefinition = {
   
   "test-mapc": ['list',
     ['print', 'mapc'],
-    ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2, 3], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2 3) (list 1 2 3) )" ] ],
+    // ! Actually we do not check if all the parama=eters were evaluated, 
+    // ! as the result is always the first list
     ['assert-equal', [ "mapc", ['quote', '1+'], [100, 10, 1]], [ "$sbcl-to-list",  "(mapc '1+ (list 100 10 1) )" ] ],
     ['assert-equal', [ "mapc", ['quote', '1-'], [100, 10, 1]], [ "$sbcl-to-list",  "(mapc '1- (list 100 10 1) )" ] ],
+    ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2, 3], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2 3) (list 1 2 3) )" ] ],
  ],
   
   "test-mapcar": ['list',

@@ -14,9 +14,9 @@ import {
   List,
   ensureString,
   Expression,
-  ActionMethodState,
   Atom,
 } from '../../../apps/runner/lib/types';
+import {State} from '../../../apps/runner/lib/state';
 import {asBoolean} from '../helpers/typecast';
 import {series, seriesn} from '../helpers/series';
 import {fn_check_params} from '../../../apps/runner/lib/util';
@@ -61,20 +61,21 @@ const createPrepareFn = function (
     // {actions, evaluate, runner, logger, scopes}
     state
   ) {
-    argvalues = await series(argvalues, state.evaluate);
+    const {actions, evaluate, runner, logger, scopes} = state;
+    argvalues = await series(argvalues, evaluate);
 
     const sc = zipObject(argnames, argvalues);
-    state.logger.debug('lambda:execute: scope:', sc, ',body:', body);
+    logger.debug('lambda:execute: scope:', sc, ',body:', body);
 
-    const newState: ActionMethodState<Atom> = {
+    const newState: State<Atom> = {
       ...state,
       scopes: state.scopes.copy().new(sc),
     };
     state.scopes.push(sc);
-    state.logger.debug('lambda:execute: scopes:', state.scopes);
+    logger.debug('lambda:execute: scopes:', state.scopes);
 
-    const res = await state.runner.evaluate(body, newState);
-    state.logger.debug('lambda:execute: res:', res);
+    const res = await runner.evaluate(body, newState);
+    logger.debug('lambda:execute: res:', res);
 
     return res;
   };

@@ -1,12 +1,14 @@
 /** @format */
 import {Expression, List} from '../../runner/lib/types';
+import {replace_extname} from '../../../lib/fileUtils/fileUtils';
 import {
   readJsonFile,
-  readStringFile,
-  replace_extname,
   writeJsonFile,
-  writeStringFile,
-} from '../../../lib/fileUtils';
+} from '../../../lib/fileUtils/read-write/jsonFileUtils';
+import {
+  readTextFile,
+  writeTextFile,
+} from '../../../lib/fileUtils/read-write/textFileUtils';
 
 const astNodeType = [
   'COMMENT',
@@ -70,11 +72,13 @@ export function compile_ast2jl_obj_json(ast: AstTree): any {
 }
 
 function escape_chars(node: AstNode): string {
-  if (typeof node?.value === 'string') {
-    return node.value
+  const s = Array.isArray(node?.value) ? node?.value.join('') : node?.value;
+  if (typeof s === 'string') {
+    return s
       .replaceAll(/\\/gi, '\\\\')
       .replaceAll(/\n/gi, '\\n')
       .replaceAll(/\f/gi, '\\n\\n')
+      .replaceAll(/"/gi, '\\"')
       .replaceAll(/\t/gi, TAB_REPLACEMENT);
     // } else if (typeof node?.value !== 'number') {
     // console.log('escape_chars error:', node);
@@ -139,7 +143,7 @@ export function compile_ast2jl_recurse(
         if (state.at_eol) acc += INDENT;
         state.at_eol = false;
         if (target === 'js' || target === 'ts' || target === 'json5') {
-          acc += `// ${s}\n`;
+          acc += `/* ${s} */ \n`;
         } else if (target === 'json') {
           acc += `[ ";", "${curr.value}" ],`;
         }
@@ -185,7 +189,7 @@ export function compile_ast2jl_str_json5(ast: AstTree): any {
 }
 
 const JS_PREFIX = 'const code = [\n';
-const JS_POSTFIX = '\n]\n\nmodule.exports = { code }\n';
+const JS_POSTFIX = '\n];\n\nmodule.exports = { code }\n';
 
 export function compile_ast2jl_str_js(ast: AstTree): any {
   const res = compile_ast2jl_recurse(ast, 'js', {at_eol: true});
@@ -193,21 +197,9 @@ export function compile_ast2jl_str_js(ast: AstTree): any {
 }
 
 const TS_PREFIX = 'export const code = [\n';
-const TS_POSTFIX = '\n]\n\nexport default code;\n';
+const TS_POSTFIX = '\n];\n\nexport default code;\n';
 
 export function compile_ast2jl_str_ts(ast: AstTree): any {
   const res = compile_ast2jl_recurse(ast, 'ts', {at_eol: true});
   return TS_PREFIX + res + TS_POSTFIX;
 }
-
-//
-
-// export async function compileAstFile(sourcePathname: string): Promise<void> {
-//   const ast = <AstTree>await readJsonFile(sourcePathname);
-//   //
-//   const parsed = await compile_ast2jl_str_json(ast);
-//   //
-//   const outFile = replace_extname(sourcePathname, '.jl.json');
-//   await writeStringFile(outFile, parsed);
-//   return;
-// }

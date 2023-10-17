@@ -3,7 +3,7 @@
 /// <reference types="node" />
 /// <reference types="node" />
 import { SpawnOptionsWithoutStdio } from 'child_process';
-import { Logger, LogPrefix } from '../../../lib/log';
+import { Logger } from '../../../lib/log';
 export type ExecActionConfig = {
     cwd: string;
     env: {
@@ -24,6 +24,6 @@ export declare function execute(command_line: string, spawnOptions: SpawnOptions
     encoding?: BufferEncoding;
     timeout?: number;
     trim?: boolean;
-    logger: Logger<LogPrefix>;
+    logger: Logger;
 }): Promise<ExecResult>;
 export {};

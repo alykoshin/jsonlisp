@@ -3,20 +3,19 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureNoFile = void 0;
 const fsUtils_1 = require("./helpers/fsUtils");
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module $build
  */
 /**
  * @name $ensureNoFile
  */
-const $ensureNoFile = async function (action, parameters, state) {
-    const { runner, logger } = state;
-    (0, util_1.fn_check_params)(parameters, { minCount: 1 });
-    logger.debug(`$ensureNoFile: parameters: ${JSON.stringify(parameters)}`);
+const $ensureNoFile = async function (_, args, { evaluate, logger }) {
+    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    logger.debug(`$ensureNoFile: parameters: ${JSON.stringify(args)}`);
     const result = [];
-    for (const p of parameters) {
-        const pFilename = await runner.eval(p, state);
+    for (const p of args) {
+        const pFilename = await evaluate(p);
         const sFilename = String(pFilename);
         logger.debug(`$ensureNoFile ${sFilename}`);
         await (0, fsUtils_1.ensureNoFile)(sFilename);

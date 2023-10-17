@@ -9,7 +9,7 @@ const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 const ejs_1 = __importDefault(require("ejs"));
 const fsUtils_1 = require("../build/helpers/fsUtils");
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 const DEBUG = false;
 // export type EjsTemplatesAction = [
 //   action: 'ejsTemplates',

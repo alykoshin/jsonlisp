@@ -1,21 +1,23 @@
 /** @format */
 
 import fs from 'fs/promises';
+import * as mkdirp from 'mkdirp';
 import peggy, {GrammarError} from 'peggy';
+import {replace_extname} from '../../../lib/fileUtils/fileUtils';
+import {writeJsonFile} from '../../../lib/fileUtils/read-write/jsonFileUtils';
 import {
-  readStringFile,
-  replace_extname,
-  writeJsonFile,
-  writeStringFile,
-} from '../../../lib/fileUtils';
-import {readJsonFile} from '../../../lib/fileUtils';
+  readTextFile,
+  writeTextFile,
+} from '../../../lib/fileUtils/read-write/textFileUtils';
+import {readJsonFile} from '../../../lib/fileUtils/read-write/jsonFileUtils';
 import {
   compile_ast2jl_str_js,
   compile_ast2jl_str_json,
   compile_ast2jl_str_ts,
 } from './ast2jl';
-import {makePath} from '../../../lib/fileUtils';
+import {makePath} from '../../../lib/fileUtils/fileUtils';
 import path from 'path';
+import {mkdir} from 'fs';
 
 type Peg$Location = {
   source: string;
@@ -63,7 +65,7 @@ async function compileGrammarFile(
   base_path: string,
   grammarRelname: string
 ): Promise<void> {
-  const s_grammar = await readStringFile(path.join(base_path, grammarRelname));
+  const s_grammar = await readTextFile(path.join(base_path, grammarRelname));
   try {
     const source = peggy.generate(s_grammar, {
       output: 'source-and-map',
@@ -74,11 +76,11 @@ async function compileGrammarFile(
 
     const code = source.toString();
     const jsPname = makePath(base_path, subDir, grammarRelname, '.js');
-    await writeStringFile(jsPname, code);
+    await writeTextFile(jsPname, code);
 
     const sourceMap = source.toStringWithSourceMap().map.toString();
     const mapPname = makePath(base_path, subDir, grammarRelname, '.map');
-    await writeStringFile(mapPname, sourceMap);
+    await writeTextFile(mapPname, sourceMap);
   } catch (e) {
     handlePegError(e as Error);
   }
@@ -104,7 +106,7 @@ export async function parseSourceWithGrammarFile(
   grammarPathname: string
 ): Promise<any> {
   try {
-    const s_grammar = await readStringFile(grammarPathname);
+    const s_grammar = await readTextFile(grammarPathname);
     const parser = peggy.generate(s_grammar);
     const sampleOutput = parser.parse(s);
     // console.log(JSON.stringify(sampleOutput, null, 2));
@@ -126,7 +128,8 @@ export async function compileSourceFileWithGrammarFile(
   // Read LISP Source File
 
   const sourcePname = makePath(baseP, '', srcFname);
-  const lispSource = await readStringFile(sourcePname);
+  mkdirp.sync(baseP);
+  const lispSource = await readTextFile(sourcePname);
 
   // Parse LISP Source to AST using .pegjs Grammar
   // and save AST to .json
@@ -147,19 +150,19 @@ export async function compileSourceFileWithGrammarFile(
     srcFname,
     '.jl.json'
   );
-  await writeStringFile(compiledJsonPname, compiledJson);
+  await writeTextFile(compiledJsonPname, compiledJson);
 
   // Compile AST to JL/JS and save to file
 
   const compiledJs = await compile_ast2jl_str_js(parsed_ast);
   const compiledJsPname = makePath(baseP, '../out/jl-js', srcFname, '.jl.js');
-  await writeStringFile(compiledJsPname, compiledJs);
+  await writeTextFile(compiledJsPname, compiledJs);
 
   // Compile AST to JL/TS and save to file
 
   const compiledTs = await compile_ast2jl_str_ts(parsed_ast);
   const compiledTsPname = makePath(baseP, '../out/jl-ts', srcFname, '.jl.ts');
-  await writeStringFile(compiledTsPname, compiledTs);
+  await writeTextFile(compiledTsPname, compiledTs);
 }
 
 export async function compileFileList(

@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.plist = void 0;
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module simple-parallel-tasks
  * @description <br>
@@ -11,7 +11,7 @@ const util_1 = require("../../lib/util");
  */
 /** @name plist */
 const plist = async function (_, args, { evaluate }) {
-    (0, util_1.fn_check_params)(args, { minCount: 2 });
+    (0, util_1.fn_check_params)(args, { minCount: 1 });
     const promises = args.map((a) => evaluate(a));
     return await Promise.all(promises);
 };

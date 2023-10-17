@@ -6,7 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const ajv_1 = __importDefault(require("ajv"));
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module operators
  */
@@ -124,23 +124,20 @@ function calcBinary(op, val1, val2) {
         // throw new Error(`Invalid opCode "${op}"`);
     }
 }
-async function operators(action, params, state) {
-    const { runner } = state;
-    (0, util_1.fn_check_params)(params, { minCount: 1 });
-    // logger.debug(`operator ${[p1, ...p_rest].join(String(action))}`);
-    // const v1 = await runner.eval(p1, state);
-    if (params.length === 1) {
-        const v1 = await runner.eval(params[0], state);
+const operators = async function (action, args, state) {
+    const { evaluate } = state;
+    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    if (args.length === 1) {
+        const v1 = await evaluate(args[0]);
         return calcUnary(action, v1);
-        // return calcUnary(action, await runner.eval(params[0], state));
     }
     else {
         let res;
-        const [p1, ...p_rest] = params;
-        let v_prev = await runner.eval(p1, state);
+        const [p1, ...p_rest] = args;
+        let v_prev = await evaluate(p1);
         // let v_prev = v1;
         for (const p_curr of p_rest) {
-            const v_curr = await runner.eval(p_curr, state);
+            const v_curr = await evaluate(p_curr);
             const { result, last, stop } = calcBinary(action, v_prev, v_curr);
             res = result;
             if (stop) {
@@ -150,7 +147,7 @@ async function operators(action, params, state) {
         }
         return res;
     }
-}
+};
 const reduce = /*async*/ function (
 // ...args: [
 arr, reducer, initial

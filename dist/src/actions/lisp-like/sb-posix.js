@@ -2,8 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.getcwd = exports.chdir = exports.getenv = exports.setenv = void 0;
-const util_1 = require("../../lib/util");
-const types_1 = require("../../lib/types");
+const util_1 = require("../../apps/runner/lib/util");
+const types_1 = require("../../apps/runner/lib/types");
 const print_1 = require("./helpers/print");
 /**
  * @module sb-posix
@@ -13,7 +13,9 @@ const print_1 = require("./helpers/print");
 /**
  * @name setenv
  *
- * @see Function: SB-POSIX:SETENV -- https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html
+ * @see
+ * - Function: SB-POSIX:SETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
  */
 const setenv = async function (_, params, { evaluate, logger }) {
     (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
@@ -30,7 +32,10 @@ const setenv = async function (_, params, { evaluate, logger }) {
 exports.setenv = setenv;
 /**
  * @name getenv
- * @see   Function: SB-POSIX:GETENV {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html}
+ * @see
+ * - Function: SB-POSIX:GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html} <br>
+ * - Function: SB-EXT:POSIX-GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-ext/function/POSIX-GETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp#L966C19-L966C19} <br>
  */
 const getenv = async function (_, params, { evaluate, logger }) {
     (0, util_1.fn_check_params)(params, { exactCount: 1 });
@@ -43,7 +48,7 @@ const getenv = async function (_, params, { evaluate, logger }) {
 };
 exports.getenv = getenv;
 /**
- * @name mkdir
+ * @name chdir
  * @see Function: SB-POSIX:MKDIR --
  * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>

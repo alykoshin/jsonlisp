@@ -1,5 +1,5 @@
 /** @format */
-import { Actions } from '../../lib/types';
+import { Actions } from '../../apps/runner/lib/types';
 /**
  * @module trivial-shell
  * @see trivial-shell:shell-command  <br>

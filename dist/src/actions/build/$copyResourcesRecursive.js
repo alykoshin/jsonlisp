@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.$copyResourcesRecursive = void 0;
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 const fsUtils_1 = require("./helpers/fsUtils");
 /**
  * @module $build

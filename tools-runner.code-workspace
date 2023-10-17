@@ -9,6 +9,6 @@
     }
   ],
   "settings": {
-    "cSpell.words": ["CLISP", "LISPWORKS", "progn", "tspegjs", "UIOP"]
+    "cSpell.words": ["CLISP", "consp", "LISPWORKS", "progn", "tspegjs", "UIOP"]
   }
 }

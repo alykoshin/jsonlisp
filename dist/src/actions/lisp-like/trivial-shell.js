@@ -3,8 +3,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const exec_1 = require("./helpers/exec");
-const util_1 = require("../../lib/util");
-const types_1 = require("../../lib/types");
+const util_1 = require("../../apps/runner/lib/util");
+const types_1 = require("../../apps/runner/lib/types");
 /**
  * @module trivial-shell
  * @see trivial-shell:shell-command  <br>

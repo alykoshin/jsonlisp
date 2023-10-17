@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,8 +10,7 @@ const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
 const sanitize_1 = require("../../../lib/sanitize");
 async function removeDirRecursive(dirname) {
-    return promises_1.default.rm(dirname, { recursive: true })
-        .catch(e => {
+    return promises_1.default.rm(dirname, { recursive: true }).catch((e) => {
         if (e.code !== 'ENOENT')
             throw e; // be silent if dir doesn't exists
     });
@@ -18,14 +18,26 @@ async function removeDirRecursive(dirname) {
 exports.removeDirRecursive = removeDirRecursive;
 async function getFilesRecursive(startDir, options) {
     // if (extnames && !Array.isArray(extnames)) extnames = [extnames];
-    const extnames = (typeof options.extnames !== 'undefined' && !Array.isArray(options.extnames)) ? [options.extnames] : options.extnames;
+    const extnames = typeof options.extnames !== 'undefined' && !Array.isArray(options.extnames)
+        ? [options.extnames]
+        : options.extnames;
     // if (excludeDirs && !Array.isArray(excludeDirs)) excludeDirs = [excludeDirs];
-    const excludeDirs = (typeof options.excludeDirs !== 'undefined' && !Array.isArray(options.excludeDirs)) ? [options.excludeDirs] : options.excludeDirs;
+    const excludeDirs = typeof options.excludeDirs !== 'undefined' &&
+        !Array.isArray(options.excludeDirs)
+        ? [options.excludeDirs]
+        : options.excludeDirs;
     async function _getFiles(dir) {
         const dirents = await promises_1.default.readdir(dir, { withFileTypes: true });
         const promises = dirents
             .filter((dirent) => {
-            return (dirent.isDirectory() && (excludeDirs ? excludeDirs.every((d) => path_1.default.resolve(startDir, d) !== path_1.default.resolve(dir, dirent.name)) : true) || (dirent.isFile() && (extnames ? extnames.some((e) => dirent.name.endsWith(e)) : true)));
+            return ((dirent.isDirectory() &&
+                (excludeDirs
+                    ? excludeDirs.every((d) => path_1.default.resolve(startDir, d) !== path_1.default.resolve(dir, dirent.name))
+                    : true)) ||
+                (dirent.isFile() &&
+                    (extnames
+                        ? extnames.some((e) => dirent.name.endsWith(e))
+                        : true)));
         })
             // .reduce((acc, dirent, currentIndex, array ) => {
             .map((dirent, currentIndex, array) => {
@@ -50,7 +62,7 @@ const cleanup = async (title, filenames_) => {
     const filenames = (0, sanitize_1.sanitizeArray)(filenames_);
     if (filenames.length > 0)
         process.stdout.write(`\n* ${title} `);
-    filenames.forEach(fname => {
+    filenames.forEach((fname) => {
         fs_1.default.unlinkSync(fname);
         process.stdout.write(`${fname} `);
     });

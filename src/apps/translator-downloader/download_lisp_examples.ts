@@ -2,7 +2,9 @@
 
 import fs from 'fs/promises';
 import path from 'path';
+import * as mkdirp from 'mkdirp';
 import axios from 'axios';
+import {mkdir} from 'fs';
 
 export const download = async function (
   i: number,
@@ -67,6 +69,7 @@ async function run() {
     'https://github.com/vindarel/cl-str/raw/master/str.test.asd',
   ];
   const base_path = './resources/downloads/';
+  mkdirp.sync(base_path);
   const promises = urls.map(
     async (url, i) => await download(i, url, base_path)
   );

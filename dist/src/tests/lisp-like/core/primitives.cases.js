@@ -1,15 +1,29 @@
 "use strict";
+/** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cases = void 0;
-const types_1 = require("../../../lib/types");
+const types_1 = require("../../../apps/runner/lib/types");
+// prettier-ignore
 exports.cases = [
-    // // [ ["quote", "a"], "(quote a)"],
-    // // [ ["atom", "a"], "(atom 'a)"],
+    [["quote", "a"], "(quote a)",
+        "This test returns false because Common LISP handles Symbols case insensitive, while we are not sure if it's ok here as we are not able to differentiate symbols and strings."],
+    [["quote", "A"], "(quote A)"],
+    //
+    [["atom", 1], "(atom 1)"],
+    [["atom", "a"], "(atom 'a)"],
+    [["atom", []], "(atom ())"],
+    [["atom", ["quote", [1, 2]]], "(atom (quote (1 2)))"],
+    // 
     [["eq", 1, 1], "(eq 1 1)"],
     [["eq", 1, 2], "(eq 1 2)"],
     [["eq", ["quote", 1], ["quote", 1]], "(eq '1 '1)"],
     [["eq", ["quote", 1], ["quote", 2]], "(eq '1 '2)"],
     [["eq", ["quote", []], ["quote", []]], "(eq '() '() )"],
+    [["eq", ["quote", [1]], ["quote", [1]]], "(eq '(1) '(1) )"],
+    [["eq", ["quote", [1]], ["quote", [2]]], "(eq '(1) '(2) )"],
+    [["eq", ["quote", [1, 2]], ["quote", [1, 2]]], "(eq '(1 2) '(1 2) )"],
+    [["eq", ["quote", [1, 2]], ["quote", [2, 1]]], "(eq '(1 2) '(2 1) )"],
+    [["eq", ["quote", false], ["quote", []]], "(eq '() '() )"],
     // edge cases
     [["car", []], "(car ())"],
     [["car", ["quote", []]], "(car '())"],

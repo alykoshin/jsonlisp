@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module error
  */

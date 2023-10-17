@@ -2,11 +2,11 @@
 
 import {
   ActionListExecutor,
-  ActionMethodState,
   Parameter,
   Parameters,
 } from '../../apps/runner/lib/types';
-import {removeDirRecursive} from './helpers/fsUtils';
+import {State} from '../../apps/runner/lib/state';
+import {removeDirRecursive} from '../../lib/fileUtils/fileUtils';
 import {fn_check_params} from '../../apps/runner/lib/util';
 
 /**

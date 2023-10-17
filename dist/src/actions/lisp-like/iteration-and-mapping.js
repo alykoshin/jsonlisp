@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../../lib/types");
+const types_1 = require("../../apps/runner/lib/types");
 const series_1 = require("./helpers/series");
 /**
  * @module iteration-and-mapping
@@ -91,23 +91,23 @@ let actions = {};
 // /* actions = */ Object.assign(actions, {
 const actions2 = {
     /** @name prog1 */
-    prog1: async function (action, params, { evaluate }) {
-        return (0, series_1.series1)(params, evaluate);
+    prog1: async function (_, args, { evaluate }) {
+        return (0, series_1.series1)(args, evaluate);
     },
     /** @name prog2 */
-    prog2: async function (action, params, { evaluate }) {
-        return (0, series_1.series2)(params, evaluate);
+    prog2: async function (_, args, { evaluate }) {
+        return (0, series_1.series2)(args, evaluate);
     },
     /** @name progn */
-    progn: async function (action, params, { evaluate }) {
-        return (0, series_1.seriesn)(params, evaluate);
+    progn: async function (_, args, { evaluate }) {
+        return (0, series_1.seriesn)(args, evaluate);
     },
     /**
      * @name mapc
      *
      * !!! todo: Not modify list !!!
      */
-    mapc: async function (action, [fn, ...listOfLists], { evaluate, logger }) {
+    mapc: async function (_, [fn, ...listOfLists], { evaluate, logger }) {
         (0, types_1.ensureList)(listOfLists);
         (0, types_1.ensureList)(listOfLists[0]);
         const list0 = listOfLists[0].slice(); // save first list as we modify arrays inside `sliceParams`
@@ -123,7 +123,7 @@ const actions2 = {
      *
      * !!! todo: Not modify list !!!
      */
-    mapcar: async function (action, [fn, ...lists], { evaluate, logger }) {
+    mapcar: async function (_, [fn, ...lists], { evaluate, logger }) {
         let ps;
         fn = await evaluate(fn);
         const results = [];

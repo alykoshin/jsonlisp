@@ -2,8 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.nullp = exports.listp = exports.consp = exports.cdr = exports.nthcdr = exports.third = exports.second = exports.car = exports.nth = exports.length = exports.list = exports.quote = void 0;
-const util_1 = require("../../lib/util");
-const types_1 = require("../../lib/types");
+const util_1 = require("../../apps/runner/lib/util");
+const types_1 = require("../../apps/runner/lib/types");
 const series_1 = require("./helpers/series");
 /**
  * @module list
@@ -71,12 +71,17 @@ exports.length = length;
 /** @name nth */
 const nth = async (_, args, { evaluate }) => {
     (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    console.log('nth:args:', JSON.stringify(args));
     // return fn_nth(params[0], params[1], evaluate);
     const idx = await evaluate(args[0]);
     (0, types_1.ensureNumber)(idx);
+    console.log('nth:idx:', JSON.stringify(idx));
     const list = await evaluate(args[1]);
     (0, types_1.ensureList)(list);
-    return _nth(idx, list);
+    console.log('nth:list:', JSON.stringify(list));
+    const res = await evaluate(await _nth(idx, list));
+    console.log('nth:res:', JSON.stringify(res));
+    return res;
 };
 exports.nth = nth;
 /** @name car */

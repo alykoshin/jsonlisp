@@ -1,10 +1,12 @@
 "use strict";
+/** @format */
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
 const _sbcl_1 = __importDefault(require("../../actions/$sbcl"));
+// prettier-ignore
 const actions = {
     ..._sbcl_1.default,
     "default": ['list', ['print', 'This will test operators'],
@@ -87,7 +89,7 @@ exports.activity = {
     version: '0.0.0',
     actions: {
         ...actions,
-    }
+    },
 };
 exports.default = exports.activity;
 //# sourceMappingURL=lists.js.map

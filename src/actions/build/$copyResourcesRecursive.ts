@@ -5,11 +5,11 @@ import fs from 'fs/promises';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Parameter,
   Parameters,
 } from '../../apps/runner/lib/types';
-import {getFilesRecursive} from './helpers/fsUtils';
+import {State} from '../../apps/runner/lib/state';
+import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 
 export type CopyResourcesRecursiveActionConfig = {
   sourceDir: string;

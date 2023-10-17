@@ -19,13 +19,13 @@ exports.actions = void 0;
 exports.actions = {
     /** @name ?
      */
-    '?': async function (action, params, { runner, logger }) {
-        const actionNames = Object.keys(runner.actions).sort();
+    '?': async function (_, args, { actions, logger }) {
+        const actionNames = Object.keys(actions).sort();
         logger.info('Available commands:', actionNames.join(', '));
         return undefined;
     },
     /** @name ; */
-    ';': async function (action, parameters, { logger }) {
+    ';': async function (_, args, { logger }) {
         logger.debug(`Found ";", skipping the list`);
         return undefined;
     },

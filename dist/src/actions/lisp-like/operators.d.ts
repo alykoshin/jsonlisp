@@ -1,5 +1,5 @@
 /** @format */
-import { Actions } from '../../lib/types';
+import { Actions } from '../../apps/runner/lib/types';
 /**
  * String concatenation
  * In brief: `concatenate` & `strcat`

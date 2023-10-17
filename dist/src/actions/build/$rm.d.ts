@@ -1,10 +1,10 @@
 /** @format */
-import { ActionMethodState, Parameter, Parameters } from '../../lib/types';
+import { ActionListExecutor } from '../../apps/runner/lib/types';
 /**
  * @module $build
  */
 /**
  * @name $version
  */
-export declare function $rm(action: string, params: Parameters, { evaluate }: ActionMethodState): Promise<Parameter>;
+export declare const $rm: ActionListExecutor;
 export default $rm;

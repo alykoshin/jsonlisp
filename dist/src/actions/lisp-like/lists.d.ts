@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor, Actions } from '../../lib/types';
+import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
 /** @name quote */
 export declare const quote: ActionListExecutor;
 /** @name list */

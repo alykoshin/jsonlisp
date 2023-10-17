@@ -1,5 +1,5 @@
 /** @format */
-import { ActionMethodState, Parameters } from '../../lib/types';
+import { ActionListExecutor } from '../../apps/runner/lib/types';
 export type ZipActionConfig = {
     file_names: string[];
     archive_prefix: string;
@@ -12,4 +12,4 @@ export type ZipActionConfig = {
 /**
  * @name $zip
  */
-export declare function $zip(action: string, params: Parameters, state: ActionMethodState): Promise<string>;
+export declare const $zip: ActionListExecutor;

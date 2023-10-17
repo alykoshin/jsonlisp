@@ -8,6 +8,8 @@ exports.actions = void 0;
 const conditionals_1 = __importDefault(require("./conditionals"));
 const defines_1 = __importDefault(require("./defines"));
 const documentation_1 = __importDefault(require("./documentation"));
+const eval_1 = __importDefault(require("./core/eval"));
+// import eval from './eval';
 const file_system_1 = __importDefault(require("./file-system"));
 const error_1 = __importDefault(require("./error"));
 const input_output_1 = __importDefault(require("./input-output"));
@@ -23,6 +25,7 @@ exports.actions = {
     ...conditionals_1.default,
     ...defines_1.default,
     ...documentation_1.default,
+    ...eval_1.default,
     ...error_1.default,
     ...file_system_1.default,
     ...input_output_1.default,

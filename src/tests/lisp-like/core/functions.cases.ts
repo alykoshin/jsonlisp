@@ -1,7 +1,7 @@
 /** @format */
 
 import {NIL, T} from '../../../apps/runner/lib/types';
-import {TestCase} from '../../../run-tests/core-test-runner/core-test-runner';
+import {TestCase} from '../../../apps/test-runner/core-test-runner';
 
 // prettier-ignore
 export const cases: TestCase[] = [

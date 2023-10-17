@@ -6,12 +6,12 @@ import {fn_check_params} from '../../apps/runner/lib/util';
 import {Runner} from '../../apps/runner/runner';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Actions,
   Atom,
   Parameter,
   Parameters,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {start} from 'repl';
 import {LogPrefix, Logger} from '../../lib/log';
 
@@ -168,12 +168,9 @@ function calcBinary(
 const operators: ActionListExecutor = async function (action, args, state) {
   const {evaluate} = state;
   fn_check_params(args, {minCount: 1});
-  // logger.debug(`operator ${[p1, ...p_rest].join(String(action))}`);
-  // const v1 = await runner.eval(p1, state);
   if (args.length === 1) {
     const v1 = await evaluate(args[0]);
     return calcUnary(action, v1);
-    // return calcUnary(action, await runner.eval(params[0], state));
   } else {
     let res;
     const [p1, ...p_rest] = args;

@@ -2,25 +2,33 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../lib/util");
-const types_1 = require("../../lib/types");
+const util_1 = require("../../apps/runner/lib/util");
+const types_1 = require("../../apps/runner/lib/types");
 const primitives_1 = require("./core/primitives");
 /**
  * @module conditionals
  */
 exports.actions = {
     /** @name if */
-    if: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
-        const [pTest, pThen, pElse] = params;
+    if: async function (_, args, { evaluate, logger }) {
+        (0, util_1.fn_check_params)(args, { exactCount: [2, 3] });
+        // const [pTest, pThen, pElse] = args;
+        //
         //   const condition = asBoolean(await evaluate(pTest));
         //   logger.debug(`if: condition: ` + JSON.stringify(condition));
+        //
         //   const branch = condition ? pThen : pElse;
         //   if (typeof branch !== 'undefined') {
         //     return await evaluate(branch);
         //   }
-        //   return null;
-        return evaluate(['cond', [pTest, pThen], [types_1.T, pElse]]);
+        //   return NIL;
+        const if_args = ['quote', args];
+        // prettier-ignore
+        return evaluate([
+            "cond",
+            [["first", if_args], ["second", if_args]],
+            [types_1.T, ["third", if_args]]
+        ]);
     },
     // cond: async function (action, params, {evaluate, logger}) {
     //   fn_check_params(params, {minCount: 1});
@@ -37,9 +45,9 @@ exports.actions = {
     // },
     cond: primitives_1.cond,
     /** @name when */
-    when: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 2 });
-        const [testClause, actionWhenTrue] = params;
+    when: async function (_, args, { evaluate, logger }) {
+        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        const [testClause, actionWhenTrue] = args;
         const condition = await evaluate(testClause);
         logger.debug(`when: condition: ` + JSON.stringify(condition));
         if (condition) {
@@ -48,9 +56,9 @@ exports.actions = {
         return null;
     },
     /** @name unless */
-    unless: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 2 });
-        const [testClause, actionWhenFalse] = params;
+    unless: async function (_, args, { evaluate, logger }) {
+        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        const [testClause, actionWhenFalse] = args;
         const condition = await evaluate(testClause);
         logger.debug(`unless: condition: ` + JSON.stringify(condition));
         if (!condition) {
@@ -58,9 +66,9 @@ exports.actions = {
         }
         return null;
     },
-    zerop: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        const value = await evaluate(params[0]);
+    zerop: async function (_, args, { evaluate, logger }) {
+        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        const value = await evaluate(args[0]);
         (0, types_1.ensureNumber)(value);
         return evaluate(['=', value, 0]);
     },

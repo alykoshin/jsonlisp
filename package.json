@@ -1,6 +1,6 @@
 {
   "name": "tools-runner",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "tools-runner",
   "type": "commonjs",
   "main": "dist/index.js",
@@ -48,6 +48,7 @@
     "axios": "^1.5.1",
     "chalk": "4.1.2",
     "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "git-config": "^0.0.7",
     "json5": "^2.2.3",

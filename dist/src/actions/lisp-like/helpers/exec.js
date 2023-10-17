@@ -20,7 +20,7 @@ async function execute(command_line, spawnOptions, execOptions) {
             execOptions.timeout = 0;
         if (!execOptions.trim)
             execOptions.trim = true;
-        defaultLogger.debug(command_line, spawnOptions);
+        defaultLogger.debug(`command_line: "${command_line}", spawnOptions:`, spawnOptions);
         spawnOptions.shell = true;
         const p = (0, child_process_1.spawn)(command_line, [], spawnOptions);
         const outStreamNames = ['stdout', 'stderr'];

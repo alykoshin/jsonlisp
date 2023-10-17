@@ -3,12 +3,8 @@
 import _ from 'lodash';
 
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionMethodState,
-  Actions,
-  Atom,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {Actions, Atom, Parameters} from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 
 /**
  * @module error

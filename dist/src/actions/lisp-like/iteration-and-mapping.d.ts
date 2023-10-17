@@ -1,4 +1,4 @@
 /** @format */
-import { Actions } from '../../lib/types';
+import { Actions } from '../../apps/runner/lib/types';
 declare let actions: Actions;
 export default actions;

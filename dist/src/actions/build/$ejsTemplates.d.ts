@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor } from '../../lib/types';
+import { ActionListExecutor } from '../../apps/runner/lib/types';
 export type EjsTemplatesActionConfig = {
     sourceDir: string;
     excludeDirs: string | string[];

@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor, Actions } from '../../lib/types';
+import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
 /**
  * @module sb-posix
  *
@@ -8,16 +8,21 @@ import { ActionListExecutor, Actions } from '../../lib/types';
 /**
  * @name setenv
  *
- * @see Function: SB-POSIX:SETENV -- https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html
+ * @see
+ * - Function: SB-POSIX:SETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
  */
 export declare const setenv: ActionListExecutor;
 /**
  * @name getenv
- * @see   Function: SB-POSIX:GETENV {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html}
+ * @see
+ * - Function: SB-POSIX:GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/GETENV.html} <br>
+ * - Function: SB-EXT:POSIX-GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-ext/function/POSIX-GETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp#L966C19-L966C19} <br>
  */
 export declare const getenv: ActionListExecutor;
 /**
- * @name mkdir
+ * @name chdir
  * @see Function: SB-POSIX:MKDIR --
  * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>

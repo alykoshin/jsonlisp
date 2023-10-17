@@ -8,7 +8,7 @@ exports.$rm = void 0;
 /**
  * @name $version
  */
-async function $rm(action, params, { evaluate }) {
+const $rm = async function (_, args, { evaluate }) {
     // const { runner, logger } = state;
     // fn_check_params(parameters, { minCount: 1 });
     // for (let pf of parameters) {
@@ -18,8 +18,8 @@ async function $rm(action, params, { evaluate }) {
     //   await fs.rm(sPathname);
     // }
     // logger.debug(`deleted ${parameters.length} dirs/files`);
-    return evaluate(['delete-file', ...params]);
-}
+    return evaluate(['delete-file', ...args]);
+};
 exports.$rm = $rm;
-exports.default = $rm;
+exports.default = exports.$rm;
 //# sourceMappingURL=$rm.js.map

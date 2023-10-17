@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.asBoolean = exports.asNumber = exports.asList = void 0;
-const types_1 = require("../../../lib/types");
+const types_1 = require("../../../apps/runner/lib/types");
 function asList(p) {
     (0, types_1.ensureList)(p);
     return p;

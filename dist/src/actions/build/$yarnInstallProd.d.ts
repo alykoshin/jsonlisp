@@ -1,5 +1,5 @@
 /** @format */
-import { ActionMethodState, Parameters } from '../../lib/types';
+import { ActionListExecutor } from '../../apps/runner/lib/types';
 export type YarnInstallProdActionConfig = {
     cwd?: string;
     env?: {
@@ -12,5 +12,5 @@ export type YarnInstallProdActionConfig = {
 /**
  * @module $yarnInstallProd
  */
-export declare function $yarnInstallProd(action: string, params: Parameters, { logger }: ActionMethodState): Promise<string>;
+export declare const $yarnInstallProd: ActionListExecutor;
 export default $yarnInstallProd;

@@ -4,7 +4,6 @@ import {fn_check_params} from '../../apps/runner/lib/util';
 import {Runner} from '../../apps/runner/runner';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Actions,
   EvaluateFn,
   Expression,
@@ -17,6 +16,7 @@ import {
   isEmptyList,
   isList,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {series, series1, series2, seriesn} from './helpers/series';
 
 /**

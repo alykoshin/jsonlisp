@@ -2,8 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../lib/util");
-const types_1 = require("../../lib/types");
+const util_1 = require("../../apps/runner/lib/util");
+const types_1 = require("../../apps/runner/lib/types");
 const print_1 = require("./helpers/print");
 const confirm_1 = require("./helpers/confirm");
 /**
@@ -73,7 +73,7 @@ exports.actions = {
      * @see
      * {@link http://www.ulisp.com/show?3L#format}
      */
-    format: async function (action, parameters, { evaluate, logger }) {
+    format: async function (_, args, { evaluate, logger }) {
         throw new Error('Not implemented');
         /*   fn_check_params(parameters, {exactCount: 2});
         const destination = this._getNextParam(parameters) || '';

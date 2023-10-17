@@ -2,10 +2,10 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.cond = exports.cons = exports.cdr = exports.car = exports.eq = exports.atom = exports.quote = void 0;
-const types_1 = require("../../../lib/types");
+const types_1 = require("../../../apps/runner/lib/types");
 const typecast_1 = require("../../../actions/lisp-like/helpers/typecast");
 const series_1 = require("../helpers/series");
-const util_1 = require("../../../lib/util");
+const util_1 = require("../../../apps/runner/lib/util");
 //
 /**
  * @module primitives
@@ -31,11 +31,11 @@ exports.atom = atom;
 /**
  * @name eq
  */
-const eq = async function (_, args, { evaluate }) {
+const eq = async function (_, args, { evaluate, logger }) {
     const [a, b] = (0, util_1.fn_check_params)(args, { exactCount: 2 });
     const ea = await evaluate(a), eb = await evaluate(b);
-    return ((0, types_1.isAtom)(ea) && (0, types_1.isAtom)(eb) && ea === eb) ||
-        ((0, types_1.isEmptyList)(ea) && (0, types_1.isEmptyList)(eb))
+    // logger.debug('>>>>>>>>>>>>>>', ea, eb);
+    return ((0, types_1.isAtom)(ea) && (0, types_1.isAtom)(eb) && ea === eb) || ((0, types_1.isNil)(ea) && (0, types_1.isNil)(eb))
         ? types_1.T
         : types_1.NIL;
 };

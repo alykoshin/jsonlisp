@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, ActionListExecutor } from '../../../lib/types';
+import { Actions, ActionListExecutor } from '../../../apps/runner/lib/types';
 /**
  * @module primitives
  */

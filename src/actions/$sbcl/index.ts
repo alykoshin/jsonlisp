@@ -3,10 +3,10 @@
 import {
   ActionDefinition,
   ActionListExecutor,
-  ActionMethodState,
   Actions,
   Parameters,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {
   Activity,
   ActivityActionsDefinition,

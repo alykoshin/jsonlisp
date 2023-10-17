@@ -7,10 +7,10 @@ import $versionActions from '../build/$version';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Actions,
   Parameters,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 
 export type ZipActionConfig = {
   file_names: string[];

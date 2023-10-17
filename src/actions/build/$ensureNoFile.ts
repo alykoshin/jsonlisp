@@ -1,11 +1,8 @@
 /** @format */
 
-import {ensureNoFile} from './helpers/fsUtils';
-import {
-  ActionListExecutor,
-  ActionMethodState,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ensureNoFile} from '../../lib/fileUtils/fileUtils';
+import {ActionListExecutor, Parameters} from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 import {fn_check_params} from '../../apps/runner/lib/util';
 
 /**

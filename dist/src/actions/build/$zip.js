@@ -31,17 +31,17 @@ exports.$zip = void 0;
 const path = __importStar(require("path"));
 const exec_1 = require("../lisp-like/helpers/exec");
 const _version_1 = __importDefault(require("../build/$version"));
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module $zip
  */
 /**
  * @name $zip
  */
-async function $zip(action, params, state) {
+const $zip = async function (action, args, state) {
     const { runner, logger } = state;
-    (0, util_1.fn_check_params)(params, { exactCount: 1 });
-    const [pConfig] = params;
+    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [pConfig] = args;
     const version = await _version_1.default.$version.call(state, action, [], state);
     const { file_names, archive_prefix, out_dir, exclude_files } = pConfig;
     const date = new Date()
@@ -60,19 +60,19 @@ async function $zip(action, params, state) {
         ...exclude_files.map(f => `-x!${f}`),
     ];
     // prettier-ignore
-    const args = [
+    const zip_args = [
         'a',
         ...switches,
         archive_pathname,
         sFileNames,
     ];
-    const command_line = [zip_exe, ...args].join(' ');
+    const command_line = [zip_exe, ...zip_args].join(' ');
     const options = {
     // cwd: activity.base_dir,
     };
     const r = await (0, exec_1.execute)(command_line, options, { logger });
     return r.stdout;
-}
+};
 exports.$zip = $zip;
 // export const actions: Actions = {
 // $zip: $zip,

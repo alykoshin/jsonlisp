@@ -2,10 +2,15 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../lib/util");
+const util_1 = require("../../apps/runner/lib/util");
 const print_1 = require("./helpers/print");
 /**
  * @module defines
+ * @see
+ * - LispWorks -- Common Lisp HyperSpec -- Macro DEFPARAMETER, DEFVAR --
+ *   {@link http://clhs.lisp.se/Body/m_defpar.htm} <br>
+ * - LispWorks -- Common Lisp HyperSpec -- Special Operator LET, LET* --
+ *   {@link http://www.lispworks.com/documentation/lw60/CLHS/Body/s_let_l.htm} <br>
  */
 exports.actions = {
     /**
@@ -43,11 +48,11 @@ exports.actions = {
      * Difference between `set`, `setq`, and `setf` in Common Lisp?
      * {@link https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp}
      */
-    setq: async function (action, parameters, { evaluate, scopes, logger }) {
-        (0, util_1.fn_check_params)(parameters, { exactCount: 2 });
-        const pName = await evaluate(parameters[0]);
+    setq: async function (_, args, { evaluate, scopes, logger }) {
+        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        const pName = await evaluate(args[0]);
         const sName = String(pName);
-        const pValue = await evaluate(parameters[1]);
+        const pValue = await evaluate(args[1]);
         // creates variable at local scope
         scopes.current().set(sName, pValue);
         logger.debug(`${sName} = ${(0, print_1.stringify)(pValue)}`);

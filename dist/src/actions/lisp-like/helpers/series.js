@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seriesn = exports.series2 = exports.series1 = exports.seriesnth = exports.series = void 0;
-const util_1 = require("../../../lib/util");
+const util_1 = require("../../../apps/runner/lib/util");
 // export const lengthEqual = (lists: any[]): boolean =>
 //   lists.every((l) => lists[0].length === l.length);
 //

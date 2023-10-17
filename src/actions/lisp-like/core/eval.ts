@@ -17,15 +17,11 @@ import {
   isString,
   ensureFunction,
   Expression,
-  ActionMethodState,
   Atom,
 } from '../../../apps/runner/lib/types';
-import {asBoolean} from '../helpers/typecast';
+import {State} from '../../../apps/runner/lib/state';
 import {series, seriesn} from '../helpers/series';
 import {fn_check_params} from '../../../apps/runner/lib/util';
-import {Scope} from '@utilities/object/dist/script-scopes';
-import {zipObject} from '../helpers/zipObject';
-import {isFunction} from 'lodash';
 
 //
 
@@ -33,19 +29,22 @@ import {isFunction} from 'lodash';
  * @module eval
  */
 
-const callFn = async (
+export const execNamedAction = async (
   op: string,
   args: Parameters,
-  state: ActionMethodState<Atom>
+  st: State
 ): Promise<Expression> => {
-  state.logger.debug(`eval: evalFn: "${op}"`);
-  const action = state.actions[op];
+  st.logger.debug(`eval: execNamedAction: "${op}"`);
+  const action = st.actions[op];
+  // console.log('state:', state);
+  // console.log('action:', action);
+  // console.log('op:', op);
   if (isList(action)) {
-    return _eval(op, [action], state);
+    return eval_(op, [action], st);
   } else {
     ensureFunction(action, `function definition not found for "${op}"`);
     try {
-      return (action as Function).call(state, op, args, state);
+      return (action as Function).call(st, op, args, st);
     } catch (e) {
       (e as Error).message = `Operation ${op} : ` + (e as Error).message;
       throw e;
@@ -53,25 +52,37 @@ const callFn = async (
   }
 };
 
-async function evaluateList(
-  expr: List,
-  st: ActionMethodState<Atom>
-): Promise<Expression> {
+async function evaluateList(expr: List, st: State): Promise<Expression> {
   const [op1, ...args] = expr;
-  const {evaluate, logger} = st;
+  let {logger} = st;
 
   if (isString(op1)) {
-    logger.debug(`eval string/symbol (${typeof expr})`, expr);
-    return callFn(op1, args, st);
+    logger = logger.newNextUp(st.runner, {name: op1});
+    st = {...st, logger};
+    const evl = (expr: Expression) => st.runner.evaluate(expr, st);
+
+    logger.debug(`eval string/symbol: "${expr}"`);
+    return execNamedAction(op1, args, {...st, evaluate: evl, logger});
+    //
   } else if (isList(op1)) {
     logger.debug(`eval list`, op1);
+
     const [op2, ...args2] = op1; // [ fn_name, arg_names, body ];
     ensureString(op2);
-    // ensureList(args2);
-    const arg_values = await series(args, evaluate);
-    logger.debug(`evaluateList: arg_values:`, arg_values);
-    const preparedFn = await callFn(op2, args2, st);
 
+    logger = logger.newNextUp(st.runner, {name: op2});
+    st = {...st, logger};
+    const evl = (expr: Expression) => st.runner.evaluate(expr, st);
+
+    // ensureList(args2);
+    const arg_values = await series(args, st.evaluate);
+    logger.debug(`evaluateList: arg_values:`, arg_values);
+
+    const preparedFn = await execNamedAction(op2, args2, {
+      ...st,
+      evaluate: evl,
+      logger,
+    });
     ensureFunction(preparedFn);
 
     const res = preparedFn(op2, arg_values, st);
@@ -84,24 +95,23 @@ async function evaluateList(
   //
 }
 
-async function evaluateAtom(
-  expr: Atom,
-  state: ActionMethodState<Atom>
-): Promise<Atom> {
+async function evaluateAtom(expr: Atom, st: State): Promise<Atom> {
+  let {logger} = st;
   // * isAtom || isEmptyList
-  state.logger.debug(
-    `evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`
-  );
+  logger.debug(`evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`);
 
   if (isString(expr)) {
+    logger = logger.newNextUp(st.runner, {name: expr});
+    st = {...st, logger};
+
     // * This may be either string or symbol
     // * as there is no convenient way to differentiate them inside JSON
 
     // * Handle as symbol
-    const value = state.scopes.get(expr);
+    const value = st.scopes.get(expr);
     if (value !== undefined) {
       expr = value;
-      state.logger.debug(
+      logger.debug(
         `evaluateAtom: var: (${typeof expr}) "${JSON.stringify(expr)}"`
       );
     } else {
@@ -110,27 +120,27 @@ async function evaluateAtom(
       const ENABLE_STRING_TEMPLATES = true;
       if (ENABLE_STRING_TEMPLATES) {
         // ! This is not effective
-        const flattenedScopes = state.scopes.merged()._scope;
+        const flattenedScopes = st.scopes.merged()._scope;
         // !
         expr = stringUtils.literalTemplate(expr, flattenedScopes);
       }
     }
   }
-  state.logger.debug(
-    `evaluateAtom: out: (${typeof expr}) "${JSON.stringify(expr)}"`
-  );
+  logger.debug(`evaluateAtom: out: (${typeof expr}) "${JSON.stringify(expr)}"`);
   return expr;
 }
 
 /**
  * @name eval
  */
-export const _eval: ActionListExecutor = async function (_, args, state) {
+export const eval_: ActionListExecutor = async function (_, args, state) {
   const [expr] = fn_check_params(args, {exactCount: 1});
-  const {logger} = state;
-  const evaluate = (args: Expression) => _eval(_, [args], state);
+  // const {logger} = state;
 
-  state = {...state, evaluate, logger: logger.newNextUp()};
+  // const evaluate = (args: Expression) => eval_(_, [args], state);
+  // const evaluate = curry(eval_, state);
+
+  // state = {...state, evaluate, logger: logger.newNextUp(state.runner)};
   // logger.debug(`eval state at enter:`, state);
 
   if (isList(expr) && !isEmptyList(expr)) {
@@ -143,7 +153,7 @@ export const _eval: ActionListExecutor = async function (_, args, state) {
 };
 
 export const actions: Actions = {
-  eval: _eval,
+  eval: eval_,
 };
 
 export default actions;

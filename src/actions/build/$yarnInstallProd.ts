@@ -4,10 +4,10 @@ import {execute} from '../lisp-like/helpers/exec';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
   ActionListExecutor,
-  ActionMethodState,
   Atom,
   Parameters,
 } from '../../apps/runner/lib/types';
+import {State} from '../../apps/runner/lib/state';
 
 export type YarnInstallProdActionConfig = {
   cwd?: string;
