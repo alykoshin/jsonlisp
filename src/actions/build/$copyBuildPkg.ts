@@ -1,11 +1,7 @@
 /** @format */
 
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 /**
@@ -16,11 +12,7 @@ import {State} from '../../apps/runner/lib/state';
  * @name $copyBuildPkg
  */
 
-export const $copyBuildPkg: ActionListExecutor = async function (
-  _,
-  args,
-  state
-) {
+export const $copyBuildPkg: ExecutorFn = async function (_, args, state) {
   const {runner, logger} = state;
   fn_check_params(args, {exactCount: 0});
   throw new Error(`Not implemented`);

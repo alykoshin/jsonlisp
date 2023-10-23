@@ -3,7 +3,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureFile = void 0;
 const util_1 = require("../../apps/runner/lib/util");
-const fsUtils_1 = require("./helpers/fsUtils");
+const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
+const types_1 = require("../../apps/runner/lib/types");
 /**
  * @module $build
  */
@@ -15,11 +16,11 @@ const $ensureFile = async function (_, args, { evaluate, logger }) {
     logger.debug(`$ensureFile: parameters: ${JSON.stringify(args)}`);
     const result = [];
     for (const p of args) {
-        const pFilename = await evaluate(p);
-        const sFilename = String(pFilename);
-        logger.debug(`$ensureFile ${sFilename}`);
-        await (0, fsUtils_1.ensureFile)(sFilename);
-        result.push(sFilename);
+        const fname = await evaluate(p);
+        (0, types_1.ensureString)(fname);
+        logger.debug(`$ensureFile ${fname}`);
+        await (0, fileUtils_1.ensureFile)(fname);
+        result.push(fname);
     }
     return result;
 };

@@ -4,7 +4,7 @@ import {existsSync} from 'node:fs';
 import * as path from 'path';
 
 import {readTsFile, writeTsFile} from './tsFileUtils';
-import {readJs} from './jsFileUtils';
+import {readJs, writeJsFile} from './jsFileUtils';
 import {readJson5, writeJson5} from './json5FileUtils';
 import {readJsonFile, writeJsonFile} from './jsonFileUtils';
 import {isDirectory} from '../fileUtils';
@@ -25,8 +25,7 @@ export const readUniversal = async (pathname?: string): Promise<any> => {
     case '.json5':
       return readJson5(pathname);
     default:
-      const msg = `Unsupported extension "${extname}" for "${pathname}"`;
-      throw new Error(msg);
+      throw new Error(`Unsupported file extension "${pathname}"`);
   }
 };
 export function writeUniversal(pathname: string, data: any) {
@@ -37,10 +36,14 @@ export function writeUniversal(pathname: string, data: any) {
   switch (extname) {
     case '.ts':
       return writeTsFile(pathname, data);
+    case '.js':
+      return writeJsFile(pathname, data);
     case '.json':
       return writeJsonFile(pathname, data);
     case '.json5':
       return writeJson5(pathname, data);
+    default:
+      throw new Error(`Unsupported file extension "${pathname}"`);
   }
 }
 const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.json', '.json5'];

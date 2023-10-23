@@ -1,8 +1,7 @@
 /** @format */
 
 import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
-import {Logger, LogPrefix} from '../../../lib/log';
-import {sign} from 'crypto';
+import {State} from '../../../apps/runner/lib/state';
 
 // export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
 //   log(command_line);
@@ -40,24 +39,31 @@ export async function execute(
     encoding?: BufferEncoding;
     timeout?: number;
     trim?: boolean;
-    logger: Logger;
+    state: State;
   }
 ): Promise<ExecResult> {
-  const defaultLogger = execOptions.logger.new({
-    name: execOptions.logger._prefix.name + '/' + 'execute',
-  });
-  const stdoutLogger = defaultLogger.new({
-    name: execOptions.logger._prefix.name + '/' + 'stdout',
-  });
-  const stderrLogger = defaultLogger.new({
-    name: execOptions.logger._prefix.name + '/' + 'stderr',
-  });
+  let {encoding, timeout, trim, state} = execOptions;
+
+  const lgrs = {
+    default: state.logger.new({
+      ...state,
+      name: state.logger.state.name + '/' + 'exec',
+    }),
+    stdout: state.logger.new({
+      ...state,
+      name: state.logger.state.name + '/' + 'exec:stdout',
+    }),
+    stderr: state.logger.new({
+      ...state,
+      name: state.logger.state.name + '/' + 'exec:stderr',
+    }),
+  };
 
   return new Promise((resolve, reject) => {
-    if (!execOptions.encoding) execOptions.encoding = 'utf8';
-    if (!execOptions.timeout) execOptions.timeout = 0;
-    if (!execOptions.trim) execOptions.trim = true;
-    defaultLogger.debug(
+    if (!encoding) encoding = 'utf8';
+    if (!timeout) timeout = 0;
+    if (!trim) trim = true;
+    lgrs.default.debug(
       `command_line: "${command_line}", spawnOptions:`,
       spawnOptions
     );
@@ -81,18 +87,18 @@ export async function execute(
       throw new Error('Error creating ChildProcess');
     }
 
-    p.stdout.setEncoding(execOptions.encoding); //'utf8');
-    p.stderr.setEncoding(execOptions.encoding); //'utf8');
+    p.stdout.setEncoding(encoding); //'utf8');
+    p.stderr.setEncoding(encoding); //'utf8');
 
     p.stdout.on('data', function (data) {
       data = data.toString();
-      stdoutLogger.log(data);
+      lgrs.stdout.log(data);
       results.stdout += data;
     });
 
     p.stderr.on('data', function (data) {
       data = data.toString();
-      stderrLogger.log(data);
+      lgrs.stderr.log(data);
       results.stderr += data;
     });
 
@@ -103,7 +109,7 @@ export async function execute(
     ) {
       let message = `[${event}] child process ${event} with code ${code}`;
       if (typeof signal !== 'undefined') message += ` and signal ${signal}`;
-      defaultLogger.debug(message);
+      lgrs.default.debug(message);
       results.signal = signal;
       results.message = message;
     }
@@ -120,14 +126,14 @@ export async function execute(
       // signal: ExitSignal;
       // }
     ) {
-      if (execOptions.trim) {
+      if (trim) {
         results.stdout = results.stdout.trim();
         results.stderr = results.stderr.trim();
       }
       // override what we set earlier with latest values
       results.code = code;
       // results.message = message;
-      defaultLogger.debug(`doExit`);
+      lgrs.default.debug(`doExit`);
       if (code === 0) {
         resolve(results);
       } else {
@@ -149,13 +155,11 @@ export async function execute(
       doExit(code);
     });
 
-    if (execOptions.timeout !== 0) {
+    if (timeout !== 0) {
       setTimeout(() => {
-        defaultLogger.warn(
-          `[timeout] child process timed out in ${execOptions.timeout} ms`
-        );
-        defaultLogger.warn(`WARN: Force kill not implemented`);
-      }, execOptions.timeout);
+        lgrs.default.warn(`[timeout] child process timed out in ${timeout} ms`);
+        lgrs.default.warn(`WARN: Force kill not implemented`);
+      }, timeout);
     }
   });
 }

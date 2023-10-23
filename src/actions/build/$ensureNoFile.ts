@@ -1,7 +1,7 @@
 /** @format */
 
 import {ensureNoFile} from '../../lib/fileUtils/fileUtils';
-import {ActionListExecutor, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {fn_check_params} from '../../apps/runner/lib/util';
 
@@ -12,7 +12,7 @@ import {fn_check_params} from '../../apps/runner/lib/util';
 /**
  * @name $ensureNoFile
  */
-export const $ensureNoFile: ActionListExecutor = async function (
+export const $ensureNoFile: ExecutorFn = async function (
   _,
   args,
   {evaluate, logger}

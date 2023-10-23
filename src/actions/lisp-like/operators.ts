@@ -5,7 +5,7 @@ import {JTDDataType} from 'ajv/dist/jtd';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {Runner} from '../../apps/runner/runner';
 import {
-  ActionListExecutor,
+  ExecutorFn,
   Actions,
   Atom,
   Parameter,
@@ -13,7 +13,7 @@ import {
 } from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {start} from 'repl';
-import {LogPrefix, Logger} from '../../lib/log';
+import {Logger} from '../../lib/log';
 
 /**
  * @module operators
@@ -165,7 +165,7 @@ function calcBinary(
   }
 }
 
-const operators: ActionListExecutor = async function (action, args, state) {
+const operators: ExecutorFn = async function (action, args, state) {
   const {evaluate} = state;
   fn_check_params(args, {minCount: 1});
   if (args.length === 1) {
@@ -283,15 +283,16 @@ const plog = function (logger: Logger) {
 
 export const actions: Actions = {
   /** @name + */
-  '+': async (action, params, {evaluate, logger}) =>
-    plog(logger)(
+  '+': async (action, params, {evaluate, logger}) => {
+    return plog(logger)(
       pReduce(
         params,
         async (acc, p) =>
           <number>await evaluate(acc) + <number>await evaluate(p),
         0
       )
-    ),
+    );
+  },
 
   /** @name - */
   '-': async (action, params, {evaluate, logger}) =>
@@ -327,15 +328,15 @@ export const actions: Actions = {
     ),
 
   /** @name 1+ */
-  '1+': async (action, params, {evaluate, logger}) => {
-    fn_check_params(params, {exactCount: 1});
-    return evaluate(['+', ...params, 1]);
+  '1+': async (action, args, {evaluate, logger}) => {
+    fn_check_params(args, {exactCount: 1});
+    return evaluate(['+', ...args, 1]);
   },
 
   /** @name 1- */
-  '1-': async (action, params, {evaluate, logger}) => {
-    fn_check_params(params, {exactCount: 1});
-    return evaluate(['-', ...params, 1]);
+  '1-': async (action, args, {evaluate, logger}) => {
+    fn_check_params(args, {exactCount: 1});
+    return evaluate(['-', ...args, 1]);
   },
 
   /** @name % */

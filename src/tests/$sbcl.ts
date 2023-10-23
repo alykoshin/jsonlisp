@@ -1,7 +1,7 @@
 /** @format */
 
 import {Activity} from '../apps/runner/lib/config';
-import $sbclActions, {$sbcl, $sbclToList} from '../actions/$sbcl/';
+import $sbclActions, {$sbcl, $sbclToList} from '../actions/$sbcl';
 
 // prettier-ignore
 export const config: Activity = {

@@ -1,76 +1,10 @@
 /** @format */
 
-import {LogPrefix, Logger} from '../../lib/log';
-import {
-  ActionListExecutor,
-  Actions,
-  NIL,
-  Parameter,
-  Parameters,
-  ensureList,
-  isEmptyList,
-  isList,
-  isNil,
-} from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
+import {Actions, ensureList, isNil} from '../../apps/runner/lib/types';
 import {series1, series2, seriesn} from './helpers/series';
-
-/**
- * @module iteration-and-mapping
- */
-
-const peekListOfLists = async function (
-  listOfLists: Parameters,
-  pos: number
-): Promise<Parameters> {
-  ensureList(listOfLists);
-  // const slice: Parameters = [];
-  // for (const i in listOfLists) {
-  //   const list = listOfLists[i];
-  //   ensureList(list);
-  //   if (isEmptyList(list)) {
-  //     return NIL;
-  //   }
-  //   // const p = (list as Parameter[]).shift();
-  //   // const r = await evaluate(p);
-  //   // slice.push(r);
-  //   // slice.push(p);
-  //   slice[i] = list[pos];
-  // }
-  let finish = false;
-  const slice = listOfLists.map((l, i) => {
-    ensureList(l);
-    if (!isList(l) || pos >= l.length) {
-      finish = true;
-    } else {
-      return l[pos];
-    }
-  });
-  return finish ? [] : slice;
-};
-// const sliceParams = async function (
-//   listOfLists: Parameters
-// ): Promise<Parameters | null> {
-//   ensureList(listOfLists);
-//   const slice: Parameters = [];
-//   for (const list of listOfLists) {
-//     ensureList(list);
-//     if (isEmptyList(list)) {
-//       return list;
-//     }
-//     const p = (list as Parameter[]).shift();
-//     // const r = await evaluate(p);
-//     // slice.push(r);
-//     slice.push(p);
-//   }
-//   return slice;
-// };
-
-//
+import {sliceListList} from './helpers/series';
 
 let actions: Actions = {};
-
-//
 
 // function Car<T>(obj: T[]): T {
 //   return obj[0];
@@ -155,26 +89,25 @@ let actions: Actions = {};
 // /* actions = */ Object.assign(actions, {
 const actions2: Actions = {
   /** @name prog1 */
-  prog1: async function (_, args, {evaluate}) {
-    return series1(args, evaluate);
+  prog1: async function (_, args, st) {
+    return series1(args, st);
   },
 
   /** @name prog2 */
-  prog2: async function (_, args, {evaluate}) {
-    return series2(args, evaluate);
+  prog2: async function (_, args, st) {
+    return series2(args, st);
   },
 
   /** @name progn */
-  progn: async function (_, args, {evaluate}) {
-    return seriesn(args, evaluate);
+  progn: async function (_, args, st) {
+    return seriesn(args, st);
   },
 
   /**
    * @name mapc
-   *
-   * !!! todo: Not modify list !!!
    */
-  mapc: async function (_, [fn, ...listOfLists], {evaluate, logger}) {
+  mapc: async function (_, [fn, ...listOfLists], st) {
+    const {evaluate, logger} = st;
     ensureList(listOfLists);
     ensureList(listOfLists[0]);
     // mapc is like mapcar except that the results of applying function
@@ -187,7 +120,7 @@ const actions2: Actions = {
     let i = 0;
     let ps;
     let rs;
-    while (!isNil((ps = await peekListOfLists(listOfLists, i++)))) {
+    while (!isNil((ps = sliceListList(listOfLists, i++)))) {
       logger.debug('ps:', ps);
       rs = await evaluate([fn, ...ps]);
     }
@@ -208,17 +141,16 @@ const actions2: Actions = {
 
   /**
    * @name mapcar
-   *
-   * !!! todo: Not modify list !!!
    */
-  mapcar: async function (_, [fn, ...listOfLists], {evaluate, logger}) {
+  mapcar: async function (_, [fn, ...listOfLists], st) {
+    const {evaluate, logger} = st;
     ensureList(listOfLists);
     fn = await evaluate(fn);
     let i = 0;
     let ps;
     const results = [];
     // while ((ps = await sliceParams(lists))) {
-    while (!isNil((ps = await peekListOfLists(listOfLists, i++)))) {
+    while (!isNil((ps = sliceListList(listOfLists, i++)))) {
       const rs = await evaluate([fn, ...ps]);
       results.push(rs);
     }

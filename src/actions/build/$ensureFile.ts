@@ -3,9 +3,10 @@
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {ensureFile} from '../../lib/fileUtils/fileUtils';
 import {
-  ActionListExecutor,
+  ExecutorFn,
   Atom,
   Parameters,
+  ensureString,
 } from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
@@ -16,7 +17,7 @@ import {State} from '../../apps/runner/lib/state';
 /**
  * @name $ensureFile
  */
-export const $ensureFile: ActionListExecutor = async function (
+export const $ensureFile: ExecutorFn = async function (
   _,
   args,
   {evaluate, logger}
@@ -26,13 +27,13 @@ export const $ensureFile: ActionListExecutor = async function (
   logger.debug(`$ensureFile: parameters: ${JSON.stringify(args)}`);
   const result: Parameters = [];
   for (const p of args) {
-    const pFilename = await evaluate(p);
-    const sFilename = String(pFilename);
+    const fname = await evaluate(p);
+    ensureString(fname);
 
-    logger.debug(`$ensureFile ${sFilename}`);
-    await ensureFile(sFilename);
+    logger.debug(`$ensureFile ${fname}`);
+    await ensureFile(fname);
 
-    result.push(sFilename);
+    result.push(fname);
   }
   return result;
 };

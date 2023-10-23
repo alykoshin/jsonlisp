@@ -3,7 +3,7 @@
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {Runner} from '../../apps/runner/runner';
 import {
-  ActionListExecutor,
+  ExecutorFn,
   Actions,
   EvaluateFn,
   Expression,
@@ -17,7 +17,7 @@ import {
   isList,
 } from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
-import {series, series1, series2, seriesn} from './helpers/series';
+import {series} from './helpers/series';
 
 /**
  * @module list
@@ -70,11 +70,11 @@ const _nullp = async function (p: Parameter): Promise<boolean> {
 async function fn_rest(
   index: Expression,
   list: Expression,
-  evaluate: EvaluateFn
+  st: State
 ): Promise<Expression> {
-  const n = await evaluate(index);
+  const n = await st.evaluate(index);
   ensureNumber(n);
-  const l = await evaluate(list);
+  const l = await st.evaluate(list);
   ensureList(l);
   return _rest(n, l);
 }
@@ -82,110 +82,110 @@ async function fn_rest(
 //===========================================================================//
 
 /** @name quote */
-export const quote: ActionListExecutor = async (_, params, {evaluate}) => {
+export const quote: ExecutorFn = async (_, params, st) => {
   fn_check_params(params, {exactCount: 1});
   // return first argument without evaluation
   return params[0];
 };
 
 /** @name list */
-export const list: ActionListExecutor = async (_, params, {evaluate}) => {
+export const list: ExecutorFn = async (_, params, st) => {
   // return all args evaluated
-  return series(params, evaluate);
+  return series(params, st);
 };
 
 /** @name length */
-export const length: ActionListExecutor = async (_, args, {evaluate}) => {
+export const length: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {exactCount: 1});
-  const a0 = await evaluate(args[0]);
+  const a0 = await st.evaluate(args[0]);
   ensureList(a0);
   return a0.length;
 };
 
 /** @name nth */
-export const nth: ActionListExecutor = async (_, args, {evaluate}) => {
+export const nth: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {exactCount: 2});
   console.log('nth:args:', JSON.stringify(args));
   // return fn_nth(params[0], params[1], evaluate);
 
-  const idx = await evaluate(args[0]);
+  const idx = await st.evaluate(args[0]);
   ensureNumber(idx);
   console.log('nth:idx:', JSON.stringify(idx));
 
-  const list = await evaluate(args[1]);
+  const list = await st.evaluate(args[1]);
   ensureList(list);
   console.log('nth:list:', JSON.stringify(list));
 
-  const res = await evaluate(await _nth(idx, list));
+  const res = await st.evaluate(await _nth(idx, list));
   console.log('nth:res:', JSON.stringify(res));
 
   return res;
 };
 
 /** @name car */
-export const car: ActionListExecutor = async (_, args, {evaluate}) => {
+export const car: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 1});
   // const list = await evaluate(args[1]);
   // ensureList(list);
   // return nth(_, [0, args[0]], state);
-  return evaluate(['nth', 0, ...args]);
+  return st.evaluate(['nth', 0, ...args]);
 };
 
 /** @name second */
-export const second: ActionListExecutor = async (_, args, {evaluate}) => {
+export const second: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 1});
   // return nth(_, [1, args[0]], state);
   //
-  return evaluate(['nth', 1, ...args]);
+  return st.evaluate(['nth', 1, ...args]);
   //
   // return;
 };
 
 /** @name third */
-export const third: ActionListExecutor = async (_, args, {evaluate}) => {
+export const third: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 1});
   // return nth(_, [2, args[0]], args);
-  return evaluate(['nth', 2, ...args]);
+  return st.evaluate(['nth', 2, ...args]);
 };
 
 //
 
 /** @name nthcdr */
-export const nthcdr: ActionListExecutor = async (_, args, {evaluate}) => {
+export const nthcdr: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 2});
-  return fn_rest(args[0], args[1], evaluate);
+  return fn_rest(args[0], args[1], st);
   // return evaluate(['rest', ...args]);
 };
 
 /** @name cdr */
-export const cdr: ActionListExecutor = async (_, args, {evaluate}) => {
+export const cdr: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 1});
-  return fn_rest(1, args[0], evaluate);
+  return fn_rest(1, args[0], st);
   // return evaluate(['rest', ...args]);
 };
 
 //
 
 /** @name consp */
-export const consp: ActionListExecutor = async (_, args, {evaluate}) => {
+export const consp: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {exactCount: 1});
-  const a0 = await evaluate(args[0]);
+  const a0 = await st.evaluate(args[0]);
   // return isList(a0) && !isEmptyList(a0);
   return _consp(a0);
 };
 
 /** @name listp */
-export const listp: ActionListExecutor = async (_, args, {evaluate}) => {
+export const listp: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {exactCount: 1});
-  const a0 = await evaluate(args[0]);
+  const a0 = await st.evaluate(args[0]);
   // return isList(a0);
   return _listp(a0);
 };
 
 /** @name nullp */
-export const nullp: ActionListExecutor = async (_, args, {evaluate}) => {
+export const nullp: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {exactCount: 1});
-  const a0 = await evaluate(args[0]);
+  const a0 = await st.evaluate(args[0]);
   // return isList(a0) && isEmptyList(a0);
   return _nullp(a0);
 };

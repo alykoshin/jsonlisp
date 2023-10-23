@@ -8,14 +8,14 @@ import {
   isList,
   isEmptyList,
   ensureList,
-  ActionListExecutor,
+  ExecutorFn,
   T,
   NIL,
   List,
   isNil,
 } from '../../../apps/runner/lib/types';
 import {asBoolean} from '../../../actions/lisp-like/helpers/typecast';
-import {seriesn} from '../helpers/series';
+import {series, seriesn} from '../helpers/series';
 import {fn_check_params} from '../../../apps/runner/lib/util';
 
 //
@@ -27,7 +27,7 @@ import {fn_check_params} from '../../../apps/runner/lib/util';
 /**
  *  @name quote
  */
-export const quote: ActionListExecutor = async function (_, args, {evaluate}) {
+export const quote: ExecutorFn = async function (_, args, st) {
   const [a] = fn_check_params(args, {exactCount: 1});
   // no evaluation
   return a;
@@ -36,24 +36,21 @@ export const quote: ActionListExecutor = async function (_, args, {evaluate}) {
 /**
  * @name atom
  */
-export const atom: ActionListExecutor = async function (_, args, {evaluate}) {
+export const atom: ExecutorFn = async function (_, args, st) {
   const [a] = fn_check_params(args, {exactCount: 1});
-  const ea = await evaluate(a);
+  const ea = await st.evaluate(a);
   return isAtom(ea) || isEmptyList(ea) ? T : NIL;
 };
 
 /**
  * @name eq
  */
-export const eq: ActionListExecutor = async function (
-  _,
-  args,
-  {evaluate, logger}
-) {
-  const [a, b] = fn_check_params(args, {exactCount: 2});
-  const ea = await evaluate(a),
-    eb = await evaluate(b);
-  // logger.debug('>>>>>>>>>>>>>>', ea, eb);
+export const eq: ExecutorFn = async function (_, args, st) {
+  // const [a, b] =
+  fn_check_params(args, {exactCount: 2});
+  // const ea = await st.evaluate(a);
+  // const eb = await st.evaluate(b);
+  const [ea, eb] = await series(args, st);
   return (isAtom(ea) && isAtom(eb) && ea === eb) || (isNil(ea) && isNil(eb))
     ? T
     : NIL;
@@ -62,9 +59,9 @@ export const eq: ActionListExecutor = async function (
 /**
  * @name car
  */
-export const car: ActionListExecutor = async function (_, args, {evaluate}) {
+export const car: ExecutorFn = async function (_, args, st) {
   const [arg0] = fn_check_params(args, {exactCount: 1});
-  const earg0 = await evaluate(arg0);
+  const earg0 = await st.evaluate(arg0);
   ensureList(earg0);
   return earg0.length > 0 ? earg0[0] : NIL;
 };
@@ -72,10 +69,9 @@ export const car: ActionListExecutor = async function (_, args, {evaluate}) {
 /**
  * @name cdr
  */
-export const cdr: ActionListExecutor = async function (_, args, {evaluate}) {
+export const cdr: ExecutorFn = async function (_, args, st) {
   const [arg0] = fn_check_params(args, {exactCount: 1});
-  // const ea = evaluate(x[0]);
-  const earg0 = await evaluate(arg0);
+  const earg0 = await st.evaluate(arg0);
   ensureList(earg0);
   return earg0.length > 1 ? earg0.slice(1) : NIL;
 };
@@ -83,10 +79,12 @@ export const cdr: ActionListExecutor = async function (_, args, {evaluate}) {
 /**
  * @name cons
  */
-export const cons: ActionListExecutor = async function (_, args, {evaluate}) {
-  const [x, y] = fn_check_params(args, {exactCount: 2});
-  const ex = await evaluate(x);
-  const ey = await evaluate(y);
+export const cons: ExecutorFn = async function (_, args, st) {
+  // const [x, y] =
+  fn_check_params(args, {exactCount: 2});
+  // const ex = await evaluate(x);
+  // const ey = await evaluate(y);
+  const [ex, ey] = await series(args, st);
   ensureList(ey);
   return [ex, ...ey];
 };
@@ -94,12 +92,12 @@ export const cons: ActionListExecutor = async function (_, args, {evaluate}) {
 /**
  * @name cond
  */
-// export const cond: ListExecutor = async function (_, args, state) {
+// export const cond: ListExecutor = async function (_, args, st) {
 // export const cond: ListExecutor = async (_, args, {evaluate}) => {
-// const quote_ = (args: Parameters) => quote(_, args, state);
-// const car_ = (args: Parameters) => car(_, args, state);
-// const cdr_ = (args: Parameters) => cdr(_, args, state);
-// const {evaluate} = state;
+// const quote_ = (args: Parameters) => quote(_, args, st);
+// const car_ = (args: Parameters) => car(_, args, st);
+// const cdr_ = (args: Parameters) => cdr(_, args, st);
+// const {evaluate} = st;
 // let rest = args;
 // while (rest.length > 0) {
 //   let current;
@@ -129,16 +127,16 @@ export const cons: ActionListExecutor = async function (_, args, {evaluate}) {
 // }
 //
 //-------------------------------------------------------------------------
-export const cond: ActionListExecutor = async (_, args, {evaluate}) => {
+export const cond: ExecutorFn = async (_, args, st) => {
   fn_check_params(args, {minCount: 1});
 
   for (const current of args) {
     ensureList(current);
     const [cond, ...exprs] = current;
 
-    const econd = await evaluate(cond);
+    const econd = await st.evaluate(cond);
     if (asBoolean(econd)) {
-      return exprs.length === 0 ? econd : seriesn(exprs, evaluate);
+      return exprs.length === 0 ? econd : seriesn(exprs, st);
     }
   }
   return NIL;

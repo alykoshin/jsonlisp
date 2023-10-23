@@ -33,9 +33,7 @@ exports.lambda = lambda;
 const createPrepareFn = function (argnames, body) {
     (0, types_1.ensureList)(argnames);
     (0, types_1.ensureList)(body);
-    const fn = async function lambda(_, argvalues, 
-    // {actions, evaluate, runner, logger, scopes}
-    state) {
+    const fn = async function lambda(_, argvalues, state) {
         const { actions, evaluate, runner, logger, scopes } = state;
         argvalues = await (0, series_1.series)(argvalues, evaluate);
         const sc = (0, zipObject_1.zipObject)(argnames, argvalues);

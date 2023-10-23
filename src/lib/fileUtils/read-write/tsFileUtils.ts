@@ -25,8 +25,5 @@ export default config;
 `;
 
   const fullContent = prefix + content + suffix;
-
-  throw new Error('This may overwrite .ts file!');
-
   return await writeTextFile(pathname, fullContent);
 };

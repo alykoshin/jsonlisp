@@ -2,11 +2,7 @@
 
 import fs from 'fs/promises';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 type CpActionConfig = {
@@ -22,7 +18,7 @@ type CpActionConfig = {
 /**
  * @name $cp
  */
-export const $cp: ActionListExecutor = async function (_, args, {logger}) {
+export const $cp: ExecutorFn = async function (_, args, {logger}) {
   fn_check_params(args, {exactCount: 1});
   const {source, dest, dry: dry_} = args[0] as CpActionConfig;
   const dry = typeof dry_ !== 'undefined' ? dry_ : false;

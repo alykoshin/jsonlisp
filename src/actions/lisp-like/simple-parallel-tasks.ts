@@ -1,11 +1,7 @@
 /** @format */
 
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Actions,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Actions, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 /**
@@ -16,7 +12,7 @@ import {State} from '../../apps/runner/lib/state';
  */
 
 /** @name plist */
-export const plist: ActionListExecutor = async function (_, args, {evaluate}) {
+export const plist: ExecutorFn = async function (_, args, {evaluate}) {
   fn_check_params(args, {minCount: 1});
   const promises = args.map((a) => evaluate(a));
   return await Promise.all(promises);

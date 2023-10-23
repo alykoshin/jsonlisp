@@ -9,7 +9,7 @@ import {
   isList,
   isEmptyList,
   ensureList,
-  ActionListExecutor,
+  ExecutorFn,
   T,
   NIL,
   List,
@@ -45,50 +45,61 @@ export const execNamedAction = async (
     ensureFunction(action, `function definition not found for "${op}"`);
     try {
       return (action as Function).call(st, op, args, st);
-    } catch (e) {
-      (e as Error).message = `Operation ${op} : ` + (e as Error).message;
-      throw e;
+    } catch (e1) {
+      throw new Error(`Error executing "${op}"`, {cause: e1});
     }
   }
 };
 
+async function evaluateListAtom(
+  arg0: string,
+  args: List,
+  st: State
+): Promise<Expression> {
+  st = st.newNextUp(arg0);
+
+  return execNamedAction(arg0, args, st);
+}
+
+async function evaluateListList(
+  arg0: List,
+  args: List,
+  st: State
+): Promise<Expression> {
+  st.logger.debug(`evaluateListList`, arg0);
+
+  const [arg0_arg0, ...args0_args] = arg0;
+  ensureString(arg0_arg0);
+
+  st = st.newNextUp(arg0_arg0);
+
+  st.logger.debug(`evaluateListList`, arg0);
+
+  // ensureList(args2);
+  const arg_values = await series(args, st);
+
+  st.logger.debug(`evaluateListList: arg_values:`, arg_values);
+
+  const preparedFn = await execNamedAction(arg0_arg0, args0_args, st);
+  ensureFunction(preparedFn);
+
+  const res = preparedFn(arg0_arg0, arg_values, st);
+
+  // logger.debug(`eval state at exit:`, st);
+  return res;
+}
+
 async function evaluateList(expr: List, st: State): Promise<Expression> {
-  const [op1, ...args] = expr;
-  let {logger} = st;
+  const [arg0, ...args] = expr;
+  // let {logger} = st;
 
-  if (isString(op1)) {
-    logger = logger.newNextUp(st.runner, {name: op1});
-    st = {...st, logger};
-    const evl = (expr: Expression) => st.runner.evaluate(expr, st);
+  if (isString(arg0)) {
+    // return execNamedAction(op1, args, st);
 
-    logger.debug(`eval string/symbol: "${expr}"`);
-    return execNamedAction(op1, args, {...st, evaluate: evl, logger});
+    return evaluateListAtom(arg0, args, st);
     //
-  } else if (isList(op1)) {
-    logger.debug(`eval list`, op1);
-
-    const [op2, ...args2] = op1; // [ fn_name, arg_names, body ];
-    ensureString(op2);
-
-    logger = logger.newNextUp(st.runner, {name: op2});
-    st = {...st, logger};
-    const evl = (expr: Expression) => st.runner.evaluate(expr, st);
-
-    // ensureList(args2);
-    const arg_values = await series(args, st.evaluate);
-    logger.debug(`evaluateList: arg_values:`, arg_values);
-
-    const preparedFn = await execNamedAction(op2, args2, {
-      ...st,
-      evaluate: evl,
-      logger,
-    });
-    ensureFunction(preparedFn);
-
-    const res = preparedFn(op2, arg_values, st);
-
-    // logger.debug(`eval state at exit:`, st);
-    return res;
+  } else if (isList(arg0)) {
+    return evaluateListList(arg0, args, st);
   }
   // } else if (isFunction(expr)) {
   // expr();
@@ -101,8 +112,15 @@ async function evaluateAtom(expr: Atom, st: State): Promise<Atom> {
   logger.debug(`evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`);
 
   if (isString(expr)) {
-    logger = logger.newNextUp(st.runner, {name: expr});
-    st = {...st, logger};
+    //
+    // logger.debug(
+    // `evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`
+    // );
+    // st = st.newNextUp(expr);
+    // st = st.next();
+    // logger.debug(
+    // `evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`
+    // );
 
     // * This may be either string or symbol
     // * as there is no convenient way to differentiate them inside JSON
@@ -111,9 +129,9 @@ async function evaluateAtom(expr: Atom, st: State): Promise<Atom> {
     const value = st.scopes.get(expr);
     if (value !== undefined) {
       expr = value;
-      logger.debug(
-        `evaluateAtom: var: (${typeof expr}) "${JSON.stringify(expr)}"`
-      );
+      // logger.debug(
+      // `evaluateAtom: var: (${typeof expr}) "${JSON.stringify(expr)}"`
+      // );
     } else {
       // * Handle as string
       // * Replace templates if enabled
@@ -133,23 +151,25 @@ async function evaluateAtom(expr: Atom, st: State): Promise<Atom> {
 /**
  * @name eval
  */
-export const eval_: ActionListExecutor = async function (_, args, state) {
+export const eval_: ExecutorFn = async function (_, args, st) {
+  st.logger.debug('eval_:enter');
+  st.next();
+
   const [expr] = fn_check_params(args, {exactCount: 1});
-  // const {logger} = state;
 
-  // const evaluate = (args: Expression) => eval_(_, [args], state);
-  // const evaluate = curry(eval_, state);
-
-  // state = {...state, evaluate, logger: logger.newNextUp(state.runner)};
-  // logger.debug(`eval state at enter:`, state);
-
+  let res;
   if (isList(expr) && !isEmptyList(expr)) {
-    return await evaluateList(expr, state);
+    st.logger.debug('eval_:enter:list');
+    res = await evaluateList(expr, st);
   } else if (!isEmptyList(expr)) {
-    return await evaluateAtom(expr, state);
+    st.logger.debug('eval_:enter:atom');
+    res = await evaluateAtom(expr, st);
   } else {
-    return expr;
+    st.logger.debug('eval_:enter:else');
+    res = expr;
   }
+  st.logger.debug('eval_:exit');
+  return res;
 };
 
 export const actions: Actions = {

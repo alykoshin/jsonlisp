@@ -5,11 +5,7 @@ import * as path from 'path';
 import {execute} from '../lisp-like/helpers/exec';
 import $versionActions from '../build/$version';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Actions,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Actions, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 export type ZipActionConfig = {
@@ -26,7 +22,7 @@ export type ZipActionConfig = {
 /**
  * @name $zip
  */
-export const $zip: ActionListExecutor = async function (
+export const $zip: ExecutorFn = async function (
   action,
   args,
   state
@@ -35,7 +31,7 @@ export const $zip: ActionListExecutor = async function (
   fn_check_params(args, {exactCount: 1});
   const [pConfig] = args;
 
-  const version = await ($versionActions.$version as ActionListExecutor).call(
+  const version = await ($versionActions.$version as ExecutorFn).call(
     state,
     action,
     [],
@@ -78,7 +74,7 @@ export const $zip: ActionListExecutor = async function (
     // cwd: activity.base_dir,
   };
 
-  const r = await execute(command_line, options, {logger});
+  const r = await execute(command_line, options, {state});
   return r.stdout;
 };
 

@@ -1,10 +1,6 @@
 /** @format */
 
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {removeDirRecursive} from '../../lib/fileUtils/fileUtils';
 import {fn_check_params} from '../../apps/runner/lib/util';
@@ -17,7 +13,7 @@ import {fn_check_params} from '../../apps/runner/lib/util';
  * @name $cleanup
  */
 
-export const $cleanup: ActionListExecutor = async function (
+export const $cleanup: ExecutorFn = async function (
   _,
   args,
   {evaluate, logger}

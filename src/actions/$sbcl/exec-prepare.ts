@@ -1,11 +1,5 @@
 /** @format */
 
-import {cat} from 'shelljs';
-import json5 from 'json5';
-
-import {LogPrefix, Logger} from '../../lib/log';
-import {Parameter} from '../../apps/runner/lib/types';
-
 export function preprocess_sbcl_expr(lisp_expr: string): string {
   // escape double quotes
   lisp_expr = lisp_expr.replace(/"/g, '""');

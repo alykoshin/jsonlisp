@@ -1,5 +1,6 @@
 /** @format */
 import { Parameter } from '../apps/runner/lib/types';
+import { Runner } from '../apps/runner/runner';
 type LogParam = Parameter;
 declare const errorTypes: readonly ["fatal", "error", "warn", "success", "info", "log", "debug"];
 type ErrorType = (typeof errorTypes)[number];
@@ -40,10 +41,10 @@ export declare class GenericLogger<T extends {
 }
 export declare class Logger extends GenericLogger<LogPrefix> {
     new(prefix: Partial<LogPrefix>, level?: ErrorType): Logger;
-    newNext(prefix?: Partial<LogPrefix>, level?: ErrorType): Logger;
-    newUp(prefix?: Partial<LogPrefix>, level?: ErrorType): Logger;
-    newNextUp(prefix?: Partial<LogPrefix>, level?: ErrorType): Logger;
-    next(): void;
+    newNext(prefix: Partial<LogPrefix> | undefined, level: "error" | "log" | "info" | "warn" | "fatal" | "success" | "debug" | undefined, runner: Runner): Logger;
+    newUp(prefix: Partial<LogPrefix> | undefined, level: "error" | "log" | "info" | "warn" | "fatal" | "success" | "debug" | undefined, runner: Runner): Logger;
+    newNextUp(runner: Runner, prefix?: Partial<LogPrefix>, level?: ErrorType): Logger;
+    next(runner: Runner): void;
     up(): void;
 }
 export {};

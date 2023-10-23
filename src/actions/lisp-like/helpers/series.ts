@@ -1,32 +1,55 @@
 /** @format */
 
-import {Parameter, Parameters} from '../../../apps/runner/lib/types';
+import {State} from '../../../apps/runner/lib/state';
+import {
+  EvaluateFn,
+  Parameter,
+  Parameters,
+  ensureList,
+  isList,
+} from '../../../apps/runner/lib/types';
 import {fn_check_params} from '../../../apps/runner/lib/util';
 
 // export const lengthEqual = (lists: any[]): boolean =>
 //   lists.every((l) => lists[0].length === l.length);
 
-//
+// export function a_series<T>(args: T[], evaluate: EvaluateFn): T[] {
+//   const result = [];
+//   for (const a of args) {
+//     const res = await evaluate(a);
+//     result.push(res);
+//   }
+//   return result;
+// }
+
+// export function a_seriesnth<T>(index: number, args: T[]): T {
+//   const result = a_series(args);
+//   if (index < 0) {
+//     index = result.length - 1;
+//   }
+//   return result[index];
+// }
 
 export const series = async (
-  forms: Parameters,
-  evaluate: (parameter: Parameter) => Promise<Parameter>
+  args: Parameters,
+  st: State
 ): Promise<Parameters> => {
-  fn_check_params(forms, {minCount: 0});
+  fn_check_params(args, {minCount: 0});
   const result = [];
-  for (const p of forms) {
-    const res = await evaluate(p);
+  for (const a of args) {
+    const res = await st.evaluate(a);
     result.push(res);
   }
   return result;
+  // return await Promise.all(args.map(async (a) => await st.evaluate(a)));
 };
 
 export const seriesnth = async (
   index: number,
-  forms: Parameters,
-  evaluate: (parameter: Parameter) => Promise<Parameter>
+  args: Parameters,
+  st: State
 ): Promise<Parameter> => {
-  const result = await series(forms, evaluate);
+  const result = await series(args, st);
   if (index < 0) {
     index = result.length - 1;
   }
@@ -35,22 +58,69 @@ export const seriesnth = async (
 };
 
 export const series1 = async (
-  forms: Parameters,
-  evaluate: (parameter: Parameter) => Promise<Parameter>
+  args: Parameters,
+  st: State
 ): Promise<Parameter> => {
-  return seriesnth(0, forms, evaluate);
+  return seriesnth(0, args, st);
 };
 
 export const series2 = async (
-  forms: Parameters,
-  evaluate: (parameter: Parameter) => Promise<Parameter>
+  args: Parameters,
+  st: State
 ): Promise<Parameter> => {
-  return seriesnth(1, forms, evaluate);
+  return seriesnth(1, args, st);
 };
 
 export const seriesn = async (
-  forms: Parameters,
-  evaluate: (parameter: Parameter) => Promise<Parameter>
+  args: Parameters,
+  st: State
 ): Promise<Parameter> => {
-  return seriesnth(-1, forms, evaluate);
+  return seriesnth(-1, args, st);
 };
+
+export const sliceListList = function (
+  listOfLists: Parameters,
+  pos: number
+): Parameters {
+  ensureList(listOfLists);
+  // const slice: Parameters = [];
+  // for (const i in listOfLists) {
+  //   const list = listOfLists[i];
+  //   ensureList(list);
+  //   if (isEmptyList(list)) {
+  //     return NIL;
+  //   }
+  //   // const p = (list as Parameter[]).shift();
+  //   // const r = await evaluate(p);
+  //   // slice.push(r);
+  //   // slice.push(p);
+  //   slice[i] = list[pos];
+  // }
+  let finish = false;
+  const slice = listOfLists.map((l, i) => {
+    ensureList(l);
+    if (!isList(l) || pos >= l.length) {
+      finish = true;
+    } else {
+      return l[pos];
+    }
+  });
+  return finish ? [] : slice;
+};
+// const sliceParams = async function (
+//   listOfLists: Parameters
+// ): Promise<Parameters | null> {
+//   ensureList(listOfLists);
+//   const slice: Parameters = [];
+//   for (const list of listOfLists) {
+//     ensureList(list);
+//     if (isEmptyList(list)) {
+//       return list;
+//     }
+//     const p = (list as Parameter[]).shift();
+//     // const r = await evaluate(p);
+//     // slice.push(r);
+//     slice.push(p);
+//   }
+//   return slice;
+// };

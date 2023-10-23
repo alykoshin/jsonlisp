@@ -14,8 +14,8 @@ import primitivesCases from '../../tests/lisp-like/core/primitives.cases';
 import {Runner} from '../runner/runner';
 
 const allCases = [
-  ...functionsCases,
-  // ...primitivesCases,
+  // ...functionsCases,
+  ...primitivesCases,
 ];
 
 const actions: Actions = {
@@ -92,22 +92,21 @@ function printHeaders() {
   printSeparator();
 }
 
-async function getEvaluate() {
-  // let interpreter;
+async function init() {
   const interpreter = new Runner();
   // replace default actions with the ones we want to test
   // (and their dependencies)
   interpreter.actions = actions;
   const st = await interpreter.init();
-  // return evCurry(interpreter.evaluate);
-  return (expr: Expression) => interpreter.evaluate.call(interpreter, expr, st);
-  // return interpreter.evaluate.bind(interpreter);
+  return st;
 }
 
 async function run() {
   printHeaders();
   let failCount = 0;
-  const evaluate = await getEvaluate();
+  // const evaluate = await init();
+  const st = await init();
+  const {evaluate} = st;
 
   for (const i in allCases) {
     const [exprJlIn, strSbclIn, message] = allCases[i];
@@ -117,7 +116,7 @@ async function run() {
       strSbclOut,
       exprSbclOut,
       ok,
-    } = await testRunner(exprJlIn, strSbclIn, {actions, evaluate});
+    } = await testRunner(exprJlIn, strSbclIn, st);
     if (!ok) failCount++;
 
     const cellValues = [

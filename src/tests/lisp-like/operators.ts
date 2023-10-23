@@ -5,7 +5,7 @@ import {
   Activity,
   ActivityActionsDefinition,
 } from '../../apps/runner/lib/config';
-import $sbcl from '../../actions/$sbcl/';
+import $sbcl from '../../actions/$sbcl';
 
 // prettier-ignore
 const actions: ActivityActionsDefinition = {

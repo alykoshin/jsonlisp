@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
-  ActionListExecutor,
+  ExecutorFn,
   Actions,
   Parameters,
   T,
@@ -40,17 +40,16 @@ import path from 'path';
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
-export const readFileIntoString: ActionListExecutor = async function (
-  action,
-  params,
-  {evaluate, logger}
-) {
-  let [filename] = fn_check_params(params, {exactCount: 1});
-  ensureString((filename = await evaluate(filename)));
-  filename = path.resolve(filename);
-  logger.debug(`reading "${filename}"`);
-  const s = await fs.readFile(filename, {encoding: 'utf8'});
-  logger.debug(`Read ${s.length} chars`);
+export const readFileIntoString: ExecutorFn = async function (_, args, st) {
+  let [pFname] = fn_check_params(args, {exactCount: 1});
+
+  let fname = await st.evaluate(pFname);
+  ensureString(fname);
+  fname = path.resolve(fname);
+  st.logger.debug(`reading "${fname}"`);
+
+  const s = await fs.readFile(fname, {encoding: 'utf8'});
+  st.logger.debug(`Read ${s.length} chars`);
   return s;
 };
 
@@ -64,17 +63,21 @@ export const readFileIntoString: ActionListExecutor = async function (
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- to-file
  *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
  */
-export const writeStringIntoFile: ActionListExecutor = async function (
+export const writeStringIntoFile: ExecutorFn = async function (
   action,
   params,
   {evaluate, logger}
 ) {
-  let [filename, s] = fn_check_params(params, {exactCount: 2});
-  ensureString((filename = await evaluate(filename)));
-  filename = path.resolve(filename);
-  logger.debug(`writing to "${filename}"`);
+  let [pFname, s] = fn_check_params(params, {exactCount: 2});
+
+  let fname = await evaluate(pFname);
+  ensureString(fname);
+  fname = path.resolve(fname);
+  logger.debug(`writing to "${fname}"`);
+
   ensureString((s = await evaluate(s)));
-  await fs.writeFile(filename, s, {encoding: 'utf8'});
+  await fs.writeFile(fname, s, {encoding: 'utf8'});
+
   logger.debug(`Wrote ${s.length} chars`);
   return s;
 };
@@ -86,7 +89,7 @@ export const writeStringIntoFile: ActionListExecutor = async function (
  * 23.3. Renaming, Deleting, and Other File Operations
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node216.html}
  */
-export const renameFile: ActionListExecutor = async function (
+export const renameFile: ExecutorFn = async function (
   action,
   params,
   {evaluate, logger}
@@ -105,7 +108,7 @@ export const renameFile: ActionListExecutor = async function (
 /**
  * @name delete-file
  */
-export const deleteFile: ActionListExecutor = async function (
+export const deleteFile: ExecutorFn = async function (
   action,
   params,
   {evaluate, logger}
@@ -122,7 +125,7 @@ export const deleteFile: ActionListExecutor = async function (
 /**
  * @name probe-file
  */
-export const probeFile: ActionListExecutor = async function (
+export const probeFile: ExecutorFn = async function (
   action,
   params,
   {evaluate, logger}
@@ -156,7 +159,7 @@ export const probeFile: ActionListExecutor = async function (
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000}
  */
 
-export const directory: ActionListExecutor = async function (
+export const directory: ExecutorFn = async function (
   action,
   params,
   {evaluate, logger}

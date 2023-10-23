@@ -8,7 +8,7 @@ import {
   isList,
   isEmptyList,
   ensureList,
-  ActionListExecutor,
+  ExecutorFn,
   T,
   NIL,
   List,
@@ -44,37 +44,31 @@ import {zipObject} from '../helpers/zipObject';
  * - Common Lisp the Language, 2nd Edition -- 5.2.2. Lambda-Expressions --
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
-export const lambda: ActionListExecutor = async function (_, args, {evaluate}) {
+export const lambda: ExecutorFn = async function (_, args, {evaluate}) {
   const [argnames, body] = fn_check_params(args, {exactCount: 2});
-  return createPrepareFn(argnames, body);
+  return createPrepareFn('lambda', argnames, body);
 };
 
 const createPrepareFn = function (
+  name: string,
   argnames: Parameter,
   body: Parameter
-): ActionListExecutor {
+): ExecutorFn {
   ensureList(argnames);
   ensureList(body);
-  const fn: ActionListExecutor = async function lambda(
-    _,
-    argvalues,
-    // {actions, evaluate, runner, logger, scopes}
-    state
-  ) {
-    const {actions, evaluate, runner, logger, scopes} = state;
-    argvalues = await series(argvalues, evaluate);
+  const fn: ExecutorFn = async function lambda(_, argvalues, st) {
+    const {evaluate, runner, logger, scopes} = st;
+    argvalues = await series(argvalues, st);
 
     const sc = zipObject(argnames, argvalues);
     logger.debug('lambda:execute: scope:', sc, ',body:', body);
 
-    const newState: State<Atom> = {
-      ...state,
-      scopes: state.scopes.copy().new(sc),
-    };
-    state.scopes.push(sc);
-    logger.debug('lambda:execute: scopes:', state.scopes);
+    st = st.newNextUp(name);
+    st.scopes = st.scopes.copy().new(sc);
+    // st.scopes.push(sc);
+    logger.debug('lambda:execute: scopes:', st.scopes);
 
-    const res = await runner.evaluate(body, newState);
+    const res = await st.evaluate(body);
     logger.debug('lambda:execute: res:', res);
 
     return res;
@@ -82,10 +76,10 @@ const createPrepareFn = function (
   return fn;
 };
 
-export const defun: ActionListExecutor = async function (_, args, state) {
+export const defun: ExecutorFn = async function (_, args, state) {
   const [name, argnames, body] = fn_check_params(args, {exactCount: 3});
   ensureString(name, `Expect string as a name of function`);
-  state.actions[name] = createPrepareFn(argnames, body);
+  state.actions[name] = createPrepareFn(name, argnames, body);
   return name;
 };
 
@@ -94,6 +88,7 @@ export const defun: ActionListExecutor = async function (_, args, state) {
  */
 // prettier-ignore
 export const null_ = createPrepareFn(
+  'null_', 
   [ 'x' ], [ 'eq', 'x', [] ]
 );
 // export const null_: ActionListExecutor = async function (_, args, {evaluate}) {
@@ -107,6 +102,7 @@ export const null_ = createPrepareFn(
  */
 // prettier-ignore
 export const and_ = createPrepareFn(
+  'and_',
   ['x', 'y'],
   ['cond', ['x', ['cond', ['y', ['quote', T]], [['quote', T], ['quote', []]]]],
           [['quote', T], ['quote', []]]]);

@@ -7,7 +7,6 @@ import {
   T,
   ensureNumber,
 } from '../../apps/runner/lib/types';
-import {series, seriesn} from './helpers/series';
 
 import {cond} from './core/primitives';
 import {asBoolean} from './helpers/typecast';

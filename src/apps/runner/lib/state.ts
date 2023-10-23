@@ -1,45 +1,107 @@
 /** @format */
 
-import {EvaluateFn, Actions, Atom} from './types';
+import {EvaluateFn, Actions, Atom, Expression, Parameter} from './types';
 
 import {Scopes} from '@utilities/object';
 import {Logger} from '../../../lib/log';
 import {Runner} from '../runner';
+import {execNamedAction} from '../../../actions/lisp-like/core/eval';
 
-export interface State {
-  // name: string;
-  // parameters: Parameters;
-  evaluate: EvaluateFn;
-  // id: number | string;
-  // level: number;
-  // scopes: Scopes<Atom>;
-  scopes: Scopes<Atom>;
+const GLOBAL_ACTION_ID = true;
+let lastActionId = 0;
+
+interface IStateInit {
+  id?: number;
+  level?: number;
+  name?: string;
+  names?: string[];
+
   runner: Runner;
-  actions: Actions;
-  logger: Logger;
+  scopes: Scopes<Atom>;
+  logger?: Logger;
 }
-export type EvState = Omit<State, 'evaluate'>;
 
-// export function createState<Atom>({
-//   runner,
-//   scopes,
-//   level,
-//   name,
-// }: {
-//   runner: Runner;
-//   scopes: Scopes<Atom>;
-//   level: number;
-//   name: string;
-// }): EvState {
-//   const state: EvState = {
-//     actions: runner.actions,
-//     logger: new Logger({id: runner.actionCount, level, name}),
-//     runner: runner,
-//     scopes: scopes,
-//     // evaluate: runner.evaluate,
-//   };
-
-//   return {
-//     ...state,
-//   };
+// interface ILoggerState {
+// id: number;
+// level: number;
+// name: string;
 // }
+export interface ILoggerState {
+  id: number;
+  level: number;
+  name: string;
+  names: string[];
+}
+
+export interface IState extends IStateInit {
+  id: number;
+  evaluate: EvaluateFn;
+}
+
+export class State implements IState, ILoggerState {
+  id: number;
+  level: number;
+  name: string;
+  names: string[];
+
+  public runner: Runner;
+  public scopes: Scopes<Atom>;
+  public actions: Actions;
+  public logger: Logger;
+
+  constructor(init: IStateInit) {
+    // Object.assign(this, init);
+    this.id = init.id === undefined ? 0 : init.id;
+    this.level = init.level === undefined ? 0 : init.level;
+    this.name = init.name || 'start';
+    this.names = init.names || [];
+
+    this.runner = init.runner;
+    this.scopes = init.scopes;
+    this.actions = init.runner.actions;
+    this.logger = init.logger ? init.logger : new Logger(this);
+    this.evaluate = this.evaluate.bind(this);
+  }
+
+  async evaluate(expr: Expression): Promise<Parameter> {
+    // return this.runner.evaluate.call(this, expr, this);
+    this.logger.debug('state.evaluate -> eval');
+    return await execNamedAction('eval', [expr], this);
+  }
+
+  new(): State {
+    return new State(this);
+  }
+
+  next(): State {
+    if (GLOBAL_ACTION_ID) {
+      lastActionId++;
+      this.id = lastActionId;
+    } else {
+      this.id++;
+    }
+    this.logger.debug('next');
+    return this;
+  }
+
+  up(name: string): State {
+    this.level++;
+    this.name = name;
+    this.names.push(name);
+    if (GLOBAL_ACTION_ID) {
+      // lastActionId++;
+      // this.id = lastActionId;
+    } else {
+      // lastActionId++;
+      this.id = 0;
+    }
+    this.logger.debug('up');
+    return this;
+  }
+
+  newNextUp(name: string): State {
+    const res = this.new().up(name);
+    res.logger = this.logger.new(res);
+    return res;
+  }
+}

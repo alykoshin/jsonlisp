@@ -8,7 +8,7 @@ exports.$copyResourcesRecursive = void 0;
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 const util_1 = require("../../apps/runner/lib/util");
-const fsUtils_1 = require("./helpers/fsUtils");
+const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 /**
  * @module $build
  */
@@ -23,7 +23,7 @@ const $copyResourcesRecursive = async function (_, args, state) {
     const excludeDirs = Array.isArray(excludeDirs_)
         ? excludeDirs_
         : [excludeDirs_];
-    const pathnames = await (0, fsUtils_1.getFilesRecursive)(sourceDir, {
+    const pathnames = await (0, fileUtils_1.getFilesRecursive)(sourceDir, {
         extnames: [
             '.bmp',
             '.png',

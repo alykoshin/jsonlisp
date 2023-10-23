@@ -2,11 +2,7 @@
 
 import {execute} from '../lisp-like/helpers/exec';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Atom,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Atom, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 export type YarnInstallProdActionConfig = {
@@ -27,11 +23,7 @@ function installDepsCmd() {
 /**
  * @module $yarnInstallProd
  */
-export const $yarnInstallProd: ActionListExecutor = async function (
-  _,
-  args,
-  {logger}
-) {
+export const $yarnInstallProd: ExecutorFn = async function (_, args, state) {
   fn_check_params(args, {exactCount: 1});
 
   const {cwd, env} = args[0] as YarnInstallProdActionConfig;
@@ -42,7 +34,7 @@ export const $yarnInstallProd: ActionListExecutor = async function (
   };
 
   const command_line = installDepsCmd();
-  const r = await execute(command_line, options, {logger});
+  const r = await execute(command_line, options, {state});
 
   return r.stdout;
 };

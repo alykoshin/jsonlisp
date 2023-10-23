@@ -124,7 +124,7 @@ exports.SimpleLogger = SimpleLogger;
   logger2 = logger({id: 2}).log('abc').debug('def')
  */
 function _prefixToString(prefix) {
-    let p = `${prefix.level}/${prefix.id}`;
+    let p = `${prefix.id}/${prefix.level}`;
     // let namePart = prefix.name ? `/${prefix.name}` : ``;
     let namePart = prefix.name ? prefix.name : ``;
     return `[${p}] [${namePart}]`;
@@ -182,33 +182,37 @@ class Logger extends GenericLogger {
     new(prefix, level = this._level) {
         return new Logger({ ...this._prefix, ...prefix }, level);
     }
-    newNext(prefix = {}, level = this._level) {
+    newNext(prefix = {}, level = this._level, runner) {
         const res = new Logger({
             ...this._prefix,
             ...prefix,
+            name: this._prefix.name + '/' + prefix.name,
         }, level);
-        res.next();
+        res.next(runner);
         return res;
     }
-    newUp(prefix = {}, level = this._level) {
+    newUp(prefix = {}, level = this._level, runner) {
         const res = new Logger({
             ...this._prefix,
             ...prefix,
+            name: this._prefix.name + '/' + prefix.name,
         }, level);
         res.up();
         return res;
     }
-    newNextUp(prefix = {}, level = this._level) {
+    newNextUp(runner, prefix = {}, level = this._level) {
         const res = new Logger({
             ...this._prefix,
             ...prefix,
+            name: this._prefix.name + '/' + prefix.name,
         }, level);
-        res.next();
+        res.next(runner);
         res.up();
         return res;
     }
-    next() {
-        this._prefix.id += 1;
+    next(runner) {
+        runner.actionCount++;
+        this._prefix.id = runner.actionCount;
         // return this;
     }
     up() {

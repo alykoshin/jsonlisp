@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import {Atom, Parameter} from '../apps/runner/lib/types';
-import {Runner} from '../apps/runner/runner';
+import {ILoggerState} from '../apps/runner/lib/state';
 
 /*
 debug(...args: any[]) {
@@ -32,7 +32,7 @@ function getLogStrs(
   });
 }
 
-const errorTypes = [
+const errorLevels = [
   'fatal',
   'error',
   'warn',
@@ -42,9 +42,9 @@ const errorTypes = [
   'debug',
 ] as const;
 
-type ErrorType = (typeof errorTypes)[number];
+type ErrorLevel = (typeof errorLevels)[number];
 
-type ErrorColorsMap = Record<ErrorType, typeof chalk.Color>;
+type ErrorColorsMap = Record<ErrorLevel, typeof chalk.Color>;
 
 const errorColors: ErrorColorsMap = {
   fatal: 'redBright',
@@ -56,7 +56,7 @@ const errorColors: ErrorColorsMap = {
   debug: 'grey',
 };
 
-const textPrefixes: Partial<Record<ErrorType, string>> = {
+const textPrefixes: Partial<Record<ErrorLevel, string>> = {
   // success: "",
   fatal: 'FATAL',
   error: 'ERROR',
@@ -67,10 +67,10 @@ const textPrefixes: Partial<Record<ErrorType, string>> = {
 };
 
 function log_data(
-  errorType: ErrorType,
+  errorType: ErrorLevel,
   prefix: LogStrPrefix = '',
   data: LogParam | LogParam[]
-) {
+): string {
   const color = errorColors[errorType];
   const data_ = Array.isArray(data) ? data : [data];
 
@@ -99,208 +99,100 @@ function debugPrimitive(value: Atom): string {
 
 //
 
-export interface LogPrefix {
-  id: number;
-  level: number;
-  name: string;
+export abstract class AbstractLogger {
+  _errorLevel: ErrorLevel;
+
+  constructor(errorLevel: ErrorLevel = 'debug') {
+    this._errorLevel = errorLevel;
+  }
+
+  abstract getPrefix(): string;
+
+  isLevelEnabled(level: ErrorLevel) {
+    return errorLevels.indexOf(this._errorLevel) >= errorLevels.indexOf(level);
+  }
+
+  log_data(level: ErrorLevel, data: LogParam | LogParam[]) {
+    if (this.isLevelEnabled(level))
+      return log_data(level, this.getPrefix(), data);
+  }
+  //
+
+  fatal(...params: LogParam[]): never {
+    this.log_data('fatal', params);
+    throw new Error(params.join(' '));
+  }
+
+  error(...params: LogParam[]): void {
+    this.log_data('error', params);
+  }
+
+  warn(...params: LogParam[]): void {
+    this.log_data('warn', params);
+  }
+
+  success(...params: LogParam[]): void {
+    this.log_data('success', params);
+  }
+
+  info(...params: LogParam[]): void {
+    this.log_data('info', params);
+  }
+
+  log(...params: LogParam[]): void {
+    this.log_data('log', params);
+  }
+
+  debug(...params: LogParam[]): void {
+    this.log_data('debug', params);
+  }
 }
 
-export class SimpleLogger {
-  _level: ErrorType;
+export class SimpleLogger extends AbstractLogger {
   _prefix: string;
-  constructor(prefix: string, level: ErrorType = 'debug') {
-    this._level = level;
+  constructor(prefix: string, errorLevel: ErrorLevel = 'debug') {
+    super(errorLevel);
     this._prefix = prefix;
     // this.prefix(prefix);
   }
 
-  isLevelEnabled(level: ErrorType) {
-    return errorTypes.indexOf(this._level) >= errorTypes.indexOf(level);
-  }
-
-  //
-
-  fatal(...params: LogParam[]): never {
-    const msg = log_data('fatal', this._prefix, params);
-    throw new Error(params.join(' '));
-  }
-
-  error(...params: LogParam[]): this {
-    if (this.isLevelEnabled('error')) log_data('error', this._prefix, params);
-    return this;
-  }
-
-  warn(...params: LogParam[]): this {
-    if (this.isLevelEnabled('warn')) log_data('warn', this._prefix, params);
-    return this;
-  }
-
-  success(...params: LogParam[]): this {
-    if (this.isLevelEnabled('success'))
-      log_data('success', this._prefix, params);
-    return this;
-  }
-
-  info(...params: LogParam[]): this {
-    if (this.isLevelEnabled('info')) log_data('info', this._prefix, params);
-    return this;
-  }
-
-  log(...params: LogParam[]): this {
-    if (this.isLevelEnabled('log')) log_data('log', this._prefix, params);
-    return this;
-  }
-
-  debug(...params: LogParam[]): this {
-    if (this.isLevelEnabled('debug')) log_data('debug', this._prefix, params);
-    return this;
+  getPrefix(): string {
+    return this._prefix;
   }
 }
 
-/**
+function _prefixToString(state: ILoggerState): string {
+  let p = `${state.id}/${state.level}`;
 
- //
- // Possible implementations:
- //
-  const logger = new Logger({ id: 1, level: 1}).log('test')
-
-  const logger = Logger({id, level}).log('test')
-  logger2 = logger({id: 2}).log('abc').debug('def')
- */
-
-function _prefixToString(prefix: LogPrefix): string {
-  let p = `${prefix.id}/${prefix.level}`;
-
-  // let namePart = prefix.name ? `/${prefix.name}` : ``;
-  let namePart = prefix.name ? prefix.name : ``;
+  // let namePart = state.name ? `/${state.name}` : ``;
+  // let namePart = state.name ? state.name : ``;
+  let namePart = state.names.join('/');
 
   return `[${p}] [${namePart}]`;
 }
 
-export class GenericLogger<T extends {[key: string]: any}> {
-  _level: ErrorType;
-  _prefix: T;
-  logger: SimpleLogger;
-  constructor(prefix: T, level: ErrorType = 'debug') {
-    this._level = level;
-    this._prefix = prefix;
-    const sPrefix = this._prefixToString(prefix);
-    this.logger = new SimpleLogger(sPrefix, level);
-    // this.prefix(prefix);
+export class Logger extends AbstractLogger {
+  state: ILoggerState;
+
+  constructor(state: ILoggerState, errorLevel?: ErrorLevel) {
+    // const prefix = _prefixToString(state);
+    // super(prefix, errorLevel);
+    super(errorLevel);
+    this.state = state;
   }
 
-  prefix(prefix: T) {
-    this._prefix = prefix;
+  getPrefix(): string {
+    return _prefixToString(this.state);
   }
 
-  _prefixToString(prefix: T): string {
-    let p = `${this._prefix.level}/${this._prefix.id}`;
-
-    // let namePart = prefix.name ? `/${prefix.name}` : ``;
-    let namePart = prefix.name ? prefix.name : ``;
-
-    return `[${p}] [${namePart}]`;
-  }
-
-  //
-  fatal(...params: LogParam[]): never {
-    this.logger.fatal(...params);
-  }
-
-  error(...params: LogParam[]): void {
-    this.logger.error(...params);
-  }
-
-  warn(...params: LogParam[]): void {
-    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('warn'))
-      log_data('warn', this._prefixToString(this._prefix), params);
-  }
-
-  success(...params: LogParam[]): void {
-    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('success'))
-      log_data('success', this._prefixToString(this._prefix), params);
-  }
-
-  info(...params: LogParam[]): void {
-    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('info'))
-      log_data('info', this._prefixToString(this._prefix), params);
-  }
-
-  log(...params: LogParam[]): void {
-    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('log'))
-      log_data('log', this._prefixToString(this._prefix), params);
-  }
-
-  debug(...params: LogParam[]): void {
-    if (errorTypes.indexOf(this._level) >= errorTypes.indexOf('debug'))
-      log_data('debug', this._prefixToString(this._prefix), params);
-  }
-}
-
-export class Logger extends GenericLogger<LogPrefix> {
-  new(prefix: Partial<LogPrefix>, level: ErrorType = this._level) {
-    return new Logger({...this._prefix, ...prefix}, level);
-  }
-
-  newNext(
-    prefix: Partial<LogPrefix> = {},
-    level: ErrorType = this._level,
-    runner: Runner
-  ) {
-    const res = new Logger(
-      {
-        ...this._prefix,
-        ...prefix,
-        name: this._prefix.name + '/' + prefix.name,
-      },
-      level
-    );
-    res.next(runner);
-    return res;
-  }
-
-  newUp(
-    prefix: Partial<LogPrefix> = {},
-    level: ErrorType = this._level,
-    runner: Runner
-  ) {
-    const res = new Logger(
-      {
-        ...this._prefix,
-        ...prefix,
-        name: this._prefix.name + '/' + prefix.name,
-      },
-      level
-    );
-    res.up();
-    return res;
-  }
-
-  newNextUp(
-    runner: Runner,
-    prefix: Partial<LogPrefix> = {},
-    level: ErrorType = this._level
-  ) {
-    const res = new Logger(
-      {
-        ...this._prefix,
-        ...prefix,
-        name: this._prefix.name + '/' + prefix.name,
-      },
-      level
-    );
-    res.next(runner);
-    res.up();
-    return res;
-  }
-
-  next(runner: Runner) {
-    runner.actionCount++;
-    this._prefix.id = runner.actionCount;
-    // return this;
-  }
-  up() {
-    this._prefix.level += 1;
-    // return this;
+  new(state: ILoggerState, level: ErrorLevel = this._errorLevel) {
+    // const newState = {
+    //   ...this.state,
+    //   ...state,
+    //   name: this.state.name + '/' + state.name,
+    // };
+    // this._prefix = _prefixToString(state);
+    return new Logger(state, level);
+    // return new Logger(newState, level);
   }
 }

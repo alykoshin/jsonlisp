@@ -2,11 +2,7 @@
 
 import fs from 'fs/promises';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 /**
  * @module $build
@@ -15,7 +11,7 @@ import {State} from '../../apps/runner/lib/state';
  * @name $version
  */
 
-export const $rm: ActionListExecutor = async function (_, args, {evaluate}) {
+export const $rm: ExecutorFn = async function (_, args, {evaluate}) {
   // const { runner, logger } = state;
   // fn_check_params(parameters, { minCount: 1 });
 

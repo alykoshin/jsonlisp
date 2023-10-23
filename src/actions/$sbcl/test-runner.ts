@@ -1,21 +1,16 @@
 /** @format */
 
-import {
-  isList,
-  Expression,
-  Actions,
-  EvaluateFn,
-  isNil,
-} from '../../apps/runner/lib/types';
+import {isList, Expression, isNil} from '../../apps/runner/lib/types';
 import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 import {get_sbcl_cmd, preprocess_sbcl_expr} from './exec-prepare';
 import {execute} from '../lisp-like/helpers/exec';
-import {Logger} from '../../lib/log';
+import {State} from '../../apps/runner/lib/state';
 
 export const testRunner = async function (
   exprJlIn: Expression,
   strSbclIn: string,
-  {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
+  // {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
+  st: State
 ): Promise<{
   exprJlIn: Expression;
   exprJlOut: Expression;
@@ -24,14 +19,15 @@ export const testRunner = async function (
   strSbclOut: string;
   exprSbclOut: Expression;
 }> {
-  const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
+  // const st = new State({});
+  // const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
 
-  const exprJlOut = await evaluate(exprJlIn);
+  const exprJlOut = await st.evaluate(exprJlIn);
 
   try {
     const c = get_sbcl_cmd(strSbclIn);
-    const {stdout: strSbclOut} = await execute(c, {}, {logger});
-    const exprSbclOut = parse_sbcl_list(strSbclOut, {logger});
+    const {stdout: strSbclOut} = await execute(c, {}, {state: st});
+    const exprSbclOut = parse_sbcl_list(strSbclOut, st);
 
     // console.log('exprJlOut:', exprJlOut);
     // console.log('sbclRaw:', sbclRaw);

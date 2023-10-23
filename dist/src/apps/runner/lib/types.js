@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ensureList_logger = exports.ensureFunction = exports.ensureString = exports.ensureNumber = exports.ensureList = exports.isEmptyList = exports.isList = exports.isSymbol = exports.isString = exports.isAtom = exports.isNil = exports.NIL = exports.isT = exports.T = void 0;
+exports.ensureFunction = exports.ensureString = exports.ensureNumber = exports.ensureList = exports.isEmptyList = exports.isList = exports.isSymbol = exports.isString = exports.isAtom = exports.isNil = exports.NIL = exports.isT = exports.T = void 0;
 const util_1 = require("util");
 exports.T = true;
 const isT = (value) => value === true;
@@ -60,25 +60,4 @@ function ensureFunction(val, msg = '') {
     }
 }
 exports.ensureFunction = ensureFunction;
-// export function ensureListOrSymb(val: Parameter,
-// msg: string = ''): asserts val is List | Symb {
-//   const types = ['string'];
-//   if (typeof val !== 'string') {
-//     throw new Error(notOfTypeMsg(val, 'string', msg));
-//   }
-// }
-function ensureList_logger(val, logger) {
-    try {
-        ensureList(val);
-    }
-    catch (e) {
-        if (logger) {
-            logger.fatal(e.message);
-        }
-        else {
-            throw e;
-        }
-    }
-}
-exports.ensureList_logger = ensureList_logger;
 //# sourceMappingURL=types.js.map

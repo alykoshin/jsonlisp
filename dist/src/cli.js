@@ -50,6 +50,7 @@ program
         `action: "${actionName}", ` +
         `parameters: ${JSON.stringify(parameters)}, ` +
         `options: ${JSON.stringify(options)}`);
+    const action = [actionName, ...parameters];
     const activityData = activityName
         ? await (0, config_1.readActivityFile)(activityName)
         : undefined;
@@ -70,11 +71,11 @@ program
     const finalData = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
     console.log(`finalData: "${JSON.stringify(finalData)}"`);
     const runner = new runner_1.Runner();
-    await runner.start({
+    const st = await runner.init({
         activity: activityData,
-        action: [actionName, ...parameters],
         scope: finalData,
     });
+    await runner.start(action, st);
 })
     .addHelpText('after', `
     Example calls (Windows):

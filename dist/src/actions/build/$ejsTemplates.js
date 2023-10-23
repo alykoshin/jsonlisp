@@ -8,7 +8,7 @@ exports.$ejsTemplates = void 0;
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
 const ejs_1 = __importDefault(require("ejs"));
-const fsUtils_1 = require("../build/helpers/fsUtils");
+const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 const util_1 = require("../../apps/runner/lib/util");
 const DEBUG = false;
 // export type EjsTemplatesAction = [
@@ -40,7 +40,7 @@ const $ejsTemplates = async function (_, args, state) {
         root: PROJECT_ROOT_DIR,
         rmWhitespace: !DEBUG,
     };
-    const ejsFiles = await (0, fsUtils_1.getFilesRecursive)(sourceDir, {
+    const ejsFiles = await (0, fileUtils_1.getFilesRecursive)(sourceDir, {
         extnames: '.ejs',
         excludeDirs,
     });

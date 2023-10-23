@@ -6,21 +6,50 @@ const series_1 = require("./helpers/series");
 /**
  * @module iteration-and-mapping
  */
-const sliceParams = async function (listOfLists) {
+const peekListOfLists = async function (listOfLists, pos) {
     (0, types_1.ensureList)(listOfLists);
-    const slice = [];
-    for (const list of listOfLists) {
-        (0, types_1.ensureList)(list);
-        if ((0, types_1.isEmptyList)(list)) {
-            return list;
+    // const slice: Parameters = [];
+    // for (const i in listOfLists) {
+    //   const list = listOfLists[i];
+    //   ensureList(list);
+    //   if (isEmptyList(list)) {
+    //     return NIL;
+    //   }
+    //   // const p = (list as Parameter[]).shift();
+    //   // const r = await evaluate(p);
+    //   // slice.push(r);
+    //   // slice.push(p);
+    //   slice[i] = list[pos];
+    // }
+    let finish = false;
+    const slice = listOfLists.map((l, i) => {
+        (0, types_1.ensureList)(l);
+        if (!(0, types_1.isList)(l) || pos >= l.length) {
+            finish = true;
         }
-        const p = list.shift();
-        // const r = await evaluate(p);
-        // slice.push(r);
-        slice.push(p);
-    }
-    return slice;
+        else {
+            return l[pos];
+        }
+    });
+    return finish ? [] : slice;
 };
+// const sliceParams = async function (
+//   listOfLists: Parameters
+// ): Promise<Parameters | null> {
+//   ensureList(listOfLists);
+//   const slice: Parameters = [];
+//   for (const list of listOfLists) {
+//     ensureList(list);
+//     if (isEmptyList(list)) {
+//       return list;
+//     }
+//     const p = (list as Parameter[]).shift();
+//     // const r = await evaluate(p);
+//     // slice.push(r);
+//     slice.push(p);
+//   }
+//   return slice;
+// };
 //
 let actions = {};
 //
@@ -110,24 +139,46 @@ const actions2 = {
     mapc: async function (_, [fn, ...listOfLists], { evaluate, logger }) {
         (0, types_1.ensureList)(listOfLists);
         (0, types_1.ensureList)(listOfLists[0]);
-        const list0 = listOfLists[0].slice(); // save first list as we modify arrays inside `sliceParams`
+        // mapc is like mapcar except that the results of applying function
+        // are not accumulated.The list argument is returned.
+        //
+        // save first list as we modify arrays inside `sliceParams`
+        const list0 = listOfLists[0].slice();
+        //
         fn = await evaluate(fn);
+        let i = 0;
         let ps;
-        while ((ps = await sliceParams(listOfLists))) {
-            const rs = await evaluate([fn, ...ps]);
+        let rs;
+        while (!(0, types_1.isNil)((ps = await peekListOfLists(listOfLists, i++)))) {
+            logger.debug('ps:', ps);
+            rs = await evaluate([fn, ...ps]);
         }
         return list0;
+        // mapc: async function (_, [fn, ...listOfLists], {evaluate, logger}) {
+        //     ensureList(listOfLists);
+        //     ensureList(listOfLists[0]);
+        //     const list0 = listOfLists[0].slice(); // save first list as we modify arrays inside `sliceParams`
+        //     fn = await evaluate(fn);
+        //     let ps;
+        //     while ((ps = await sliceParams(listOfLists))) {
+        //       logger.debug('ps:', ps);
+        //       const rs = await evaluate([fn, ...ps]);
+        //     }
+        //     return list0;
     },
     /**
      * @name mapcar
      *
      * !!! todo: Not modify list !!!
      */
-    mapcar: async function (_, [fn, ...lists], { evaluate, logger }) {
-        let ps;
+    mapcar: async function (_, [fn, ...listOfLists], { evaluate, logger }) {
+        (0, types_1.ensureList)(listOfLists);
         fn = await evaluate(fn);
+        let i = 0;
+        let ps;
         const results = [];
-        while ((ps = await sliceParams(lists))) {
+        // while ((ps = await sliceParams(lists))) {
+        while (!(0, types_1.isNil)((ps = await peekListOfLists(listOfLists, i++)))) {
             const rs = await evaluate([fn, ...ps]);
             results.push(rs);
         }

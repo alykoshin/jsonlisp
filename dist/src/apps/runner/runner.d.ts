@@ -1,37 +1,21 @@
 /** @format */
-import { ScopeObject, Scopes } from '@utilities/object';
-import { Activity } from './lib/config';
-import { Atom, Actions, Parameter, ActionMethodState } from './lib/types';
-type ActionArg = string;
-type ActionWithParamsArg = string[];
-export declare class Runner<A> {
-    maxLevels: number;
-    maxSteps: number;
-    scopes: Scopes<Atom>;
+import { ScopeObject } from '@utilities/object';
+import type { Activity } from './lib/config';
+import type { Atom, Actions, Parameter, Expression } from './lib/types';
+import { type EvState, NewState } from './lib/state';
+import { Tracer, TracerConstructorOptions } from './lib/tracer';
+interface RunnerConstructorOptions extends TracerConstructorOptions {
+}
+export declare class Runner {
     actions: Actions;
     actionCount: number;
-    constructor(opts?: {
-        maxLevels?: number;
-        maxSteps?: number;
-    });
-    start({ activity, action, scope, }: {
-        activity: Activity | undefined;
-        action: ActionArg | ActionWithParamsArg;
-        scope: ScopeObject<Atom>;
-    }): Promise<void>;
-    evaluate(param: Parameter, state_?: ActionMethodState<Atom>): Promise<Parameter>;
-    _incLevel(state: {
-        level: number;
-    }): void;
-    _decLevel(state: {
-        level: number;
-    }): void;
-    _incSteps(): number;
-    _resetState(state: {
-        level: number;
-    }): void;
-    _initState(): {
-        level: number;
-    };
+    tracer: Tracer;
+    constructor({ maxLevels, maxSteps }?: RunnerConstructorOptions);
+    init({ activity, scope, }?: {
+        activity?: Activity;
+        scope?: ScopeObject<Atom>;
+    }): Promise<NewState>;
+    start(args: string[], st: EvState): Promise<void>;
+    evaluate(expr: Expression, st: EvState): Promise<Parameter>;
 }
 export {};

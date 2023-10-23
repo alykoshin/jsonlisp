@@ -13,10 +13,10 @@ export const isNil = (value: any): boolean =>
 
 export type EvaluateFn = (expr: Expression) => Promise<Parameter>;
 
-export type ActionListExecutor = (
+export type ExecutorFn = (
   // this: ActionMethodState,
   name: string,
-  parameters: Parameters,
+  args: Parameters,
   state: State
 ) => Promise<Parameter>;
 
@@ -47,7 +47,7 @@ export const isAtom = (value: any): value is Atom =>
 export type GenericList<Atom> = (Atom | GenericList<Atom>)[];
 
 export type List = GenericList<Atom>;
-export type Expression = Atom | List | ActionListExecutor;
+export type Expression = Atom | List | ExecutorFn;
 
 export type Parameter = Expression;
 export type Parameters = Parameter[];
@@ -109,7 +109,7 @@ export function ensureFunction(
   }
 }
 
-export type ActionDefinition = ActionName | ActionListExecutor | Expression;
+export type ActionDefinition = ActionName | ExecutorFn | Expression;
 
 export type Actions = {
   [name: string]: ActionDefinition;

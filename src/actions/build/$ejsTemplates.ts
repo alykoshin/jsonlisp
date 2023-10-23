@@ -6,11 +6,7 @@ import ejs from 'ejs';
 
 import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
 const DEBUG = false;
@@ -33,11 +29,7 @@ export type EjsTemplatesActionConfig = {
 /**
  * @name $ejsTemplates
  */
-export const $ejsTemplates: ActionListExecutor = async function (
-  _,
-  args,
-  state
-) {
+export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
   const {runner, logger} = state;
   fn_check_params(args, {exactCount: 1});
 

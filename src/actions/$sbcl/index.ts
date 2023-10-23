@@ -2,7 +2,7 @@
 
 import {
   ActionDefinition,
-  ActionListExecutor,
+  ExecutorFn,
   Actions,
   Parameters,
 } from '../../apps/runner/lib/types';
@@ -25,11 +25,7 @@ import {get_sbcl_cmd} from './exec-prepare';
  * @name $sbcl
  */
 
-export const $sbcl: ActionListExecutor = async function (
-  a,
-  params,
-  {evaluate}
-) {
+export const $sbcl: ExecutorFn = async function (a, params, {evaluate}) {
   const line = await evaluate(params[0]);
   // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
   const res = await evaluate([`shell-command`, get_sbcl_cmd(String(line))]);
@@ -77,7 +73,7 @@ export const $sbcl: ActionListExecutor = async function (
 /**
  * @name $sbcl-to-list
  */
-export const $sbclToList: ActionListExecutor = async function (
+export const $sbclToList: ExecutorFn = async function (
   _,
   args,
   {evaluate, logger}

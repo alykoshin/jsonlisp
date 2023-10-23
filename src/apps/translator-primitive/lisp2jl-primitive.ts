@@ -3,7 +3,7 @@
 import {cat} from 'shelljs';
 import json5 from 'json5';
 
-import {LogPrefix, Logger} from '../../lib/log';
+import {Logger} from '../../lib/log';
 import {Parameter} from '../runner/lib/types';
 
 export function parse_sbcl_bool(

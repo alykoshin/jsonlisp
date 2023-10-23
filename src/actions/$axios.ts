@@ -1,11 +1,7 @@
 /** @format */
 
 import axios from 'axios';
-import {
-  ActionListExecutor,
-  Actions,
-  ensureString,
-} from '../apps/runner/lib/types';
+import {ExecutorFn, Actions, ensureString} from '../apps/runner/lib/types';
 import {fn_check_params} from '../apps/runner/lib/util';
 
 /**
@@ -16,11 +12,7 @@ import {fn_check_params} from '../apps/runner/lib/util';
  * @name $axios
  */
 
-export const $axios: ActionListExecutor = async function (
-  _,
-  args,
-  {evaluate, logger}
-) {
+export const $axios: ExecutorFn = async function (_, args, {evaluate, logger}) {
   let [method, url, body] = fn_check_params(args, {exactCount: [2, 3]});
   ensureString((method = await evaluate(method)));
   ensureString((url = await evaluate(url)));

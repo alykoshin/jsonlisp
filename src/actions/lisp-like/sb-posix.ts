@@ -2,7 +2,7 @@
 
 import {fn_check_params} from '../../apps/runner/lib/util';
 import {
-  ActionListExecutor,
+  ExecutorFn,
   Actions,
   Parameters,
   ensureString,
@@ -24,11 +24,8 @@ import {series} from './helpers/series';
  * - Function: SB-POSIX:SETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html} <br>
  * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
  */
-export const setenv: ActionListExecutor = async function (
-  _,
-  params,
-  {evaluate, logger}
-) {
+export const setenv: ExecutorFn = async function (_, params, st) {
+  const {evaluate, logger} = st;
   fn_check_params(params, {exactCount: [2, 3]});
   // const [pName, pValue, pOverwrite] = await series(params, evaluate);
   const [pName, pValue, pOverwrite] = params;
@@ -48,7 +45,7 @@ export const setenv: ActionListExecutor = async function (
  * - Function: SB-EXT:POSIX-GETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-ext/function/POSIX-GETENV.html} <br>
  * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp#L966C19-L966C19} <br>
  */
-export const getenv: ActionListExecutor = async function (
+export const getenv: ExecutorFn = async function (
   _,
   params,
   {evaluate, logger}
@@ -69,11 +66,7 @@ export const getenv: ActionListExecutor = async function (
  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
  *
  */
-export const chdir: ActionListExecutor = async function (
-  _,
-  params,
-  {evaluate}
-) {
+export const chdir: ExecutorFn = async function (_, params, {evaluate}) {
   fn_check_params(params, {exactCount: 1});
   const dir = await evaluate(params[0]);
   ensureString(dir);
@@ -84,7 +77,7 @@ export const chdir: ActionListExecutor = async function (
 /**
  * @name getcwd
  */
-export const getcwd: ActionListExecutor = async function (_, params, {logger}) {
+export const getcwd: ExecutorFn = async function (_, params, {logger}) {
   fn_check_params(params, {exactCount: 0});
   const res = process.cwd();
   logger.debug(stringify(res));

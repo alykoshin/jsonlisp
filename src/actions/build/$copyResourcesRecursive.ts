@@ -3,11 +3,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import {fn_check_params} from '../../apps/runner/lib/util';
-import {
-  ActionListExecutor,
-  Parameter,
-  Parameters,
-} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 
@@ -25,7 +21,7 @@ export type CopyResourcesRecursiveActionConfig = {
  * @name $copyResourcesRecursive
  */
 
-export const $copyResourcesRecursive: ActionListExecutor = async function (
+export const $copyResourcesRecursive: ExecutorFn = async function (
   _,
   args,
   state

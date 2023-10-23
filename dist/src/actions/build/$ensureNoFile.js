@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureNoFile = void 0;
-const fsUtils_1 = require("./helpers/fsUtils");
+const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 const util_1 = require("../../apps/runner/lib/util");
 /**
  * @module $build
@@ -18,7 +18,7 @@ const $ensureNoFile = async function (_, args, { evaluate, logger }) {
         const pFilename = await evaluate(p);
         const sFilename = String(pFilename);
         logger.debug(`$ensureNoFile ${sFilename}`);
-        await (0, fsUtils_1.ensureNoFile)(sFilename);
+        await (0, fileUtils_1.ensureNoFile)(sFilename);
         result.push(sFilename);
     }
     return result;

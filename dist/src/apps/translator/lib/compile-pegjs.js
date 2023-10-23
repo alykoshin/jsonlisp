@@ -31,9 +31,10 @@ exports.compileFileDir = exports.compileFileList = exports.compileSourceFileWith
 const promises_1 = __importDefault(require("fs/promises"));
 const mkdirp = __importStar(require("mkdirp"));
 const peggy_1 = __importStar(require("peggy"));
-const fileUtils_1 = require("../../../lib/fileUtils");
+const jsonFileUtils_1 = require("../../../lib/fileUtils/read-write/jsonFileUtils");
+const textFileUtils_1 = require("../../../lib/fileUtils/read-write/textFileUtils");
 const ast2jl_1 = require("./ast2jl");
-const fileUtils_2 = require("../../../lib/fileUtils");
+const fileUtils_1 = require("../../../lib/fileUtils/fileUtils");
 const path_1 = __importDefault(require("path"));
 // export async function readGrammar(inPathname: string): Promise<string> {
 // return await readStringFile(inPathname);
@@ -46,7 +47,7 @@ const path_1 = __importDefault(require("path"));
 // return {SyntaxError, parse};
 // }
 async function compileGrammarFile(base_path, grammarRelname) {
-    const s_grammar = await (0, fileUtils_1.readStringFile)(path_1.default.join(base_path, grammarRelname));
+    const s_grammar = await (0, textFileUtils_1.readTextFile)(path_1.default.join(base_path, grammarRelname));
     try {
         const source = peggy_1.default.generate(s_grammar, {
             output: 'source-and-map',
@@ -54,11 +55,11 @@ async function compileGrammarFile(base_path, grammarRelname) {
         });
         const subDir = '../out/grammar/';
         const code = source.toString();
-        const jsPname = (0, fileUtils_2.makePath)(base_path, subDir, grammarRelname, '.js');
-        await (0, fileUtils_1.writeStringFile)(jsPname, code);
+        const jsPname = (0, fileUtils_1.makePath)(base_path, subDir, grammarRelname, '.js');
+        await (0, textFileUtils_1.writeTextFile)(jsPname, code);
         const sourceMap = source.toStringWithSourceMap().map.toString();
-        const mapPname = (0, fileUtils_2.makePath)(base_path, subDir, grammarRelname, '.map');
-        await (0, fileUtils_1.writeStringFile)(mapPname, sourceMap);
+        const mapPname = (0, fileUtils_1.makePath)(base_path, subDir, grammarRelname, '.map');
+        await (0, textFileUtils_1.writeTextFile)(mapPname, sourceMap);
     }
     catch (e) {
         handlePegError(e);
@@ -82,7 +83,7 @@ function handlePegError(e) {
 }
 async function parseSourceWithGrammarFile(s, grammarPathname) {
     try {
-        const s_grammar = await (0, fileUtils_1.readStringFile)(grammarPathname);
+        const s_grammar = await (0, textFileUtils_1.readTextFile)(grammarPathname);
         const parser = peggy_1.default.generate(s_grammar);
         const sampleOutput = parser.parse(s);
         // console.log(JSON.stringify(sampleOutput, null, 2));
@@ -98,26 +99,26 @@ async function compileSourceFileWithGrammarFile(baseP, srcFname, grammarPathname
     //
     // LISP + Grammar -> ASR, JL/JSON, JL/JS, JL/TS
     // Read LISP Source File
-    const sourcePname = (0, fileUtils_2.makePath)(baseP, '', srcFname);
+    const sourcePname = (0, fileUtils_1.makePath)(baseP, '', srcFname);
     mkdirp.sync(baseP);
-    const lispSource = await (0, fileUtils_1.readStringFile)(sourcePname);
+    const lispSource = await (0, textFileUtils_1.readTextFile)(sourcePname);
     // Parse LISP Source to AST using .pegjs Grammar
     // and save AST to .json
     const parsed_ast = await parseSourceWithGrammarFile(lispSource, grammarPathname);
-    const parsedOutPname = (0, fileUtils_2.makePath)(baseP, '../out/ast', srcFname, '.ast.json');
-    await (0, fileUtils_1.writeJsonFile)(parsedOutPname, parsed_ast);
+    const parsedOutPname = (0, fileUtils_1.makePath)(baseP, '../out/ast', srcFname, '.ast.json');
+    await (0, jsonFileUtils_1.writeJsonFile)(parsedOutPname, parsed_ast);
     // Compile AST to JL/JSON and save to file
     const compiledJson = await (0, ast2jl_1.compile_ast2jl_str_json)(parsed_ast);
-    const compiledJsonPname = (0, fileUtils_2.makePath)(baseP, '../out/json', srcFname, '.jl.json');
-    await (0, fileUtils_1.writeStringFile)(compiledJsonPname, compiledJson);
+    const compiledJsonPname = (0, fileUtils_1.makePath)(baseP, '../out/json', srcFname, '.jl.json');
+    await (0, textFileUtils_1.writeTextFile)(compiledJsonPname, compiledJson);
     // Compile AST to JL/JS and save to file
     const compiledJs = await (0, ast2jl_1.compile_ast2jl_str_js)(parsed_ast);
-    const compiledJsPname = (0, fileUtils_2.makePath)(baseP, '../out/jl-js', srcFname, '.jl.js');
-    await (0, fileUtils_1.writeStringFile)(compiledJsPname, compiledJs);
+    const compiledJsPname = (0, fileUtils_1.makePath)(baseP, '../out/jl-js', srcFname, '.jl.js');
+    await (0, textFileUtils_1.writeTextFile)(compiledJsPname, compiledJs);
     // Compile AST to JL/TS and save to file
     const compiledTs = await (0, ast2jl_1.compile_ast2jl_str_ts)(parsed_ast);
-    const compiledTsPname = (0, fileUtils_2.makePath)(baseP, '../out/jl-ts', srcFname, '.jl.ts');
-    await (0, fileUtils_1.writeStringFile)(compiledTsPname, compiledTs);
+    const compiledTsPname = (0, fileUtils_1.makePath)(baseP, '../out/jl-ts', srcFname, '.jl.ts');
+    await (0, textFileUtils_1.writeTextFile)(compiledTsPname, compiledTs);
 }
 exports.compileSourceFileWithGrammarFile = compileSourceFileWithGrammarFile;
 async function compileFileList(compileSourceFileWithGrammarFile, base_path, sources, 
