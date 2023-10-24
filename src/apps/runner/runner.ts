@@ -53,11 +53,13 @@ export class Runner {
     }
     // st.logger.debug(`this.actions: ${Object.keys(this.actions).join(',')}`);
 
+    const logLevel = activity?.logLevel ? activity?.logLevel : 'log';
+
     const scopes = scope ? new Scopes<Atom>([scope]) : new Scopes<Atom>();
     const st = new State({
       runner: this,
       scopes,
-      errorLevel: 'log',
+      errorLevel: logLevel,
     });
     st.logger.warn(`need to clean up the scopes on start`);
     return st;

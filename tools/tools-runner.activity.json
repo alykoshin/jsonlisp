@@ -1,6 +1,7 @@
 {
   "base_dir": "./",
   "version": "0.0.0",
+  "logLevel": "debug",
   "actions": {
     "default": [ "print", "\nAction name is missing\n" ],
     "build": [ "list",

@@ -12,6 +12,7 @@ import {
   writeUniversal,
 } from '../../../lib/fileUtils/read-write/universalFileUtils';
 import {buildPathname} from '../../../lib/fileUtils/fileUtils';
+import {ErrorLevel} from '../../../lib/log';
 
 // type ConfigModes = '.ts' | '.json5' | '.json';
 // const CONFIG_MODE: ConfigModes = '.ts' // '.json5'; // '.json'
@@ -23,6 +24,7 @@ export type ActivityActionsDefinition = Actions & {
 export interface Activity {
   base_dir: string;
   version: string;
+  logLevel?: ErrorLevel;
   actions: ActivityActionsDefinition;
 }
 
