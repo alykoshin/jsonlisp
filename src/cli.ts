@@ -3,6 +3,7 @@
 // #!/usr/bin/env ts-node
 
 import * as _ from 'lodash';
+import JSON5 from 'json5';
 import {Command} from 'commander';
 import pkg from '../package.json';
 import {Runner} from './apps/runner/runner';
@@ -54,8 +55,8 @@ program
     }
     const cmdlineData = options.dataJson
       ? JSON.parse(options.dataJson)
-      : options.dataJson
-      ? JSON.parse(options.dataJson5)
+      : options.dataJson5
+      ? JSON5.parse(options.dataJson5)
       : {};
     console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
 

@@ -6,12 +6,12 @@ export type NIL = false;
 export declare const NIL = false;
 export declare const isNil: (value: any) => boolean;
 export type EvaluateFn = (expr: Expression) => Promise<Parameter>;
-export type ActionListExecutor = (name: string, parameters: Parameters, state: State) => Promise<Parameter>;
+export type ExecutorFn = (name: string, args: Parameters, state: State) => Promise<Parameter>;
 export type Atom = undefined | boolean | number | bigint | string | null | object;
 export declare const isAtom: (value: any) => value is Atom;
 export type GenericList<Atom> = (Atom | GenericList<Atom>)[];
 export type List = GenericList<Atom>;
-export type Expression = Atom | List | ActionListExecutor;
+export type Expression = Atom | List | ExecutorFn;
 export type Parameter = Expression;
 export type Parameters = Parameter[];
 export type ActionName = string;
@@ -23,7 +23,7 @@ export declare function ensureList(val: Parameter, msg?: string): asserts val is
 export declare function ensureNumber(val: Parameter, msg?: string): asserts val is number;
 export declare function ensureString(val: Parameter, msg?: string): asserts val is string;
 export declare function ensureFunction(val: Parameter, msg?: string): asserts val is Function;
-export type ActionDefinition = ActionName | ActionListExecutor | Expression;
+export type ActionDefinition = ActionName | ExecutorFn | Expression;
 export type Actions = {
     [name: string]: ActionDefinition;
 };

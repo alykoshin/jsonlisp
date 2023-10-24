@@ -4,15 +4,6 @@ import chalk from 'chalk';
 import {Atom, Parameter} from '../apps/runner/lib/types';
 import {ILoggerState} from '../apps/runner/lib/state';
 
-/*
-debug(...args: any[]) {
-  if (DEFAULT_DEBUG) {
-    const prefix = stringUtils.repeat('*', this._level);
-    console.debug(`${prefix} [${this._steps}/${this._level}]`, ...args);
-  }
-}
-*/
-
 type LogStrPrefix = number | string;
 // type LogParam = undefined | null | boolean | number | string;
 type LogParam = Parameter;
@@ -42,7 +33,10 @@ const errorLevels = [
   'debug',
 ] as const;
 
-type ErrorLevel = (typeof errorLevels)[number];
+export type ErrorLevel = (typeof errorLevels)[number];
+
+// const DEFAULT_DEBUG: ErrorLevel = 'info';
+const DEFAULT_ERROR_LEVEL: ErrorLevel = 'debug';
 
 type ErrorColorsMap = Record<ErrorLevel, typeof chalk.Color>;
 
@@ -100,10 +94,16 @@ function debugPrimitive(value: Atom): string {
 //
 
 export abstract class AbstractLogger {
-  _errorLevel: ErrorLevel;
+  _errorLevel: ErrorLevel = DEFAULT_ERROR_LEVEL;
 
-  constructor(errorLevel: ErrorLevel = 'debug') {
+  constructor(errorLevel: ErrorLevel = DEFAULT_ERROR_LEVEL) {
+    this.setErrorLevel(errorLevel);
+    // this._errorLevel = errorLevel;
+  }
+
+  setErrorLevel(errorLevel: ErrorLevel) {
     this._errorLevel = errorLevel;
+    // this.debug(`errorLevel: ${this._errorLevel}`);
   }
 
   abstract getPrefix(): string;
@@ -148,41 +148,53 @@ export abstract class AbstractLogger {
   }
 }
 
-export class SimpleLogger extends AbstractLogger {
+/* export class SimpleLogger extends AbstractLogger {
   _prefix: string;
+
   constructor(prefix: string, errorLevel: ErrorLevel = 'debug') {
     super(errorLevel);
     this._prefix = prefix;
-    // this.prefix(prefix);
+    this.debug(`errorLevel: ${errorLevel}`);
+    // console.log('>>>>>>>', errorLevel);
   }
 
   getPrefix(): string {
     return this._prefix;
   }
 }
-
-function _prefixToString(state: ILoggerState): string {
-  let p = `${state.id}/${state.level}`;
-
-  // let namePart = state.name ? `/${state.name}` : ``;
-  // let namePart = state.name ? state.name : ``;
-  let namePart = state.names.join('/');
-
-  return `[${p}] [${namePart}]`;
-}
+*/
 
 export class Logger extends AbstractLogger {
   state: ILoggerState;
 
-  constructor(state: ILoggerState, errorLevel?: ErrorLevel) {
-    // const prefix = _prefixToString(state);
-    // super(prefix, errorLevel);
+  constructor(
+    state: ILoggerState,
+    errorLevel: ErrorLevel = DEFAULT_ERROR_LEVEL
+  ) {
     super(errorLevel);
     this.state = state;
   }
 
+  _prefix1(state: ILoggerState): string {
+    return state ? `[${state.id}/${state.level}]` : `[]`;
+  }
+
+  _prefix2(state: ILoggerState): string {
+    if (state) {
+      const res = this.isLevelEnabled('debug')
+        ? state.names.join('/')
+        : state.names[state.names.length - 1];
+      return `[${res}]`;
+      // return state ? `[${state.names.join('/')}]` : `[]`;
+    } else {
+      return `[]`;
+    }
+  }
+
   getPrefix(): string {
-    return _prefixToString(this.state);
+    let p = this._prefix1(this.state);
+    p += ' ' + this._prefix2(this.state);
+    return p;
   }
 
   new(state: ILoggerState, level: ErrorLevel = this._errorLevel) {

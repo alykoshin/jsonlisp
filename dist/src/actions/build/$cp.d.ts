@@ -1,10 +1,10 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 /**
  * @module $build
  */
 /**
  * @name $cp
  */
-export declare const $cp: ActionListExecutor;
+export declare const $cp: ExecutorFn;
 export default $cp;

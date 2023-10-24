@@ -1,16 +1,18 @@
 /** @format */
 
-import {isList, Expression, isNil} from '../../apps/runner/lib/types';
+import {isList, Expression, isNil, Actions} from '../../apps/runner/lib/types';
 import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 import {get_sbcl_cmd, preprocess_sbcl_expr} from './exec-prepare';
 import {execute} from '../lisp-like/helpers/exec';
 import {State} from '../../apps/runner/lib/state';
+import {Runner} from '../../apps/runner/runner';
 
 export const testRunner = async function (
+  actions: Actions,
   exprJlIn: Expression,
-  strSbclIn: string,
+  strSbclIn: string
   // {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
-  st: State
+  // st: State
 ): Promise<{
   exprJlIn: Expression;
   exprJlOut: Expression;
@@ -19,6 +21,16 @@ export const testRunner = async function (
   strSbclOut: string;
   exprSbclOut: Expression;
 }> {
+  // const evaluate = await init();
+  const interpreter = new Runner({errorLevel: 'debug'});
+  // replace default actions with the ones we want to test
+  // (and their dependencies)
+  interpreter.actions = actions;
+  const st = await interpreter.init();
+  // return st;
+  // const st = await init();
+  // const {evaluate} = st;
+
   // const st = new State({});
   // const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
 
@@ -28,9 +40,6 @@ export const testRunner = async function (
     const c = get_sbcl_cmd(strSbclIn);
     const {stdout: strSbclOut} = await execute(c, {}, {state: st});
     const exprSbclOut = parse_sbcl_list(strSbclOut, st);
-
-    // console.log('exprJlOut:', exprJlOut);
-    // console.log('sbclRaw:', sbclRaw);
 
     // check if lambda function was returned.
     // if so, do only partial comparison

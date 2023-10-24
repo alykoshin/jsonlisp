@@ -92,21 +92,12 @@ function printHeaders() {
   printSeparator();
 }
 
-async function init() {
-  const interpreter = new Runner();
-  // replace default actions with the ones we want to test
-  // (and their dependencies)
-  interpreter.actions = actions;
-  const st = await interpreter.init();
-  return st;
-}
+// async function init() {
+// }
 
 async function run() {
   printHeaders();
   let failCount = 0;
-  // const evaluate = await init();
-  const st = await init();
-  const {evaluate} = st;
 
   for (const i in allCases) {
     const [exprJlIn, strSbclIn, message] = allCases[i];
@@ -116,7 +107,7 @@ async function run() {
       strSbclOut,
       exprSbclOut,
       ok,
-    } = await testRunner(exprJlIn, strSbclIn, st);
+    } = await testRunner(actions, exprJlIn, strSbclIn);
     if (!ok) failCount++;
 
     const cellValues = [

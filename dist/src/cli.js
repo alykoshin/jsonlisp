@@ -29,6 +29,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 // #!/usr/bin/env ts-node
 const _ = __importStar(require("lodash"));
+const json5_1 = __importDefault(require("json5"));
 const commander_1 = require("commander");
 const package_json_1 = __importDefault(require("../package.json"));
 const runner_1 = require("./apps/runner/runner");
@@ -64,8 +65,8 @@ program
     }
     const cmdlineData = options.dataJson
         ? JSON.parse(options.dataJson)
-        : options.dataJson
-            ? JSON.parse(options.dataJson5)
+        : options.dataJson5
+            ? json5_1.default.parse(options.dataJson5)
             : {};
     console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
     const finalData = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),

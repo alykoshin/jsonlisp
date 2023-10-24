@@ -31,23 +31,29 @@ exports.actions = {
         // const fn = shelljs[shellCmd as keyof typeof shelljs];
         const fn = shelljs_1.default[shellCmd];
         (0, types_1.ensureFunction)(fn, `expect shelljs method`);
+        logger.log(shellCmd, shellParams);
         // typecast fn to generic Function to avoid parameters typecheck
         let res = fn(...shellParams);
-        // console.log('>>>>>', res)
-        // console.log('>>>>>', JSON.stringify(res))
-        // console.log('>>>>>', JSON.stringify((res as any).code))
         // const s = String(shellRes).trim();
         if (TRIM_RESULT) {
             res.stdout = res.stdout?.trim() || '';
             res.stderr = res.stderr?.trim() || '';
         }
         // logger.log(`[${action}] ` + res );
-        logger.log([
-            // `s: "${s}"`,
-            `stdout: "${res.stdout}"`,
-            `stderr: "${res.stderr}"`,
-            `code: ${res.code}`,
-        ].join(', '));
+        // logger.log(
+        //   [
+        //     // `s: "${s}"`,
+        //     `stdout: "${res.stdout}"`,
+        //     `stderr: "${res.stderr}"`,
+        //     `code: ${res.code}`,
+        //   ].join(', ')
+        // );
+        if (res.stdout)
+            logger.log(res.stdout);
+        if (res.stderr)
+            logger.warn(res.stderr);
+        if (res.code !== 0)
+            logger.warn(`Exit code: ${res.code}`);
         // print(shellParams);
         return res.stdout;
     },

@@ -1,10 +1,10 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 /**
  * @module $build
  */
 /**
  * @name $cleanup
  */
-export declare const $cleanup: ActionListExecutor;
+export declare const $cleanup: ExecutorFn;
 export default $cleanup;

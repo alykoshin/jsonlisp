@@ -1,9 +1,6 @@
 /** @format */
-import { Expression, Actions, EvaluateFn } from '../../apps/runner/lib/types';
-export declare const testRunner: (exprJlIn: Expression, strSbclIn: string, { actions, evaluate }: {
-    actions: Actions;
-    evaluate: EvaluateFn;
-}) => Promise<{
+import { Expression, Actions } from '../../apps/runner/lib/types';
+export declare const testRunner: (actions: Actions, exprJlIn: Expression, strSbclIn: string) => Promise<{
     exprJlIn: Expression;
     exprJlOut: Expression;
     ok: boolean;

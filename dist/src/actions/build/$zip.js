@@ -70,7 +70,7 @@ const $zip = async function (action, args, state) {
     const options = {
     // cwd: activity.base_dir,
     };
-    const r = await (0, exec_1.execute)(command_line, options, { logger });
+    const r = await (0, exec_1.execute)(command_line, options, { state });
     return r.stdout;
 };
 exports.$zip = $zip;

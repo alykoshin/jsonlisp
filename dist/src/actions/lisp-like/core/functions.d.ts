@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, ActionListExecutor } from '../../../apps/runner/lib/types';
+import { Actions, ExecutorFn } from '../../../apps/runner/lib/types';
 /**
  * @module functions
  * @see
@@ -18,15 +18,15 @@ import { Actions, ActionListExecutor } from '../../../apps/runner/lib/types';
  * - Common Lisp the Language, 2nd Edition -- 5.2.2. Lambda-Expressions --
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
-export declare const lambda: ActionListExecutor;
-export declare const defun: ActionListExecutor;
+export declare const lambda: ExecutorFn;
+export declare const defun: ExecutorFn;
 /**
  * @name null_
  */
-export declare const null_: ActionListExecutor;
+export declare const null_: ExecutorFn;
 /**
  * @name and_
  */
-export declare const and_: ActionListExecutor;
+export declare const and_: ExecutorFn;
 export declare const actions: Actions;
 export default actions;

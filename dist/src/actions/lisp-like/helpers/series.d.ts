@@ -1,7 +1,9 @@
 /** @format */
+import { State } from '../../../apps/runner/lib/state';
 import { Parameter, Parameters } from '../../../apps/runner/lib/types';
-export declare const series: (forms: Parameters, evaluate: (parameter: Parameter) => Promise<Parameter>) => Promise<Parameters>;
-export declare const seriesnth: (index: number, forms: Parameters, evaluate: (parameter: Parameter) => Promise<Parameter>) => Promise<Parameter>;
-export declare const series1: (forms: Parameters, evaluate: (parameter: Parameter) => Promise<Parameter>) => Promise<Parameter>;
-export declare const series2: (forms: Parameters, evaluate: (parameter: Parameter) => Promise<Parameter>) => Promise<Parameter>;
-export declare const seriesn: (forms: Parameters, evaluate: (parameter: Parameter) => Promise<Parameter>) => Promise<Parameter>;
+export declare const series: (args: Parameters, st: State) => Promise<Parameters>;
+export declare const seriesnth: (index: number, args: Parameters, st: State) => Promise<Parameter>;
+export declare const series1: (args: Parameters, st: State) => Promise<Parameter>;
+export declare const series2: (args: Parameters, st: State) => Promise<Parameter>;
+export declare const seriesn: (args: Parameters, st: State) => Promise<Parameter>;
+export declare const sliceListList: (listOfLists: Parameters, pos: number) => Parameters;

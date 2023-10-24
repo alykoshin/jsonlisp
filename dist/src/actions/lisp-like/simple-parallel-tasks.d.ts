@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
 /**
  * @module simple-parallel-tasks
  * @description <br>
@@ -7,6 +7,6 @@ import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
  * - The simple-parallel-tasks Reference Manual {@link https://quickref.common-lisp.net/simple-parallel-tasks.html}
  */
 /** @name plist */
-export declare const plist: ActionListExecutor;
+export declare const plist: ExecutorFn;
 export declare const actions: Actions;
 export default actions;

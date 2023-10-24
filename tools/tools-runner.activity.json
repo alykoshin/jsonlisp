@@ -72,6 +72,8 @@
     ],
     "git-commit": ["shell-command", "git commit -am \"auto commit\""],
     "git-push":   ["shell-command", "git push --follow-tags"],
+    "npm-publish-public":  ["shell-command", "npm publish --access public"],
+    "npm-publish-private": ["shell-command", "npm publish --access private"],
     "jsdoc":      [
       "list",
       ["$shelljs", "rm", "-rf", "jsdoc/*" ],

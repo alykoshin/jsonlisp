@@ -16,7 +16,8 @@ exports.actions = {
     /**
      * @name shell-command
      */
-    'shell-command': async function (_, args, { evaluate, logger }) {
+    'shell-command': async function (_, args, state) {
+        const { evaluate } = state;
         (0, util_1.fn_check_params)(args, { minCount: 1 });
         const lastParam = args[args.length - 1];
         let config = {};
@@ -27,8 +28,8 @@ exports.actions = {
         const { cwd, env } = config || {};
         const result = [];
         for (const p of args) {
-            const pCommand = await evaluate(p);
-            const sCommand = String(pCommand);
+            const command = await evaluate(p);
+            (0, types_1.ensureString)(command);
             const options = {
                 cwd,
                 env,
@@ -37,7 +38,7 @@ exports.actions = {
                 // stdout: 'pipe',
                 // stderr: 'pipe',
             };
-            const r = await (0, exec_1.execute)(sCommand, options, { logger });
+            const r = await (0, exec_1.execute)(command, options, { state });
             result.push(r.stdout);
         }
         return result.length === 1 ? result[0] : result;

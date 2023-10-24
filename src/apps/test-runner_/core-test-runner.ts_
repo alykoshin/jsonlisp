@@ -3,7 +3,7 @@
 import {inspect} from 'util';
 import {Actions} from '../runner/lib/types';
 
-import {MicroInterpreter, MicroList} from '../runner/microRunner';
+import {Runner, List} from '../runner/runner';
 import {testRunner} from '../../actions/$sbcl/test-runner';
 
 import eval from '../../actions/lisp-like/core/eval';
@@ -12,7 +12,6 @@ import primitives from '../../actions/lisp-like/core/primitives';
 //
 import functionsCases from '../../tests/lisp-like/core/functions.cases';
 import primitivesCases from '../../tests/lisp-like/core/primitives.cases';
-import {Runner} from '../runner/runner';
 
 const allCases = [
   ...functionsCases,
@@ -97,7 +96,7 @@ function getEvaluate() {
   const NEW_INTERPRETER = true;
   let interpreter;
   if (NEW_INTERPRETER) {
-    interpreter = new MicroInterpreter({actions});
+    interpreter = new Runner();
   } else {
     interpreter = new Runner();
     // replace default actions with the ones we want to test
@@ -112,6 +111,8 @@ async function run() {
   let failCount = 0;
   const evaluate = getEvaluate();
 
+  const st = new State({});
+
   for (const i in allCases) {
     const [exprJlIn, strSbclIn, message] = allCases[i];
     const {
@@ -120,7 +121,7 @@ async function run() {
       strSbclOut,
       exprSbclOut,
       ok,
-    } = await testRunner(exprJlIn, strSbclIn, {actions, evaluate});
+    } = await testRunner(exprJlIn, strSbclIn, state);
     if (!ok) failCount++;
 
     const cellValues = [

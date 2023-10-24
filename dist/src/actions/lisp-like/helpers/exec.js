@@ -4,23 +4,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.execute = void 0;
 const child_process_1 = require("child_process");
 async function execute(command_line, spawnOptions, execOptions) {
-    const defaultLogger = execOptions.logger.new({
-        name: execOptions.logger._prefix.name + '/' + 'execute',
-    });
-    const stdoutLogger = defaultLogger.new({
-        name: execOptions.logger._prefix.name + '/' + 'stdout',
-    });
-    const stderrLogger = defaultLogger.new({
-        name: execOptions.logger._prefix.name + '/' + 'stderr',
-    });
+    let { encoding, timeout, trim, state } = execOptions;
+    const lgrs = {
+        default: state.new().up('exec').logger,
+        // ...state,
+        // name: state.logger.state.name + '/' + 'exec',
+        // }),
+        stdout: state.new().up('exec:stdout').logger,
+        // stdout: state.logger.new({
+        //   ...state,
+        //   name: state.logger.state.name + '/' + 'exec:stdout',
+        // }),
+        stderr: state.new().up('exec:stderr').logger,
+        // stderr: state.logger.new({
+        //   ...state,
+        //   name: state.logger.state.name + '/' + 'exec:stderr',
+        // }),
+    };
     return new Promise((resolve, reject) => {
-        if (!execOptions.encoding)
-            execOptions.encoding = 'utf8';
-        if (!execOptions.timeout)
-            execOptions.timeout = 0;
-        if (!execOptions.trim)
-            execOptions.trim = true;
-        defaultLogger.debug(`command_line: "${command_line}", spawnOptions:`, spawnOptions);
+        if (!encoding)
+            encoding = 'utf8';
+        if (!timeout)
+            timeout = 0;
+        if (!trim)
+            trim = true;
+        lgrs.default.log(`command_line: "${command_line}", spawnOptions:`, spawnOptions);
         spawnOptions.shell = true;
         const p = (0, child_process_1.spawn)(command_line, [], spawnOptions);
         const outStreamNames = ['stdout', 'stderr'];
@@ -35,23 +43,26 @@ async function execute(command_line, spawnOptions, execOptions) {
         if (!p || !p.stdout || !p.stderr) {
             throw new Error('Error creating ChildProcess');
         }
-        p.stdout.setEncoding(execOptions.encoding); //'utf8');
-        p.stderr.setEncoding(execOptions.encoding); //'utf8');
+        p.stdout.setEncoding(encoding); //'utf8');
+        p.stderr.setEncoding(encoding); //'utf8');
         p.stdout.on('data', function (data) {
             data = data.toString();
-            stdoutLogger.log(data);
+            lgrs.stdout.log(data);
             results.stdout += data;
         });
         p.stderr.on('data', function (data) {
             data = data.toString();
-            stderrLogger.log(data);
+            lgrs.stderr.log(data);
             results.stderr += data;
         });
         function debugExit(event, code, signal) {
             let message = `[${event}] child process ${event} with code ${code}`;
             if (typeof signal !== 'undefined')
                 message += ` and signal ${signal}`;
-            defaultLogger.debug(message);
+            if (code !== 0)
+                lgrs.default.warn(message);
+            else
+                lgrs.default.debug(message);
             results.signal = signal;
             results.message = message;
         }
@@ -67,14 +78,14 @@ async function execute(command_line, spawnOptions, execOptions) {
         // signal: ExitSignal;
         // }
         ) {
-            if (execOptions.trim) {
+            if (trim) {
                 results.stdout = results.stdout.trim();
                 results.stderr = results.stderr.trim();
             }
             // override what we set earlier with latest values
             results.code = code;
             // results.message = message;
-            defaultLogger.debug(`doExit`);
+            lgrs.default.debug(`doExit`);
             if (code === 0) {
                 resolve(results);
             }
@@ -94,11 +105,11 @@ async function execute(command_line, spawnOptions, execOptions) {
             debugExit('close', code);
             doExit(code);
         });
-        if (execOptions.timeout !== 0) {
+        if (timeout !== 0) {
             setTimeout(() => {
-                defaultLogger.warn(`[timeout] child process timed out in ${execOptions.timeout} ms`);
-                defaultLogger.warn(`WARN: Force kill not implemented`);
-            }, execOptions.timeout);
+                lgrs.default.warn(`[timeout] child process timed out in ${timeout} ms`);
+                lgrs.default.warn(`WARN: Force kill not implemented`);
+            }, timeout);
         }
     });
 }

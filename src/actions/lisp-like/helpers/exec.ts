@@ -45,25 +45,27 @@ export async function execute(
   let {encoding, timeout, trim, state} = execOptions;
 
   const lgrs = {
-    default: state.logger.new({
-      ...state,
-      name: state.logger.state.name + '/' + 'exec',
-    }),
-    stdout: state.logger.new({
-      ...state,
-      name: state.logger.state.name + '/' + 'exec:stdout',
-    }),
-    stderr: state.logger.new({
-      ...state,
-      name: state.logger.state.name + '/' + 'exec:stderr',
-    }),
+    default: state.new().up('exec').logger, //.new({
+    // ...state,
+    // name: state.logger.state.name + '/' + 'exec',
+    // }),
+    stdout: state.new().up('exec:stdout').logger,
+    // stdout: state.logger.new({
+    //   ...state,
+    //   name: state.logger.state.name + '/' + 'exec:stdout',
+    // }),
+    stderr: state.new().up('exec:stderr').logger,
+    // stderr: state.logger.new({
+    //   ...state,
+    //   name: state.logger.state.name + '/' + 'exec:stderr',
+    // }),
   };
 
   return new Promise((resolve, reject) => {
     if (!encoding) encoding = 'utf8';
     if (!timeout) timeout = 0;
     if (!trim) trim = true;
-    lgrs.default.debug(
+    lgrs.default.log(
       `command_line: "${command_line}", spawnOptions:`,
       spawnOptions
     );
@@ -109,7 +111,8 @@ export async function execute(
     ) {
       let message = `[${event}] child process ${event} with code ${code}`;
       if (typeof signal !== 'undefined') message += ` and signal ${signal}`;
-      lgrs.default.debug(message);
+      if (code !== 0) lgrs.default.warn(message);
+      else lgrs.default.debug(message);
       results.signal = signal;
       results.message = message;
     }

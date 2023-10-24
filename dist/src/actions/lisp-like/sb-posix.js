@@ -17,7 +17,8 @@ const print_1 = require("./helpers/print");
  * - Function: SB-POSIX:SETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/SETENV.html} <br>
  * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
  */
-const setenv = async function (_, params, { evaluate, logger }) {
+const setenv = async function (_, params, st) {
+    const { evaluate, logger } = st;
     (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
     // const [pName, pValue, pOverwrite] = await series(params, evaluate);
     const [pName, pValue, pOverwrite] = params;

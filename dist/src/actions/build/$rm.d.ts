@@ -1,10 +1,10 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 /**
  * @module $build
  */
 /**
  * @name $version
  */
-export declare const $rm: ActionListExecutor;
+export declare const $rm: ExecutorFn;
 export default $rm;

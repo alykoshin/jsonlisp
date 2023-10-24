@@ -6,16 +6,27 @@ const types_1 = require("../../apps/runner/lib/types");
 const lisp2jl_primitive_1 = require("../../apps/translator-primitive/lisp2jl-primitive");
 const exec_prepare_1 = require("./exec-prepare");
 const exec_1 = require("../lisp-like/helpers/exec");
-const log_1 = require("../../lib/log");
-const testRunner = async function (exprJlIn, strSbclIn, { actions, evaluate }) {
-    const logger = new log_1.Logger({ id: 0, level: 0, name: 'micro' }, 'info');
-    const exprJlOut = await evaluate(exprJlIn);
+const runner_1 = require("../../apps/runner/runner");
+const testRunner = async function (actions, exprJlIn, strSbclIn
+// {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
+// st: State
+) {
+    // const evaluate = await init();
+    const interpreter = new runner_1.Runner({ errorLevel: 'debug' });
+    // replace default actions with the ones we want to test
+    // (and their dependencies)
+    interpreter.actions = actions;
+    const st = await interpreter.init();
+    // return st;
+    // const st = await init();
+    // const {evaluate} = st;
+    // const st = new State({});
+    // const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
+    const exprJlOut = await st.evaluate(exprJlIn);
     try {
         const c = (0, exec_prepare_1.get_sbcl_cmd)(strSbclIn);
-        const { stdout: strSbclOut } = await (0, exec_1.execute)(c, {}, { logger });
-        const exprSbclOut = (0, lisp2jl_primitive_1.parse_sbcl_list)(strSbclOut, { logger });
-        // console.log('exprJlOut:', exprJlOut);
-        // console.log('sbclRaw:', sbclRaw);
+        const { stdout: strSbclOut } = await (0, exec_1.execute)(c, {}, { state: st });
+        const exprSbclOut = (0, lisp2jl_primitive_1.parse_sbcl_list)(strSbclOut, st);
         // check if lambda function was returned.
         // if so, do only partial comparison
         const jlLambda = (0, types_1.isList)(exprJlIn) && exprJlIn[0] === 'lambda';

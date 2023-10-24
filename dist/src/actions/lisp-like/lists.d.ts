@@ -1,28 +1,28 @@
 /** @format */
-import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
 /** @name quote */
-export declare const quote: ActionListExecutor;
+export declare const quote: ExecutorFn;
 /** @name list */
-export declare const list: ActionListExecutor;
+export declare const list: ExecutorFn;
 /** @name length */
-export declare const length: ActionListExecutor;
+export declare const length: ExecutorFn;
 /** @name nth */
-export declare const nth: ActionListExecutor;
+export declare const nth: ExecutorFn;
 /** @name car */
-export declare const car: ActionListExecutor;
+export declare const car: ExecutorFn;
 /** @name second */
-export declare const second: ActionListExecutor;
+export declare const second: ExecutorFn;
 /** @name third */
-export declare const third: ActionListExecutor;
+export declare const third: ExecutorFn;
 /** @name nthcdr */
-export declare const nthcdr: ActionListExecutor;
+export declare const nthcdr: ExecutorFn;
 /** @name cdr */
-export declare const cdr: ActionListExecutor;
+export declare const cdr: ExecutorFn;
 /** @name consp */
-export declare const consp: ActionListExecutor;
+export declare const consp: ExecutorFn;
 /** @name listp */
-export declare const listp: ActionListExecutor;
+export declare const listp: ExecutorFn;
 /** @name nullp */
-export declare const nullp: ActionListExecutor;
+export declare const nullp: ExecutorFn;
 export declare const actions: Actions;
 export default actions;

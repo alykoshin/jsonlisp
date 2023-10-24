@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 export type ZipActionConfig = {
     file_names: string[];
     archive_prefix: string;
@@ -12,4 +12,4 @@ export type ZipActionConfig = {
 /**
  * @name $zip
  */
-export declare const $zip: ActionListExecutor;
+export declare const $zip: ExecutorFn;

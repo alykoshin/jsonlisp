@@ -1,9 +1,10 @@
 /** @format */
 
+import {omit} from 'lodash';
 import {EvaluateFn, Actions, Atom, Expression, Parameter} from './types';
 
 import {Scopes} from '@utilities/object';
-import {Logger} from '../../../lib/log';
+import {ErrorLevel, Logger} from '../../../lib/log';
 import {Runner} from '../runner';
 import {execNamedAction} from '../../../actions/lisp-like/core/eval';
 
@@ -17,8 +18,9 @@ interface IStateInit {
   names?: string[];
 
   runner: Runner;
-  scopes: Scopes<Atom>;
+  scopes?: Scopes<Atom>;
   logger?: Logger;
+  errorLevel?: ErrorLevel;
 }
 
 // interface ILoggerState {
@@ -29,7 +31,7 @@ interface IStateInit {
 export interface ILoggerState {
   id: number;
   level: number;
-  name: string;
+  // name: string;
   names: string[];
 }
 
@@ -41,7 +43,7 @@ export interface IState extends IStateInit {
 export class State implements IState, ILoggerState {
   id: number;
   level: number;
-  name: string;
+  // name: string;
   names: string[];
 
   public runner: Runner;
@@ -53,13 +55,15 @@ export class State implements IState, ILoggerState {
     // Object.assign(this, init);
     this.id = init.id === undefined ? 0 : init.id;
     this.level = init.level === undefined ? 0 : init.level;
-    this.name = init.name || 'start';
-    this.names = init.names || [];
+    // this.name = init.name || 'start';
+
+    this.names = init.names?.slice() || ['*'];
 
     this.runner = init.runner;
-    this.scopes = init.scopes;
+    this.scopes = init.scopes == undefined ? new Scopes() : init.scopes.copy();
     this.actions = init.runner.actions;
     this.logger = init.logger ? init.logger : new Logger(this);
+    if (init.errorLevel) this.logger.setErrorLevel(init.errorLevel);
     this.evaluate = this.evaluate.bind(this);
   }
 
@@ -71,6 +75,7 @@ export class State implements IState, ILoggerState {
 
   new(): State {
     return new State(this);
+    // return new State(omit(this, 'logger'));
   }
 
   next(): State {
@@ -86,7 +91,7 @@ export class State implements IState, ILoggerState {
 
   up(name: string): State {
     this.level++;
-    this.name = name;
+    // this.name = name;
     this.names.push(name);
     if (GLOBAL_ACTION_ID) {
       // lastActionId++;
@@ -95,6 +100,7 @@ export class State implements IState, ILoggerState {
       // lastActionId++;
       this.id = 0;
     }
+    this.logger = this.logger.new(this);
     this.logger.debug('up');
     return this;
   }

@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 export type YarnInstallProdActionConfig = {
     cwd?: string;
     env?: {
@@ -12,5 +12,5 @@ export type YarnInstallProdActionConfig = {
 /**
  * @module $yarnInstallProd
  */
-export declare const $yarnInstallProd: ActionListExecutor;
+export declare const $yarnInstallProd: ExecutorFn;
 export default $yarnInstallProd;

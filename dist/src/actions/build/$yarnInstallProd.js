@@ -15,7 +15,7 @@ function installDepsCmd() {
 /**
  * @module $yarnInstallProd
  */
-const $yarnInstallProd = async function (_, args, { logger }) {
+const $yarnInstallProd = async function (_, args, state) {
     (0, util_1.fn_check_params)(args, { exactCount: 1 });
     const { cwd, env } = args[0];
     const options = {
@@ -23,7 +23,7 @@ const $yarnInstallProd = async function (_, args, { logger }) {
         env,
     };
     const command_line = installDepsCmd();
-    const r = await (0, exec_1.execute)(command_line, options, { logger });
+    const r = await (0, exec_1.execute)(command_line, options, { state });
     return r.stdout;
 };
 exports.$yarnInstallProd = $yarnInstallProd;

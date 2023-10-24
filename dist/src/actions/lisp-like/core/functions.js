@@ -27,24 +27,22 @@ const zipObject_1 = require("../helpers/zipObject");
  */
 const lambda = async function (_, args, { evaluate }) {
     const [argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 2 });
-    return createPrepareFn(argnames, body);
+    return createPrepareFn('lambda', argnames, body);
 };
 exports.lambda = lambda;
-const createPrepareFn = function (argnames, body) {
+const createPrepareFn = function (name, argnames, body) {
     (0, types_1.ensureList)(argnames);
     (0, types_1.ensureList)(body);
-    const fn = async function lambda(_, argvalues, state) {
-        const { actions, evaluate, runner, logger, scopes } = state;
-        argvalues = await (0, series_1.series)(argvalues, evaluate);
+    const fn = async function lambda(_, argvalues, st) {
+        const { evaluate, runner, logger, scopes } = st;
+        argvalues = await (0, series_1.series)(argvalues, st);
         const sc = (0, zipObject_1.zipObject)(argnames, argvalues);
         logger.debug('lambda:execute: scope:', sc, ',body:', body);
-        const newState = {
-            ...state,
-            scopes: state.scopes.copy().new(sc),
-        };
-        state.scopes.push(sc);
-        logger.debug('lambda:execute: scopes:', state.scopes);
-        const res = await runner.evaluate(body, newState);
+        st = st.newNextUp(name);
+        st.scopes = st.scopes.copy().new(sc);
+        // st.scopes.push(sc);
+        logger.debug('lambda:execute: scopes:', st.scopes);
+        const res = await st.evaluate(body);
         logger.debug('lambda:execute: res:', res);
         return res;
     };
@@ -53,7 +51,7 @@ const createPrepareFn = function (argnames, body) {
 const defun = async function (_, args, state) {
     const [name, argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 3 });
     (0, types_1.ensureString)(name, `Expect string as a name of function`);
-    state.actions[name] = createPrepareFn(argnames, body);
+    state.actions[name] = createPrepareFn(name, argnames, body);
     return name;
 };
 exports.defun = defun;
@@ -61,7 +59,7 @@ exports.defun = defun;
  * @name null_
  */
 // prettier-ignore
-exports.null_ = createPrepareFn(['x'], ['eq', 'x', []]);
+exports.null_ = createPrepareFn('null_', ['x'], ['eq', 'x', []]);
 // export const null_: ActionListExecutor = async function (_, args, {evaluate}) {
 //   const [x] = fn_check_params(args, {exactCount: 1});
 //   // prettier-ignore
@@ -71,7 +69,7 @@ exports.null_ = createPrepareFn(['x'], ['eq', 'x', []]);
  * @name and_
  */
 // prettier-ignore
-exports.and_ = createPrepareFn(['x', 'y'], ['cond', ['x', ['cond', ['y', ['quote', types_1.T]], [['quote', types_1.T], ['quote', []]]]],
+exports.and_ = createPrepareFn('and_', ['x', 'y'], ['cond', ['x', ['cond', ['y', ['quote', types_1.T]], [['quote', types_1.T], ['quote', []]]]],
     [['quote', types_1.T], ['quote', []]]]);
 // export const and_: ActionListExecutor = async function (_, args, {evaluate}) {
 //   const [x, y] = fn_check_params(args, {exactCount: 2});

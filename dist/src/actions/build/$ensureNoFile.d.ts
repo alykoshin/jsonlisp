@@ -1,10 +1,10 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 /**
  * @module $build
  */
 /**
  * @name $ensureNoFile
  */
-export declare const $ensureNoFile: ActionListExecutor;
+export declare const $ensureNoFile: ExecutorFn;
 export default $ensureNoFile;

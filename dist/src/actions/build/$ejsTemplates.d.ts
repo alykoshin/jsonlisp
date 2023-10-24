@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../../apps/runner/lib/types';
 export type EjsTemplatesActionConfig = {
     sourceDir: string;
     excludeDirs: string | string[];
@@ -11,5 +11,5 @@ export type EjsTemplatesActionConfig = {
 /**
  * @name $ejsTemplates
  */
-export declare const $ejsTemplates: ActionListExecutor;
+export declare const $ejsTemplates: ExecutorFn;
 export default $ejsTemplates;

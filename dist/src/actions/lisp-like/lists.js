@@ -39,113 +39,113 @@ const _nullp = async function (p) {
 //   ensureList(l);
 //   return _nth(n, l);
 // }
-async function fn_rest(index, list, evaluate) {
-    const n = await evaluate(index);
+async function fn_rest(index, list, st) {
+    const n = await st.evaluate(index);
     (0, types_1.ensureNumber)(n);
-    const l = await evaluate(list);
+    const l = await st.evaluate(list);
     (0, types_1.ensureList)(l);
     return _rest(n, l);
 }
 //===========================================================================//
 /** @name quote */
-const quote = async (_, params, { evaluate }) => {
+const quote = async (_, params, st) => {
     (0, util_1.fn_check_params)(params, { exactCount: 1 });
     // return first argument without evaluation
     return params[0];
 };
 exports.quote = quote;
 /** @name list */
-const list = async (_, params, { evaluate }) => {
+const list = async (_, params, st) => {
     // return all args evaluated
-    return (0, series_1.series)(params, evaluate);
+    return (0, series_1.series)(params, st);
 };
 exports.list = list;
 /** @name length */
-const length = async (_, args, { evaluate }) => {
+const length = async (_, args, st) => {
     (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    const a0 = await evaluate(args[0]);
+    const a0 = await st.evaluate(args[0]);
     (0, types_1.ensureList)(a0);
     return a0.length;
 };
 exports.length = length;
 /** @name nth */
-const nth = async (_, args, { evaluate }) => {
+const nth = async (_, args, st) => {
     (0, util_1.fn_check_params)(args, { exactCount: 2 });
     console.log('nth:args:', JSON.stringify(args));
     // return fn_nth(params[0], params[1], evaluate);
-    const idx = await evaluate(args[0]);
+    const idx = await st.evaluate(args[0]);
     (0, types_1.ensureNumber)(idx);
     console.log('nth:idx:', JSON.stringify(idx));
-    const list = await evaluate(args[1]);
+    const list = await st.evaluate(args[1]);
     (0, types_1.ensureList)(list);
     console.log('nth:list:', JSON.stringify(list));
-    const res = await evaluate(await _nth(idx, list));
+    const res = await st.evaluate(await _nth(idx, list));
     console.log('nth:res:', JSON.stringify(res));
     return res;
 };
 exports.nth = nth;
 /** @name car */
-const car = async (_, args, { evaluate }) => {
+const car = async (_, args, st) => {
     // fn_check_params(args, {exactCount: 1});
     // const list = await evaluate(args[1]);
     // ensureList(list);
     // return nth(_, [0, args[0]], state);
-    return evaluate(['nth', 0, ...args]);
+    return st.evaluate(['nth', 0, ...args]);
 };
 exports.car = car;
 /** @name second */
-const second = async (_, args, { evaluate }) => {
+const second = async (_, args, st) => {
     // fn_check_params(args, {exactCount: 1});
     // return nth(_, [1, args[0]], state);
     //
-    return evaluate(['nth', 1, ...args]);
+    return st.evaluate(['nth', 1, ...args]);
     //
     // return;
 };
 exports.second = second;
 /** @name third */
-const third = async (_, args, { evaluate }) => {
+const third = async (_, args, st) => {
     // fn_check_params(args, {exactCount: 1});
     // return nth(_, [2, args[0]], args);
-    return evaluate(['nth', 2, ...args]);
+    return st.evaluate(['nth', 2, ...args]);
 };
 exports.third = third;
 //
 /** @name nthcdr */
-const nthcdr = async (_, args, { evaluate }) => {
+const nthcdr = async (_, args, st) => {
     // fn_check_params(args, {exactCount: 2});
-    return fn_rest(args[0], args[1], evaluate);
+    return fn_rest(args[0], args[1], st);
     // return evaluate(['rest', ...args]);
 };
 exports.nthcdr = nthcdr;
 /** @name cdr */
-const cdr = async (_, args, { evaluate }) => {
+const cdr = async (_, args, st) => {
     // fn_check_params(args, {exactCount: 1});
-    return fn_rest(1, args[0], evaluate);
+    return fn_rest(1, args[0], st);
     // return evaluate(['rest', ...args]);
 };
 exports.cdr = cdr;
 //
 /** @name consp */
-const consp = async (_, args, { evaluate }) => {
+const consp = async (_, args, st) => {
     (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    const a0 = await evaluate(args[0]);
+    const a0 = await st.evaluate(args[0]);
     // return isList(a0) && !isEmptyList(a0);
     return _consp(a0);
 };
 exports.consp = consp;
 /** @name listp */
-const listp = async (_, args, { evaluate }) => {
+const listp = async (_, args, st) => {
     (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    const a0 = await evaluate(args[0]);
+    const a0 = await st.evaluate(args[0]);
     // return isList(a0);
     return _listp(a0);
 };
 exports.listp = listp;
 /** @name nullp */
-const nullp = async (_, args, { evaluate }) => {
+const nullp = async (_, args, st) => {
     (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    const a0 = await evaluate(args[0]);
+    const a0 = await st.evaluate(args[0]);
     // return isList(a0) && isEmptyList(a0);
     return _nullp(a0);
 };

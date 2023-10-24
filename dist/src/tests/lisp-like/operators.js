@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
-const _sbcl_1 = __importDefault(require("../../actions/$sbcl/"));
+const _sbcl_1 = __importDefault(require("../../actions/$sbcl"));
 // prettier-ignore
 const actions = {
     ..._sbcl_1.default,

@@ -33,36 +33,35 @@ const execNamedAction = async (op, args, st) => {
     }
 };
 exports.execNamedAction = execNamedAction;
+async function evaluateListAtom(arg0, args, st) {
+    st = st.newNextUp(arg0);
+    return (0, exports.execNamedAction)(arg0, args, st);
+}
+async function evaluateListList(arg0, args, st) {
+    st.logger.debug(`evaluateListList`, arg0);
+    const [arg0_arg0, ...args0_args] = arg0;
+    (0, types_1.ensureString)(arg0_arg0);
+    st = st.newNextUp(arg0_arg0);
+    st.logger.debug(`evaluateListList`, arg0);
+    // ensureList(args2);
+    const arg_values = await (0, series_1.series)(args, st);
+    st.logger.debug(`evaluateListList: arg_values:`, arg_values);
+    const preparedFn = await (0, exports.execNamedAction)(arg0_arg0, args0_args, st);
+    (0, types_1.ensureFunction)(preparedFn);
+    const res = preparedFn(arg0_arg0, arg_values, st);
+    // logger.debug(`eval state at exit:`, st);
+    return res;
+}
 async function evaluateList(expr, st) {
-    const [op1, ...args] = expr;
-    let { logger } = st;
-    if ((0, types_1.isString)(op1)) {
-        logger = logger.newNextUp(st.runner, { name: op1 });
-        st = { ...st, logger };
-        const evl = (expr) => st.runner.evaluate(expr, st);
-        logger.debug(`eval string/symbol: "${expr}"`);
-        return (0, exports.execNamedAction)(op1, args, { ...st, evaluate: evl, logger });
+    const [arg0, ...args] = expr;
+    // let {logger} = st;
+    if ((0, types_1.isString)(arg0)) {
+        // return execNamedAction(op1, args, st);
+        return evaluateListAtom(arg0, args, st);
         //
     }
-    else if ((0, types_1.isList)(op1)) {
-        logger.debug(`eval list`, op1);
-        const [op2, ...args2] = op1; // [ fn_name, arg_names, body ];
-        (0, types_1.ensureString)(op2);
-        logger = logger.newNextUp(st.runner, { name: op2 });
-        st = { ...st, logger };
-        const evl = (expr) => st.runner.evaluate(expr, st);
-        // ensureList(args2);
-        const arg_values = await (0, series_1.series)(args, st.evaluate);
-        logger.debug(`evaluateList: arg_values:`, arg_values);
-        const preparedFn = await (0, exports.execNamedAction)(op2, args2, {
-            ...st,
-            evaluate: evl,
-            logger,
-        });
-        (0, types_1.ensureFunction)(preparedFn);
-        const res = preparedFn(op2, arg_values, st);
-        // logger.debug(`eval state at exit:`, st);
-        return res;
+    else if ((0, types_1.isList)(arg0)) {
+        return evaluateListList(arg0, args, st);
     }
     // } else if (isFunction(expr)) {
     // expr();
@@ -73,15 +72,24 @@ async function evaluateAtom(expr, st) {
     // * isAtom || isEmptyList
     logger.debug(`evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`);
     if ((0, types_1.isString)(expr)) {
-        logger = logger.newNextUp(st.runner, { name: expr });
-        st = { ...st, logger };
+        //
+        // logger.debug(
+        // `evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`
+        // );
+        // st = st.newNextUp(expr);
+        // st = st.next();
+        // logger.debug(
+        // `evaluateAtom: in: (${typeof expr}) "${JSON.stringify(expr)}"`
+        // );
         // * This may be either string or symbol
         // * as there is no convenient way to differentiate them inside JSON
         // * Handle as symbol
         const value = st.scopes.get(expr);
         if (value !== undefined) {
             expr = value;
-            logger.debug(`evaluateAtom: var: (${typeof expr}) "${JSON.stringify(expr)}"`);
+            // logger.debug(
+            // `evaluateAtom: var: (${typeof expr}) "${JSON.stringify(expr)}"`
+            // );
         }
         else {
             // * Handle as string
@@ -101,22 +109,25 @@ async function evaluateAtom(expr, st) {
 /**
  * @name eval
  */
-const eval_ = async function (_, args, state) {
+const eval_ = async function (_, args, st) {
+    st.logger.debug('eval_:enter');
+    st.next();
     const [expr] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    // const {logger} = state;
-    // const evaluate = (args: Expression) => eval_(_, [args], state);
-    // const evaluate = curry(eval_, state);
-    // state = {...state, evaluate, logger: logger.newNextUp(state.runner)};
-    // logger.debug(`eval state at enter:`, state);
+    let res;
     if ((0, types_1.isList)(expr) && !(0, types_1.isEmptyList)(expr)) {
-        return await evaluateList(expr, state);
+        st.logger.debug('eval_:enter:list');
+        res = await evaluateList(expr, st);
     }
     else if (!(0, types_1.isEmptyList)(expr)) {
-        return await evaluateAtom(expr, state);
+        st.logger.debug('eval_:enter:atom');
+        res = await evaluateAtom(expr, st);
     }
     else {
-        return expr;
+        st.logger.debug('eval_:enter:else');
+        res = expr;
     }
+    st.logger.debug('eval_:exit');
+    return res;
 };
 exports.eval_ = eval_;
 exports.actions = {

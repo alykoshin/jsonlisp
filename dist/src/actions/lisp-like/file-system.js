@@ -36,13 +36,14 @@ const path_1 = __importDefault(require("path"));
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
-const readFileIntoString = async function (action, params, { evaluate, logger }) {
-    let [filename] = (0, util_1.fn_check_params)(params, { exactCount: 1 });
-    (0, types_1.ensureString)((filename = await evaluate(filename)));
-    filename = path_1.default.resolve(filename);
-    logger.debug(`reading "${filename}"`);
-    const s = await promises_1.default.readFile(filename, { encoding: 'utf8' });
-    logger.debug(`Read ${s.length} chars`);
+const readFileIntoString = async function (_, args, st) {
+    let [pFname] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    let fname = await st.evaluate(pFname);
+    (0, types_1.ensureString)(fname);
+    fname = path_1.default.resolve(fname);
+    st.logger.debug(`reading "${fname}"`);
+    const s = await promises_1.default.readFile(fname, { encoding: 'utf8' });
+    st.logger.debug(`Read ${s.length} chars`);
     return s;
 };
 exports.readFileIntoString = readFileIntoString;
@@ -57,12 +58,13 @@ exports.readFileIntoString = readFileIntoString;
  *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
  */
 const writeStringIntoFile = async function (action, params, { evaluate, logger }) {
-    let [filename, s] = (0, util_1.fn_check_params)(params, { exactCount: 2 });
-    (0, types_1.ensureString)((filename = await evaluate(filename)));
-    filename = path_1.default.resolve(filename);
-    logger.debug(`writing to "${filename}"`);
+    let [pFname, s] = (0, util_1.fn_check_params)(params, { exactCount: 2 });
+    let fname = await evaluate(pFname);
+    (0, types_1.ensureString)(fname);
+    fname = path_1.default.resolve(fname);
+    logger.debug(`writing to "${fname}"`);
     (0, types_1.ensureString)((s = await evaluate(s)));
-    await promises_1.default.writeFile(filename, s, { encoding: 'utf8' });
+    await promises_1.default.writeFile(fname, s, { encoding: 'utf8' });
     logger.debug(`Wrote ${s.length} chars`);
     return s;
 };

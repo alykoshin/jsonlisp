@@ -1,7 +1,7 @@
 /** @format */
 
 import {ScopeObject, Scopes} from '@utilities/object';
-import {Logger} from '../../lib/log';
+import {ErrorLevel, Logger} from '../../lib/log';
 import type {Activity} from './lib/config';
 import type {
   Atom,
@@ -16,19 +16,24 @@ import {Tracer, TracerConstructorOptions} from './lib/tracer';
 import {actions} from '../../actions';
 import {execNamedAction} from '../../actions/lisp-like/core/eval';
 
-// const DEFAULT_DEBUG = false;
-const DEFAULT_DEBUG = true;
-
-interface RunnerConstructorOptions extends TracerConstructorOptions {}
+interface RunnerConstructorOptions extends TracerConstructorOptions {
+  errorLevel?: ErrorLevel;
+}
 
 export class Runner {
   actions: Actions;
   // actionCount: number = 0;
   tracer: Tracer;
+  errorLevel?: ErrorLevel;
 
-  constructor({maxLevels, maxSteps}: RunnerConstructorOptions = {}) {
+  constructor({
+    maxLevels,
+    maxSteps,
+    errorLevel,
+  }: RunnerConstructorOptions = {}) {
     this.actions = actions;
     this.tracer = new Tracer({maxLevels, maxSteps});
+    this.errorLevel = errorLevel;
   }
 
   async init({
@@ -52,6 +57,7 @@ export class Runner {
     const st = new State({
       runner: this,
       scopes,
+      errorLevel: 'log',
     });
     st.logger.warn(`need to clean up the scopes on start`);
     return st;

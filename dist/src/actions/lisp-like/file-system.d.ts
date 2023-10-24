@@ -1,5 +1,5 @@
 /** @format */
-import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
 /**
  * @module file-system
  *
@@ -27,7 +27,7 @@ import { ActionListExecutor, Actions } from '../../apps/runner/lib/types';
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
-export declare const readFileIntoString: ActionListExecutor;
+export declare const readFileIntoString: ExecutorFn;
 /**
  * @name write-string-into-file
  * @see
@@ -38,7 +38,7 @@ export declare const readFileIntoString: ActionListExecutor;
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- to-file
  *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
  */
-export declare const writeStringIntoFile: ActionListExecutor;
+export declare const writeStringIntoFile: ExecutorFn;
 /**
  * @name rename-file
  * @see
@@ -46,21 +46,21 @@ export declare const writeStringIntoFile: ActionListExecutor;
  * 23.3. Renaming, Deleting, and Other File Operations
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node216.html}
  */
-export declare const renameFile: ActionListExecutor;
+export declare const renameFile: ExecutorFn;
 /**
  * @name delete-file
  */
-export declare const deleteFile: ActionListExecutor;
+export declare const deleteFile: ExecutorFn;
 /**
  * @name probe-file
  */
-export declare const probeFile: ActionListExecutor;
+export declare const probeFile: ExecutorFn;
 /**
  * @name directory
  * @see
  * - Common Lisp the Language, 2nd Edition --  23.5. Accessing Directories
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000}
  */
-export declare const directory: ActionListExecutor;
+export declare const directory: ExecutorFn;
 export declare const actions: Actions;
 export default actions;

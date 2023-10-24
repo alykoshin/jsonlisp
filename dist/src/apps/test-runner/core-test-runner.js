@@ -9,12 +9,10 @@ const test_runner_1 = require("../../actions/$sbcl/test-runner");
 const eval_1 = __importDefault(require("../../actions/lisp-like/core/eval"));
 const functions_1 = __importDefault(require("../../actions/lisp-like/core/functions"));
 const primitives_1 = __importDefault(require("../../actions/lisp-like/core/primitives"));
-//
-const functions_cases_1 = __importDefault(require("../../tests/lisp-like/core/functions.cases"));
-const runner_1 = require("../runner/runner");
+const primitives_cases_1 = __importDefault(require("../../tests/lisp-like/core/primitives.cases"));
 const allCases = [
-    ...functions_cases_1.default,
-    // ...primitivesCases,
+    // ...functionsCases,
+    ...primitives_cases_1.default,
 ];
 const actions = {
     ...eval_1.default,
@@ -80,24 +78,14 @@ function printHeaders() {
     printCells(headers, ' ');
     printSeparator();
 }
-async function getEvaluate() {
-    // let interpreter;
-    const interpreter = new runner_1.Runner();
-    // replace default actions with the ones we want to test
-    // (and their dependencies)
-    interpreter.actions = actions;
-    const st = await interpreter.init();
-    // return evCurry(interpreter.evaluate);
-    return (expr) => interpreter.evaluate.call(interpreter, expr, st);
-    // return interpreter.evaluate.bind(interpreter);
-}
+// async function init() {
+// }
 async function run() {
     printHeaders();
     let failCount = 0;
-    const evaluate = await getEvaluate();
     for (const i in allCases) {
         const [exprJlIn, strSbclIn, message] = allCases[i];
-        const { exprJlOut, strSbclIn: strSbclIn_, strSbclOut, exprSbclOut, ok, } = await (0, test_runner_1.testRunner)(exprJlIn, strSbclIn, { actions, evaluate });
+        const { exprJlOut, strSbclIn: strSbclIn_, strSbclOut, exprSbclOut, ok, } = await (0, test_runner_1.testRunner)(actions, exprJlIn, strSbclIn);
         if (!ok)
             failCount++;
         const cellValues = [

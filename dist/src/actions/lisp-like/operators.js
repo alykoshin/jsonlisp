@@ -220,7 +220,9 @@ const plog = function (logger) {
  */
 exports.actions = {
     /** @name + */
-    '+': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p) => await evaluate(acc) + await evaluate(p), 0)),
+    '+': async (action, params, { evaluate, logger }) => {
+        return plog(logger)(pReduce(params, async (acc, p) => await evaluate(acc) + await evaluate(p), 0));
+    },
     /** @name - */
     '-': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) - await evaluate(p), 0)),
     /** @name * */
@@ -228,14 +230,14 @@ exports.actions = {
     /** @name / */
     '/': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) / await evaluate(p), 1)),
     /** @name 1+ */
-    '1+': async (action, params, { evaluate, logger }) => {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        return evaluate(['+', ...params, 1]);
+    '1+': async (action, args, { evaluate, logger }) => {
+        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        return evaluate(['+', ...args, 1]);
     },
     /** @name 1- */
-    '1-': async (action, params, { evaluate, logger }) => {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
-        return evaluate(['-', ...params, 1]);
+    '1-': async (action, args, { evaluate, logger }) => {
+        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        return evaluate(['-', ...args, 1]);
     },
     /** @name % */
     '%': operators,

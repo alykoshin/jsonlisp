@@ -1,6 +1,6 @@
 {
     "name": "tools-runner",
-    "version": "0.0.22",
+    "version": "0.0.42",
     "description": "tools-runner",
     "type": "commonjs",
     "main": "dist/index.js",
@@ -11,7 +11,7 @@
     },
     "scripts": {
         "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json",
-        "test-core": ".src/run-tests/core-test-runner/core-test-runner.ts",
+        "test-core": "ts-node ./src/apps/test-runner/core-test-runner.ts",
         "build": "npm start build",
         "start-ts": "ts-node --esm ./src/cli.ts",
         "start-js": "node ./dist/cli.js"
