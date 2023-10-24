@@ -1,11 +1,13 @@
 /** @format */
 import { ActionDefinition, Actions } from './types';
+import { ErrorLevel } from '../../../lib/log';
 export type ActivityActionsDefinition = Actions & {
     default: ActionDefinition;
 };
 export interface Activity {
     base_dir: string;
     version: string;
+    logLevel?: ErrorLevel;
     actions: ActivityActionsDefinition;
 }
 declare class ConfigReader {

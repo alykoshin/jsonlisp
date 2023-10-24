@@ -26,11 +26,12 @@ class Runner {
             };
         }
         // st.logger.debug(`this.actions: ${Object.keys(this.actions).join(',')}`);
+        const logLevel = activity?.logLevel ? activity?.logLevel : 'log';
         const scopes = scope ? new object_1.Scopes([scope]) : new object_1.Scopes();
         const st = new state_1.State({
             runner: this,
             scopes,
-            errorLevel: 'log',
+            errorLevel: logLevel,
         });
         st.logger.warn(`need to clean up the scopes on start`);
         return st;
