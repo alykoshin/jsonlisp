@@ -6,7 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$cp = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 /**
  * @module $build
  */
@@ -14,7 +14,7 @@ const util_1 = require("../../apps/runner/lib/util");
  * @name $cp
  */
 const $cp = async function (_, args, { logger }) {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const { source, dest, dry: dry_ } = args[0];
     const dry = typeof dry_ !== 'undefined' ? dry_ : false;
     const sources = Array.isArray(source) ? source : [source];

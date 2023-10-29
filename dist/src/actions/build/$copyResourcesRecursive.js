@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.$copyResourcesRecursive = void 0;
 const path_1 = __importDefault(require("path"));
 const promises_1 = __importDefault(require("fs/promises"));
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 /**
  * @module $build
@@ -17,7 +17,7 @@ const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
  */
 const $copyResourcesRecursive = async function (_, args, state) {
     const { runner, logger } = state;
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const [pConfig] = args;
     const { sourceDir, excludeDirs: excludeDirs_, targetDir, } = pConfig;
     const excludeDirs = Array.isArray(excludeDirs_)

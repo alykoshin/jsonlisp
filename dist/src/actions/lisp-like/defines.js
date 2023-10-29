@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const print_1 = require("./helpers/print");
 /**
  * @module defines
@@ -49,7 +49,7 @@ exports.actions = {
      * {@link https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp}
      */
     setq: async function (_, args, { evaluate, scopes, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
         const pName = await evaluate(args[0]);
         const sName = String(pName);
         const pValue = await evaluate(args[1]);

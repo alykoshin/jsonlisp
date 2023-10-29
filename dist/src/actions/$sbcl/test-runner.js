@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.testRunner = void 0;
 const types_1 = require("../../apps/runner/lib/types");
-const lisp2jl_primitive_1 = require("../../apps/translator-primitive/lisp2jl-primitive");
+// import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
+// import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
+const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");
 const exec_prepare_1 = require("./exec-prepare");
 const exec_1 = require("../lisp-like/helpers/exec");
 const runner_1 = require("../../apps/runner/runner");
@@ -12,16 +14,11 @@ const testRunner = async function (actions, exprJlIn, strSbclIn
 // st: State
 ) {
     // const evaluate = await init();
-    const interpreter = new runner_1.Runner({ errorLevel: 'debug' });
+    const runner = new runner_1.Runner({ errorLevel: 'debug' });
     // replace default actions with the ones we want to test
     // (and their dependencies)
-    interpreter.actions = actions;
-    const st = await interpreter.init();
-    // return st;
-    // const st = await init();
-    // const {evaluate} = st;
-    // const st = new State({});
-    // const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
+    runner.actions = actions;
+    const st = await runner.init();
     const exprJlOut = await st.evaluate(exprJlIn);
     try {
         const c = (0, exec_prepare_1.get_sbcl_cmd)(strSbclIn);

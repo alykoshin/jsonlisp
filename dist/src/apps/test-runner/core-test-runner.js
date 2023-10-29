@@ -9,11 +9,10 @@ const test_runner_1 = require("../../actions/$sbcl/test-runner");
 const eval_1 = __importDefault(require("../../actions/lisp-like/core/eval"));
 const functions_1 = __importDefault(require("../../actions/lisp-like/core/functions"));
 const primitives_1 = __importDefault(require("../../actions/lisp-like/core/primitives"));
+//
+const functions_cases_1 = __importDefault(require("../../tests/lisp-like/core/functions.cases"));
 const primitives_cases_1 = __importDefault(require("../../tests/lisp-like/core/primitives.cases"));
-const allCases = [
-    // ...functionsCases,
-    ...primitives_cases_1.default,
-];
+const allCases = [...functions_cases_1.default, ...primitives_cases_1.default];
 const actions = {
     ...eval_1.default,
     ...functions_1.default,

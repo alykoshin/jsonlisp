@@ -6,7 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.directory = exports.probeFile = exports.deleteFile = exports.renameFile = exports.writeStringIntoFile = exports.readFileIntoString = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 const path_1 = __importDefault(require("path"));
 /**
@@ -37,7 +37,7 @@ const path_1 = __importDefault(require("path"));
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
 const readFileIntoString = async function (_, args, st) {
-    let [pFname] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    let [pFname] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     let fname = await st.evaluate(pFname);
     (0, types_1.ensureString)(fname);
     fname = path_1.default.resolve(fname);
@@ -58,7 +58,7 @@ exports.readFileIntoString = readFileIntoString;
  *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
  */
 const writeStringIntoFile = async function (action, params, { evaluate, logger }) {
-    let [pFname, s] = (0, util_1.fn_check_params)(params, { exactCount: 2 });
+    let [pFname, s] = (0, validateArgs_1.validateArgs)(params, { exactCount: 2 });
     let fname = await evaluate(pFname);
     (0, types_1.ensureString)(fname);
     fname = path_1.default.resolve(fname);
@@ -77,7 +77,7 @@ exports.writeStringIntoFile = writeStringIntoFile;
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node216.html}
  */
 const renameFile = async function (action, params, { evaluate, logger }) {
-    let [source, dest] = (0, util_1.fn_check_params)(params, { exactCount: 2 });
+    let [source, dest] = (0, validateArgs_1.validateArgs)(params, { exactCount: 2 });
     (0, types_1.ensureString)((source = await evaluate(source)));
     (0, types_1.ensureString)((dest = await evaluate(dest)));
     source = path_1.default.resolve(source);
@@ -92,7 +92,7 @@ exports.renameFile = renameFile;
  * @name delete-file
  */
 const deleteFile = async function (action, params, { evaluate, logger }) {
-    let [source] = (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    let [source] = (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     (0, types_1.ensureString)((source = await evaluate(source)));
     logger.debug(`"${source}"`);
     const p = path_1.default.resolve(source);
@@ -105,7 +105,7 @@ exports.deleteFile = deleteFile;
  * @name probe-file
  */
 const probeFile = async function (action, params, { evaluate, logger }) {
-    let [source] = (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    let [source] = (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     (0, types_1.ensureString)((source = await evaluate(source)));
     logger.debug(`"${source}"`);
     const p = path_1.default.resolve(source);
@@ -135,7 +135,7 @@ exports.probeFile = probeFile;
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000}
  */
 const directory = async function (action, params, { evaluate, logger }) {
-    let [source] = (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    let [source] = (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     (0, types_1.ensureString)((source = await evaluate(source)));
     logger.debug(`"${source}"`);
     const p = path_1.default.resolve(source);

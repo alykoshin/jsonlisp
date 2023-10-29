@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sliceListList = exports.seriesn = exports.series2 = exports.series1 = exports.seriesnth = exports.series = void 0;
 const types_1 = require("../../../apps/runner/lib/types");
-const util_1 = require("../../../apps/runner/lib/util");
+const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 // export const lengthEqual = (lists: any[]): boolean =>
 //   lists.every((l) => lists[0].length === l.length);
 // export function a_series<T>(args: T[], evaluate: EvaluateFn): T[] {
@@ -22,7 +22,7 @@ const util_1 = require("../../../apps/runner/lib/util");
 //   return result[index];
 // }
 const series = async (args, st) => {
-    (0, util_1.fn_check_params)(args, { minCount: 0 });
+    (0, validateArgs_1.validateArgs)(args, { minCount: 0 });
     const result = [];
     for (const a of args) {
         const res = await st.evaluate(a);
@@ -37,7 +37,7 @@ const seriesnth = async (index, args, st) => {
     if (index < 0) {
         index = result.length - 1;
     }
-    (0, util_1.fn_check_params)(result, { minCount: index });
+    (0, validateArgs_1.validateArgs)(result, { minCount: index });
     return result[index];
 };
 exports.seriesnth = seriesnth;

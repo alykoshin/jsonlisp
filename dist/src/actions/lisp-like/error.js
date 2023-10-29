@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 /**
  * @module error
  */
@@ -11,7 +11,7 @@ exports.actions = {
      * @name error
      */
     error: async function error(action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const pValue = await evaluate(params[0]);
         const sValue = String(pValue);
         logger.fatal(sValue);
@@ -21,7 +21,7 @@ exports.actions = {
      * @see {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node336.html}
      */
     assert: async function (action, params, { evaluate, scopes, logger }) {
-        (0, util_1.fn_check_params)(params, { minCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { minCount: 1 });
         const pActual = await evaluate(params[0]);
         // console.log('>>>', actual)
         const bActual = !!pActual;

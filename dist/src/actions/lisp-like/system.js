@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 /**
  * @module system
  * @see ...
@@ -10,7 +10,7 @@ const util_1 = require("../../apps/runner/lib/util");
 exports.actions = {
     /** @name sleep */
     sleep: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const pValue = await evaluate(params[0]);
         const nValue = Number(pValue);
         logger.debug(`sleep ${nValue} seconds`);
@@ -19,7 +19,7 @@ exports.actions = {
     },
     /** @name time */
     time: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const [pDuration] = params;
         const startTime = new Date();
         const value = await evaluate(pDuration);

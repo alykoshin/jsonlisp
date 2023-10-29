@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureNoFile = void 0;
 const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 /**
  * @module $build
  */
@@ -11,7 +11,7 @@ const util_1 = require("../../apps/runner/lib/util");
  * @name $ensureNoFile
  */
 const $ensureNoFile = async function (_, args, { evaluate, logger }) {
-    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { minCount: 1 });
     logger.debug(`$ensureNoFile: parameters: ${JSON.stringify(args)}`);
     const result = [];
     for (const p of args) {

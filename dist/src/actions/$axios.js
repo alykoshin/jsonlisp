@@ -7,15 +7,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.$axios = void 0;
 const axios_1 = __importDefault(require("axios"));
 const types_1 = require("../apps/runner/lib/types");
-const util_1 = require("../apps/runner/lib/util");
+const validateArgs_1 = require("../apps/runner/lib/validateArgs");
 /**
- * @module axios
+ * @module $axios
  */
 /**
  * @name $axios
  */
 const $axios = async function (_, args, { evaluate, logger }) {
-    let [method, url, body] = (0, util_1.fn_check_params)(args, { exactCount: [2, 3] });
+    let [method, url, body] = (0, validateArgs_1.validateArgs)(args, { exactCount: [2, 3] });
     (0, types_1.ensureString)((method = await evaluate(method)));
     (0, types_1.ensureString)((url = await evaluate(url)));
     if (body) {

@@ -67,7 +67,6 @@ function debugPrimitive(value) {
         result = `"${result}"`;
     return result;
 }
-//
 class AbstractLogger {
     _errorLevel = DEFAULT_ERROR_LEVEL;
     constructor(errorLevel = DEFAULT_ERROR_LEVEL) {

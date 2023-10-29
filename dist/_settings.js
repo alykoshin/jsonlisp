@@ -1,4 +1,5 @@
 "use strict";
+/** @format */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -28,10 +29,10 @@ exports.packageJson = exports.PROJECT_DIR = exports.PRODUCTION = void 0;
 // const dotenv = require('dotenv').config();
 const dotenv = __importStar(require("dotenv"));
 const config = dotenv.config();
-console.log('DEBUG:', process.env.DEBUG);
-console.log('NODE_ENV:', process.env.NODE_ENV);
+// console.log('DEBUG:', process.env.DEBUG);
+// console.log('NODE_ENV:', process.env.NODE_ENV);
 const PRODUCTION_STR = 'production';
-exports.PRODUCTION = (process.env.NODE_ENV === PRODUCTION_STR);
+exports.PRODUCTION = process.env.NODE_ENV === PRODUCTION_STR;
 exports.PROJECT_DIR = __dirname;
 exports.packageJson = require('./package.json');
 //# sourceMappingURL=_settings.js.map

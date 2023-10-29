@@ -1,82 +1,68 @@
 "use strict";
 /** @format */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.$zip = void 0;
-const path = __importStar(require("path"));
-const exec_1 = require("../lisp-like/helpers/exec");
-const _version_1 = __importDefault(require("../build/$version"));
-const util_1 = require("../../apps/runner/lib/util");
+exports.actions = exports.$zipDir = exports.$zip = void 0;
+// import {actions as $versionActions} from '../build/$version';
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
+const types_1 = require("../../apps/runner/lib/types");
+const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
+const _7zip_1 = require("./helpers/7zip");
+const archiver_1 = require("./helpers/archiver");
+async function getVersion(evaluate) {
+    // const version = await ($versionActions.$version as ExecutorFn).call(
+    //   state,
+    //   action,
+    //   [],
+    //   state
+    // );
+    // ensureString(version);
+    // return 'v'+version;
+    //
+    const version = await evaluate(['$version']);
+    (0, types_1.ensureString)(version);
+    return version;
+}
+function getArchiveBasename(archive_prefix, version) {
+    return [archive_prefix, version, (0, fileUtils_1.formatFilenameDate)()].join('-');
+}
 /**
  * @module $zip
  */
 /**
  * @name $zip
+ * @description Uses `7zip` executable to create zip archive (*Windows* only).
  */
-const $zip = async function (action, args, state) {
-    const { runner, logger } = state;
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
-    const [pConfig] = args;
-    const version = await _version_1.default.$version.call(state, action, [], state);
-    const { file_names, archive_prefix, out_dir, exclude_files } = pConfig;
-    const date = new Date()
-        .toISOString()
-        .replace(/[:T]/g, '-')
-        .replace(/\..+/, '');
-    // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-    const zip_exe = '"c:/Program Files/7-Zip/7z.exe"';
-    const archive_name = `${archive_prefix}-v${version}-${date}.zip`;
-    const archive_pathname = path.join(out_dir, archive_name);
-    const sFileNames = file_names.join(' ');
-    // prettier-ignore
-    const switches = [
-        '-bb1',
-        '-r',
-        '-t' + 'zip',
-        ...exclude_files.map((f) => `-x!${f}`),
-    ];
-    // prettier-ignore
-    const zip_args = [
-        'a',
-        ...switches,
-        archive_pathname,
-        sFileNames,
-    ];
-    const command_line = [zip_exe, ...zip_args].join(' ');
-    const options = {
-    // cwd: activity.base_dir,
-    };
-    const r = await (0, exec_1.execute)(command_line, options, { state });
-    return r.stdout;
+const $zip = async function (_, args, st) {
+    // const {runner, logger} = st;
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
+    const options = args[0];
+    const version = await getVersion(st.evaluate);
+    const { archive_prefix } = options;
+    const archiveBaseName = getArchiveBasename(archive_prefix, version);
+    return (0, _7zip_1.sevenZip)(archiveBaseName, options, st);
 };
 exports.$zip = $zip;
-// export const actions: Actions = {
-// $zip: $zip,
-// }
-// export default actions
+/**
+ * @name $zipDir
+ * @description Uses `archiver` module to create zip archive.
+ */
+const $zipDir = async function (_, args, st) {
+    // const {runner, logger} = st;
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 3 });
+    const [sourceDir, out_dir, archive_prefix] = args;
+    (0, types_1.ensureString)(sourceDir);
+    (0, types_1.ensureString)(out_dir);
+    (0, types_1.ensureString)(archive_prefix);
+    const version = await getVersion(st.evaluate);
+    const archiveBaseName = getArchiveBasename(archive_prefix, version);
+    const finalName = await (0, archiver_1.zipDirectory)(sourceDir, out_dir, archiveBaseName, st.logger);
+    return finalName;
+};
+exports.$zipDir = $zipDir;
+exports.actions = {
+    $zip: exports.$zip,
+    $zipDir: exports.$zipDir,
+    // 'zip:get-name': getArchiveBasename,
+};
+exports.default = exports.actions;
 //# sourceMappingURL=$zip.js.map

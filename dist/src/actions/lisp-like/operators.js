@@ -1,33 +1,8 @@
 "use strict";
 /** @format */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const ajv_1 = __importDefault(require("ajv"));
-const util_1 = require("../../apps/runner/lib/util");
-/**
- * @module operators
- */
-const schema = {
-    type: 'array',
-    minItems: 2,
-    items: [{ type: 'integer' }, { type: 'integer' }],
-    additionalItems: false,
-};
-const ajv = new ajv_1.default({ allowUnionTypes: true });
-let validate = ajv.compile(schema);
-const data = [11, 22];
-// const data = [11,22,33]
-// const data = [11]
-if (validate(data)) {
-    // data is MyData here
-    console.log('>>> OK', data);
-}
-else {
-    console.log(validate.errors);
-}
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const logicalUnaryFns = {
     not: (a) => !a,
 };
@@ -126,7 +101,7 @@ function calcBinary(op, val1, val2) {
 }
 const operators = async function (action, args, state) {
     const { evaluate } = state;
-    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { minCount: 1 });
     if (args.length === 1) {
         const v1 = await evaluate(args[0]);
         return calcUnary(action, v1);
@@ -231,12 +206,12 @@ exports.actions = {
     '/': async (action, params, { evaluate, logger }) => plog(logger)(pReduce(params, async (acc, p, i, arr, stop) => await evaluate(acc) / await evaluate(p), 1)),
     /** @name 1+ */
     '1+': async (action, args, { evaluate, logger }) => {
-        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
         return evaluate(['+', ...args, 1]);
     },
     /** @name 1- */
     '1-': async (action, args, { evaluate, logger }) => {
-        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
         return evaluate(['-', ...args, 1]);
     },
     /** @name % */

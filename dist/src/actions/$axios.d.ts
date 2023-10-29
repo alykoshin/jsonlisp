@@ -1,7 +1,7 @@
 /** @format */
 import { ExecutorFn, Actions } from '../apps/runner/lib/types';
 /**
- * @module axios
+ * @module $axios
  */
 /**
  * @name $axios

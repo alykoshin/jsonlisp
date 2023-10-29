@@ -3,8 +3,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
 const types_1 = require("../../apps/runner/lib/types");
-const util_1 = require("../../apps/runner/lib/util");
-const octo_1 = require("./octo");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
+const octo_1 = require("./lib/octo");
 const GIT_ACTIONS = {
     default: ['queryClean'],
     // "readGithubUsername": [
@@ -67,7 +67,7 @@ const GIT_ACTIONS = {
     //  ],
     //],
     async ensureClean(_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 0 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 0 });
         // const git_clean = await this.queryClean();
         // const git_clean = await this['queryClean']();
         const git_clean = await evaluate('queryClean');
@@ -81,7 +81,7 @@ const GIT_ACTIONS = {
         }
     },
     async createGithubRepo(_, args, { evaluate, runner, level, logger }) {
-        const [username, name, description] = (0, util_1.fn_check_params)(args, {
+        const [username, name, description] = (0, validateArgs_1.validateArgs)(args, {
             exactCount: 3,
         });
         (0, types_1.ensureString)(username);

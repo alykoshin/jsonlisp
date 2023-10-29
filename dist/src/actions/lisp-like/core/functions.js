@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.and_ = exports.null_ = exports.defun = exports.createPrepareFn = exports.lambda = void 0;
 const types_1 = require("../../../apps/runner/lib/types");
 const series_1 = require("../helpers/series");
-const util_1 = require("../../../apps/runner/lib/util");
+const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 const passArgs_1 = require("../helpers/passArgs");
 //
 /**
@@ -26,7 +26,7 @@ const passArgs_1 = require("../helpers/passArgs");
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
 const lambda = async function (_, args, { evaluate }) {
-    const [argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    const [argnames, body] = (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
     return (0, exports.createPrepareFn)('lambda', argnames, body);
 };
 exports.lambda = lambda;
@@ -50,7 +50,7 @@ const createPrepareFn = function (name, argnames, body) {
 };
 exports.createPrepareFn = createPrepareFn;
 const defun = async function (_, args, state) {
-    const [name, argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 3 });
+    const [name, argnames, body] = (0, validateArgs_1.validateArgs)(args, { exactCount: 3 });
     (0, types_1.ensureString)(name, `Expect string as a name of function`);
     state.actions[name] = (0, exports.createPrepareFn)(name, argnames, body);
     return name;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$yarnInstallProd = void 0;
 const exec_1 = require("../lisp-like/helpers/exec");
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 function installDepsCmd() {
     const program = 'yarn';
     const keys = ['--production=true'];
@@ -16,7 +16,7 @@ function installDepsCmd() {
  * @module $yarnInstallProd
  */
 const $yarnInstallProd = async function (_, args, state) {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const { cwd, env } = args[0];
     const options = {
         cwd,

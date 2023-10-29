@@ -5,7 +5,7 @@ exports.actions = exports.cond = exports.cons = exports.cdr = exports.car = expo
 const types_1 = require("../../../apps/runner/lib/types");
 const typecast_1 = require("../../../actions/lisp-like/helpers/typecast");
 const series_1 = require("../helpers/series");
-const util_1 = require("../../../apps/runner/lib/util");
+const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 //
 /**
  * @module primitives
@@ -14,7 +14,7 @@ const util_1 = require("../../../apps/runner/lib/util");
  *  @name quote
  */
 const quote = async function (_, args, st) {
-    const [a] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [a] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     // no evaluation
     return a;
 };
@@ -23,7 +23,7 @@ exports.quote = quote;
  * @name atom
  */
 const atom = async function (_, args, st) {
-    const [a] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [a] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const ea = await st.evaluate(a);
     return (0, types_1.isAtom)(ea) || (0, types_1.isEmptyList)(ea) ? types_1.T : types_1.NIL;
 };
@@ -33,7 +33,7 @@ exports.atom = atom;
  */
 const eq = async function (_, args, st) {
     // const [a, b] =
-    (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
     // const ea = await st.evaluate(a);
     // const eb = await st.evaluate(b);
     const [ea, eb] = await (0, series_1.series)(args, st);
@@ -46,7 +46,7 @@ exports.eq = eq;
  * @name car
  */
 const car = async function (_, args, st) {
-    const [arg0] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [arg0] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const earg0 = await st.evaluate(arg0);
     (0, types_1.ensureList)(earg0);
     return earg0.length > 0 ? earg0[0] : types_1.NIL;
@@ -56,7 +56,7 @@ exports.car = car;
  * @name cdr
  */
 const cdr = async function (_, args, st) {
-    const [arg0] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [arg0] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const earg0 = await st.evaluate(arg0);
     (0, types_1.ensureList)(earg0);
     return earg0.length > 1 ? earg0.slice(1) : types_1.NIL;
@@ -67,7 +67,7 @@ exports.cdr = cdr;
  */
 const cons = async function (_, args, st) {
     // const [x, y] =
-    (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
     // const ex = await evaluate(x);
     // const ey = await evaluate(y);
     const [ex, ey] = await (0, series_1.series)(args, st);
@@ -114,7 +114,7 @@ exports.cons = cons;
 //
 //-------------------------------------------------------------------------
 const cond = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { minCount: 1 });
     for (const current of args) {
         (0, types_1.ensureList)(current);
         const [cond, ...exprs] = current;

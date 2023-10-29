@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.nullp = exports.listp = exports.consp = exports.cdr = exports.nthcdr = exports.third = exports.second = exports.car = exports.nth = exports.length = exports.list = exports.quote = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 const series_1 = require("./helpers/series");
 /**
@@ -49,7 +49,7 @@ async function fn_rest(index, list, st) {
 //===========================================================================//
 /** @name quote */
 const quote = async (_, params, st) => {
-    (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     // return first argument without evaluation
     return params[0];
 };
@@ -62,7 +62,7 @@ const list = async (_, params, st) => {
 exports.list = list;
 /** @name length */
 const length = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const a0 = await st.evaluate(args[0]);
     (0, types_1.ensureList)(a0);
     return a0.length;
@@ -70,7 +70,7 @@ const length = async (_, args, st) => {
 exports.length = length;
 /** @name nth */
 const nth = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { exactCount: 2 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
     console.log('nth:args:', JSON.stringify(args));
     // return fn_nth(params[0], params[1], evaluate);
     const idx = await st.evaluate(args[0]);
@@ -128,7 +128,7 @@ exports.cdr = cdr;
 //
 /** @name consp */
 const consp = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const a0 = await st.evaluate(args[0]);
     // return isList(a0) && !isEmptyList(a0);
     return _consp(a0);
@@ -136,7 +136,7 @@ const consp = async (_, args, st) => {
 exports.consp = consp;
 /** @name listp */
 const listp = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const a0 = await st.evaluate(args[0]);
     // return isList(a0);
     return _listp(a0);
@@ -144,7 +144,7 @@ const listp = async (_, args, st) => {
 exports.listp = listp;
 /** @name nullp */
 const nullp = async (_, args, st) => {
-    (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const a0 = await st.evaluate(args[0]);
     // return isList(a0) && isEmptyList(a0);
     return _nullp(a0);

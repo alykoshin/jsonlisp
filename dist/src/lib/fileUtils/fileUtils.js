@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildPathname = exports.ensureNoFile = exports.ensureFile = exports.fileCheckError = exports.iterateFiles = exports.cleanup = exports.getFilesRecursive = exports.removeDirRecursive = exports.isDirectory = exports.makePath = exports.replace_extname = void 0;
+exports.formatFilenameDate = exports.absPathname = exports.ensureNoFile = exports.ensureFile = exports.fileCheckError = exports.iterateFiles = exports.cleanup = exports.getFilesRecursive = exports.removeDirRecursive = exports.isDirectory = exports.makePath = exports.replace_extname = void 0;
 const path = __importStar(require("path"));
 const mkdirp = __importStar(require("mkdirp"));
 const fs_1 = __importDefault(require("fs"));
@@ -163,10 +163,16 @@ async function ensureNoFile(filenames) {
     });
 }
 exports.ensureNoFile = ensureNoFile;
-function buildPathname(filename) {
-    const baseDir = process.cwd();
-    const pathname = path.join(baseDir, filename);
+function absPathname(pathname) {
+    if (!path.isAbsolute(pathname)) {
+        const baseDir = process.cwd();
+        pathname = path.join(baseDir, pathname);
+    }
     return path.resolve(pathname);
 }
-exports.buildPathname = buildPathname;
+exports.absPathname = absPathname;
+function formatFilenameDate(date = new Date()) {
+    return date.toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
+}
+exports.formatFilenameDate = formatFilenameDate;
 //# sourceMappingURL=fileUtils.js.map

@@ -24,7 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolveFilename = exports.writeUniversal = exports.readUniversal = void 0;
+exports.resolveToFile = exports.writeUniversal = exports.readUniversal = void 0;
 const node_fs_1 = require("node:fs");
 const path = __importStar(require("path"));
 const tsFileUtils_1 = require("./tsFileUtils");
@@ -73,7 +73,7 @@ function writeUniversal(pathname, data) {
 exports.writeUniversal = writeUniversal;
 const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.json', '.json5'];
 const INDEX_FILE_BASENAME = 'index';
-const resolveFilename = (pathname) => {
+const resolveToFile = (pathname) => {
     // let pathname = buildPathname(fname)
     let extname = path.extname(pathname);
     if (!extname) {
@@ -101,8 +101,8 @@ const resolveFilename = (pathname) => {
         }
         pathname = pathname + extname;
     }
-    console.log(`Will process as "${extname}", Final pathname: "${pathname}"`);
+    // console.log(`Will process as "${extname}", Final pathname: "${pathname}"`);
     return pathname;
 };
-exports.resolveFilename = resolveFilename;
+exports.resolveToFile = resolveToFile;
 //# sourceMappingURL=universalFileUtils.js.map

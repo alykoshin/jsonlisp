@@ -1,4 +1,4 @@
 /** @format */
-import { Activity } from '../../apps/runner/lib/config';
+import { Activity } from '../../apps/runner/startup/Activities';
 export declare const activity: Activity;
 export default activity;

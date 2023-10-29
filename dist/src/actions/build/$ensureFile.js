@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$ensureFile = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 const types_1 = require("../../apps/runner/lib/types");
 /**
@@ -12,7 +12,7 @@ const types_1 = require("../../apps/runner/lib/types");
  * @name $ensureFile
  */
 const $ensureFile = async function (_, args, { evaluate, logger }) {
-    (0, util_1.fn_check_params)(args, { minCount: 1 });
+    (0, validateArgs_1.validateArgs)(args, { minCount: 1 });
     logger.debug(`$ensureFile: parameters: ${JSON.stringify(args)}`);
     const result = [];
     for (const p of args) {

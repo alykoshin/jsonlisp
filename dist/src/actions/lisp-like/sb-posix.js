@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.getcwd = exports.chdir = exports.getenv = exports.setenv = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 const print_1 = require("./helpers/print");
 /**
@@ -19,7 +19,7 @@ const print_1 = require("./helpers/print");
  */
 const setenv = async function (_, params, st) {
     const { evaluate, logger } = st;
-    (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: [2, 3] });
     // const [pName, pValue, pOverwrite] = await series(params, evaluate);
     const [pName, pValue, pOverwrite] = params;
     const eName = await evaluate(pName);
@@ -39,7 +39,7 @@ exports.setenv = setenv;
  * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp#L966C19-L966C19} <br>
  */
 const getenv = async function (_, params, { evaluate, logger }) {
-    (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     const [pName] = params;
     const eName = await evaluate(pName);
     (0, types_1.ensureString)(eName);
@@ -56,7 +56,7 @@ exports.getenv = getenv;
  *
  */
 const chdir = async function (_, params, { evaluate }) {
-    (0, util_1.fn_check_params)(params, { exactCount: 1 });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
     const dir = await evaluate(params[0]);
     (0, types_1.ensureString)(dir);
     const res = process.chdir(dir);
@@ -67,7 +67,7 @@ exports.chdir = chdir;
  * @name getcwd
  */
 const getcwd = async function (_, params, { logger }) {
-    (0, util_1.fn_check_params)(params, { exactCount: 0 });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: 0 });
     const res = process.cwd();
     logger.debug((0, print_1.stringify)(res));
     return res;

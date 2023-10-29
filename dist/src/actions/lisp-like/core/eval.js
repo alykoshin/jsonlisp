@@ -8,7 +8,7 @@ exports.actions = exports.eval_ = exports.execNamedAction = void 0;
 const string_1 = __importDefault(require("@utilities/string"));
 const types_1 = require("../../../apps/runner/lib/types");
 const series_1 = require("../helpers/series");
-const util_1 = require("../../../apps/runner/lib/util");
+const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 //
 /**
  * @module eval
@@ -112,7 +112,7 @@ async function evaluateAtom(expr, st) {
 const eval_ = async function (_, args, st) {
     st.logger.debug('eval_:enter');
     st.next();
-    const [expr] = (0, util_1.fn_check_params)(args, { exactCount: 1 });
+    const [expr] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     let res;
     if ((0, types_1.isList)(expr) && !(0, types_1.isEmptyList)(expr)) {
         st.logger.debug('eval_:enter:list');

@@ -16,18 +16,19 @@ class Runner {
         this.tracer = new tracer_1.Tracer({ maxLevels, maxSteps });
         this.errorLevel = errorLevel;
     }
-    async init({ activity, scope, } = {}) {
+    async init({ activities, scope, } = {}) {
         //
         // `this.actions` must be populated before creating `state`
-        if (activity) {
+        if (activities) {
             this.actions = {
                 ...this.actions,
-                ...activity.actions,
+                ...activities.actions(),
             };
         }
         // st.logger.debug(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
-        console.log(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
-        const logLevel = activity?.logLevel ? activity?.logLevel : 'log';
+        // console.log(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
+        // const logLevel = activities?.logLevel ? activities?.logLevel : 'log';
+        const logLevel = /* activities?.logLevel ? activities?.logLevel : */ 'log';
         const scopes = scope ? new object_1.Scopes([scope]) : new object_1.Scopes();
         const st = new state_1.State({
             runner: this,

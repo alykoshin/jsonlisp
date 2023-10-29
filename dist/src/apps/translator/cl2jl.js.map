@@ -1,1 +1,0 @@
-{"version":3,"file":"cl2jl.js","sourceRoot":"","sources":["../../../../src/apps/translator/cl2jl.ts"],"names":[],"mappings":";AAAA,cAAc;;;;;AAEd,gDAAwB;AACxB,uDAAmD;AAEnD,KAAK,UAAU,GAAG;IAChB,MAAM,SAAS,GAAG,wBAAwB,CAAC;IAC3C,MAAM,eAAe,GAAG,cAAI,CAAC,OAAO,CAAC,SAAS,EAAE,sBAAsB,CAAC,CAAC;IACxE,MAAM,IAAA,8BAAc,EAAC,SAAS,EAAE,eAAe,CAAC,CAAC;AACnD,CAAC;AACD,GAAG,EAAE,CAAC"}

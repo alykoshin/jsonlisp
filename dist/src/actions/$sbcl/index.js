@@ -2,7 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$sbclToList = exports.$sbcl = void 0;
-const lisp2jl_primitive_1 = require("../../apps/translator-primitive/lisp2jl-primitive");
+const types_1 = require("../../apps/runner/lib/types");
+const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");
 const exec_prepare_1 = require("./exec-prepare");
 /**
  * @module $sbcl
@@ -13,7 +14,8 @@ const exec_prepare_1 = require("./exec-prepare");
 const $sbcl = async function (a, params, { evaluate }) {
     const line = await evaluate(params[0]);
     // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
-    const res = await evaluate([`shell-command`, (0, exec_prepare_1.get_sbcl_cmd)(String(line))]);
+    (0, types_1.ensureString)(line);
+    const res = await evaluate([`shell-command`, (0, exec_prepare_1.get_sbcl_cmd)(line)]);
     return res;
 };
 exports.$sbcl = $sbcl;

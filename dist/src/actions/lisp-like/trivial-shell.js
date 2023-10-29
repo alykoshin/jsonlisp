@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const exec_1 = require("./helpers/exec");
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 /**
  * @module trivial-shell
@@ -18,7 +18,7 @@ exports.actions = {
      */
     'shell-command': async function (_, args, state) {
         const { evaluate } = state;
-        (0, util_1.fn_check_params)(args, { minCount: 1 });
+        (0, validateArgs_1.validateArgs)(args, { minCount: 1 });
         const lastParam = args[args.length - 1];
         let config = {};
         if (typeof lastParam === 'object' && lastParam !== null) {
@@ -45,12 +45,12 @@ exports.actions = {
     },
     /** @name os-process-id */
     'os-process-id': async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 0 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 0 });
         return process.pid;
     },
     /** @name get-env-var */
     'get-env-var': async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
         const name = evaluate(args[0]);
         (0, types_1.ensureString)(name);
         return process.env[name];

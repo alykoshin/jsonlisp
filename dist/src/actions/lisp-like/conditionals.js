@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 const primitives_1 = require("./core/primitives");
 /**
@@ -11,7 +11,7 @@ const primitives_1 = require("./core/primitives");
 exports.actions = {
     /** @name if */
     if: async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: [2, 3] });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: [2, 3] });
         // const [pTest, pThen, pElse] = args;
         //
         //   const condition = asBoolean(await evaluate(pTest));
@@ -46,7 +46,7 @@ exports.actions = {
     cond: primitives_1.cond,
     /** @name when */
     when: async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
         const [testClause, actionWhenTrue] = args;
         const condition = await evaluate(testClause);
         logger.debug(`when: condition: ` + JSON.stringify(condition));
@@ -57,7 +57,7 @@ exports.actions = {
     },
     /** @name unless */
     unless: async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 2 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
         const [testClause, actionWhenFalse] = args;
         const condition = await evaluate(testClause);
         logger.debug(`unless: condition: ` + JSON.stringify(condition));
@@ -67,7 +67,7 @@ exports.actions = {
         return null;
     },
     zerop: async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
         const value = await evaluate(args[0]);
         (0, types_1.ensureNumber)(value);
         return evaluate(['=', value, 0]);

@@ -6,7 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const lodash_1 = __importDefault(require("lodash"));
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 /**
  * @module lisp-unit
  *
@@ -55,7 +55,7 @@ const failCounter = new Counter({ name: 'assert_fail_count' });
 exports.actions = {
     /** @name assert-true */
     'assert-true': async function (action, params, { evaluate, scopes, logger }) {
-        (0, util_1.fn_check_params)(params, { minCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { minCount: 1 });
         const pActual = await evaluate(params[0]);
         const bActual = !!pActual;
         const sActual = JSON.stringify(pActual);
@@ -81,13 +81,13 @@ exports.actions = {
     },
     /** @name assert-false */
     'assert-false': async function (action, params, { evaluate }) {
-        (0, util_1.fn_check_params)(params, { minCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { minCount: 1 });
         const cond = await evaluate(params[0]);
         return evaluate(['assert-true', !cond, ...params.slice(1)]);
     },
     /** @name assert-equal */
     'assert-equal': async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: [2, 3] });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: [2, 3] });
         const actual = await evaluate(params[0]);
         logger.debug('actual', actual);
         const expected = await evaluate(params[1]);

@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const util_1 = require("../../apps/runner/lib/util");
+const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("../../apps/runner/lib/types");
 const print_1 = require("./helpers/print");
 const confirm_1 = require("./helpers/confirm");
@@ -28,7 +28,7 @@ exports.actions = {
      * @see {@link http://clhs.lisp.se/Body/f_terpri.htm#terpri}
      */
     terpri: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 0 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 0 });
         (0, print_1.print)(print_1.EOL);
         return types_1.NIL;
     },
@@ -37,7 +37,7 @@ exports.actions = {
      * @see {@link http://clhs.lisp.se/Body/f_terpri.htm#fresh-line}
      */
     'fresh-line': async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 0 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 0 });
         if (print_1.atBOL) {
             (0, print_1.print)(print_1.EOL);
             return types_1.T;
@@ -46,7 +46,7 @@ exports.actions = {
     },
     /** @name prin1 */
     prin1: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const pValue = await evaluate(params[0]);
         const toPrint = (0, print_1.stringify)(pValue);
         (0, print_1.print)(toPrint);
@@ -54,14 +54,14 @@ exports.actions = {
     },
     /** @name princ */
     princ: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const pValue = await evaluate(params[0]);
         (0, print_1.print)(pValue, '\n');
         return pValue;
     },
     /** @name print */
     print: async function (action, params, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(params, { exactCount: 1 });
+        (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
         const pValue = await evaluate(params[0]);
         const toPrint = (0, print_1.stringify)(pValue);
         (0, print_1.print)(toPrint, '\n');
@@ -91,7 +91,7 @@ exports.actions = {
      * {@link http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_y-or-n-pcm_yes-or-no-p.html}
      */
     'y-or-n-p': async function (_, args, { evaluate, logger }) {
-        (0, util_1.fn_check_params)(args, { exactCount: [0, 1] });
+        (0, validateArgs_1.validateArgs)(args, { exactCount: [0, 1] });
         const value = args.length === 1 ? String(await evaluate(args[0])) : 'Confirm y/[N]?';
         const res = await (0, confirm_1.confirm)(value);
         logger.info(`confirm: ${res}`);

@@ -13,5 +13,6 @@ export declare const iterateFiles: (filenames: string | string[], title: string,
 export declare const fileCheckError: (fname: string, moreData?: any) => undefined;
 export declare function ensureFile(filenames: string | string[]): Promise<string[]>;
 export declare function ensureNoFile(filenames: string | string[]): Promise<string[]>;
-export declare function buildPathname(filename: string): string;
+export declare function absPathname(pathname: string): string;
+export declare function formatFilenameDate(date?: Date): string;
 export {};
