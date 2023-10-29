@@ -3,7 +3,7 @@
 import {ensureNoFile} from '../../lib/fileUtils/fileUtils';
 import {ExecutorFn, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 
 /**
  * @module $build
@@ -17,7 +17,7 @@ export const $ensureNoFile: ExecutorFn = async function (
   args,
   {evaluate, logger}
 ) {
-  fn_check_params(args, {minCount: 1});
+  validateArgs(args, {minCount: 1});
 
   logger.debug(`$ensureNoFile: parameters: ${JSON.stringify(args)}`);
   const result: Parameters = [];

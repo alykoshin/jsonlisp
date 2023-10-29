@@ -11,12 +11,8 @@ import primitives from '../../actions/lisp-like/core/primitives';
 //
 import functionsCases from '../../tests/lisp-like/core/functions.cases';
 import primitivesCases from '../../tests/lisp-like/core/primitives.cases';
-import {Runner} from '../runner/runner';
 
-const allCases = [
-  // ...functionsCases,
-  ...primitivesCases,
-];
+const allCases = [...functionsCases, ...primitivesCases];
 
 const actions: Actions = {
   ...eval,

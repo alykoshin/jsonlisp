@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, Atom, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {Scope, Scopes} from '@utilities/object';
@@ -61,7 +61,7 @@ const failCounter = new Counter({name: 'assert_fail_count'});
 export const actions: Actions = {
   /** @name assert-true */
   'assert-true': async function (action, params, {evaluate, scopes, logger}) {
-    fn_check_params(params, {minCount: 1});
+    validateArgs(params, {minCount: 1});
 
     const pActual = await evaluate(params[0]);
 
@@ -91,7 +91,7 @@ export const actions: Actions = {
 
   /** @name assert-false */
   'assert-false': async function (action, params, {evaluate}) {
-    fn_check_params(params, {minCount: 1});
+    validateArgs(params, {minCount: 1});
 
     const cond = await evaluate(params[0]);
 
@@ -100,7 +100,7 @@ export const actions: Actions = {
 
   /** @name assert-equal */
   'assert-equal': async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: [2, 3]});
+    validateArgs(params, {exactCount: [2, 3]});
 
     const actual = await evaluate(params[0]);
     logger.debug('actual', actual);

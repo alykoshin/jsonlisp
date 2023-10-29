@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "logLevel": "debug",
   "actions": {
-    "default": [ "print", "\nAction name is missing\n" ],
+    "default": [ "print", "\nThis Activity requires specific Action name to be provided\n" ],
     "build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
       ["clean-dist"],
@@ -16,10 +16,10 @@
       ["shell-command", ".\\node_modules\\.bin\\tsc -d", { "cwd": "./", "env": {} } ]
     ],
 
-    "download-lisp-examples": [
+    "-download-lisp-examples": [
       "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator-downloader/download_lisp_examples.ts"
     ],
-    "cl2jl": [
+    "-cl2jl": [
       "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator/cl2jl.ts"
     ],
 
@@ -83,7 +83,7 @@
     "test-core-primitives": [
       "list",
       ["shell-command", 
-        "ts-node ./src/tests/lisp-like/core/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
+        "ts-node ./src/apps/test-runner/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
     "test-main": [
       "list",
       ["shell-command", 

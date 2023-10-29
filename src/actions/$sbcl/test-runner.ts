@@ -1,7 +1,11 @@
 /** @format */
 
 import {isList, Expression, isNil, Actions} from '../../apps/runner/lib/types';
-import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
+// import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
+
+// import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
+import {parse_sbcl_list} from 'lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive';
+
 import {get_sbcl_cmd, preprocess_sbcl_expr} from './exec-prepare';
 import {execute} from '../lisp-like/helpers/exec';
 import {State} from '../../apps/runner/lib/state';
@@ -22,17 +26,11 @@ export const testRunner = async function (
   exprSbclOut: Expression;
 }> {
   // const evaluate = await init();
-  const interpreter = new Runner({errorLevel: 'debug'});
+  const runner = new Runner({errorLevel: 'debug'});
   // replace default actions with the ones we want to test
   // (and their dependencies)
-  interpreter.actions = actions;
-  const st = await interpreter.init();
-  // return st;
-  // const st = await init();
-  // const {evaluate} = st;
-
-  // const st = new State({});
-  // const logger = new Logger({id: 0, level: 0, name: 'micro'}, 'info');
+  runner.actions = actions;
+  const st = await runner.init();
 
   const exprJlOut = await st.evaluate(exprJlIn);
 

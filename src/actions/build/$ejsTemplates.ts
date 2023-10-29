@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 import ejs from 'ejs';
 
 import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
@@ -31,7 +31,7 @@ export type EjsTemplatesActionConfig = {
  */
 export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
   const {runner, logger} = state;
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
 
   const {
     sourceDir,

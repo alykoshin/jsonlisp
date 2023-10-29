@@ -1,14 +1,12 @@
 /** @format */
 
 import {Parameters} from '../../apps/runner/lib/types';
-import {
-  Activity,
-  ActivityActionsDefinition,
-} from '../../apps/runner/lib/config';
+import {Activity} from '../../apps/runner/startup/Activities';
+import {Actions} from '../../apps/runner/lib/types';
 import $sbcl from '../../actions/$sbcl';
 
 // prettier-ignore
-const actions: ActivityActionsDefinition = {
+const actions: Actions = {
   ...$sbcl,
   "default": ['list', ['print', 'This will test operators'],
     // ['test-quote'],

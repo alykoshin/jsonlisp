@@ -5,16 +5,12 @@ import {
   ExecutorFn,
   Actions,
   Parameters,
+  ensureString,
 } from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
-import {
-  Activity,
-  ActivityActionsDefinition,
-} from '../../apps/runner/lib/config';
 import {
   parse_sbcl_bool,
   parse_sbcl_list,
-} from '../../apps/translator-primitive/lisp2jl-primitive';
+} from 'lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive';
 import {get_sbcl_cmd} from './exec-prepare';
 
 /**
@@ -28,7 +24,8 @@ import {get_sbcl_cmd} from './exec-prepare';
 export const $sbcl: ExecutorFn = async function (a, params, {evaluate}) {
   const line = await evaluate(params[0]);
   // const res = await evaluate([ `shell-command`, `sbcl --noinform --non-interactive --noprint --eval \"( print ${line} )\"` ]);
-  const res = await evaluate([`shell-command`, get_sbcl_cmd(String(line))]);
+  ensureString(line);
+  const res = await evaluate([`shell-command`, get_sbcl_cmd(line)]);
 
   return res as Parameters;
 };

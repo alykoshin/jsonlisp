@@ -1,6 +1,6 @@
 /** @format */
 
-import {Activity} from '../../apps/runner/lib/config';
+import {Activity} from '../../apps/runner/startup/Activities';
 
 // prettier-ignore
 export const config: Activity = {

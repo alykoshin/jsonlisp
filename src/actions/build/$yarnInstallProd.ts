@@ -1,7 +1,7 @@
 /** @format */
 
 import {execute} from '../lisp-like/helpers/exec';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {ExecutorFn, Atom, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
@@ -24,7 +24,7 @@ function installDepsCmd() {
  * @module $yarnInstallProd
  */
 export const $yarnInstallProd: ExecutorFn = async function (_, args, state) {
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
 
   const {cwd, env} = args[0] as YarnInstallProdActionConfig;
 

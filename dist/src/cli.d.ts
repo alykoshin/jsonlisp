@@ -1,2 +1,2 @@
 /** @format */
-export {};
+import '../_settings';

@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
@@ -12,7 +12,7 @@ import {State} from '../../apps/runner/lib/state';
 export const actions: Actions = {
   /** @name sleep */
   sleep: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const nValue = Number(pValue);
@@ -24,7 +24,7 @@ export const actions: Actions = {
 
   /** @name time */
   time: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
     const [pDuration] = params;
 
     const startTime = new Date();

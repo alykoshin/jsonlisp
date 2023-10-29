@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, NIL, Parameters, T} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {print, stringify, EOL, atBOL} from './helpers/print';
@@ -28,7 +28,7 @@ export const actions: Actions = {
    * @see {@link http://clhs.lisp.se/Body/f_terpri.htm#terpri}
    */
   terpri: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 0});
+    validateArgs(params, {exactCount: 0});
     print(EOL);
     return NIL;
   },
@@ -38,7 +38,7 @@ export const actions: Actions = {
    * @see {@link http://clhs.lisp.se/Body/f_terpri.htm#fresh-line}
    */
   'fresh-line': async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 0});
+    validateArgs(params, {exactCount: 0});
     if (atBOL) {
       print(EOL);
       return T;
@@ -48,7 +48,7 @@ export const actions: Actions = {
 
   /** @name prin1 */
   prin1: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const toPrint = stringify(pValue);
@@ -59,7 +59,7 @@ export const actions: Actions = {
 
   /** @name princ */
   princ: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
 
@@ -69,7 +69,7 @@ export const actions: Actions = {
 
   /** @name print */
   print: async function (action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const toPrint = stringify(pValue);
@@ -103,7 +103,7 @@ export const actions: Actions = {
    * {@link http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_y-or-n-pcm_yes-or-no-p.html}
    */
   'y-or-n-p': async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: [0, 1]});
+    validateArgs(args, {exactCount: [0, 1]});
     const value =
       args.length === 1 ? String(await evaluate(args[0])) : 'Confirm y/[N]?';
     const res = await confirm_(value);

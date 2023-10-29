@@ -2,10 +2,10 @@
 
 import axios from 'axios';
 import {ExecutorFn, Actions, ensureString} from '../apps/runner/lib/types';
-import {fn_check_params} from '../apps/runner/lib/util';
+import {validateArgs} from '../apps/runner/lib/validateArgs';
 
 /**
- * @module axios
+ * @module $axios
  */
 
 /**
@@ -13,7 +13,7 @@ import {fn_check_params} from '../apps/runner/lib/util';
  */
 
 export const $axios: ExecutorFn = async function (_, args, {evaluate, logger}) {
-  let [method, url, body] = fn_check_params(args, {exactCount: [2, 3]});
+  let [method, url, body] = validateArgs(args, {exactCount: [2, 3]});
   ensureString((method = await evaluate(method)));
   ensureString((url = await evaluate(url)));
   if (body) {

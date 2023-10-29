@@ -28,6 +28,7 @@ export const readUniversal = async (pathname?: string): Promise<any> => {
       throw new Error(`Unsupported file extension "${pathname}"`);
   }
 };
+
 export function writeUniversal(pathname: string, data: any) {
   const extname = path.extname(pathname);
   // const baseDir = process.cwd();
@@ -49,7 +50,7 @@ export function writeUniversal(pathname: string, data: any) {
 const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.json', '.json5'];
 const INDEX_FILE_BASENAME = 'index';
 
-export const resolveFilename = (pathname: string): string => {
+export const resolveToFile = (pathname: string): string => {
   // let pathname = buildPathname(fname)
   let extname = path.extname(pathname);
   if (!extname) {
@@ -78,6 +79,6 @@ export const resolveFilename = (pathname: string): string => {
     }
     pathname = pathname + extname;
   }
-  console.log(`Will process as "${extname}", Final pathname: "${pathname}"`);
+  // console.log(`Will process as "${extname}", Final pathname: "${pathname}"`);
   return pathname;
 };

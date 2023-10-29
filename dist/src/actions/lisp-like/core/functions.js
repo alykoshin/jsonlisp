@@ -1,11 +1,11 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.and_ = exports.null_ = exports.defun = exports.lambda = void 0;
+exports.actions = exports.and_ = exports.null_ = exports.defun = exports.createPrepareFn = exports.lambda = void 0;
 const types_1 = require("../../../apps/runner/lib/types");
 const series_1 = require("../helpers/series");
 const util_1 = require("../../../apps/runner/lib/util");
-const zipObject_1 = require("../helpers/zipObject");
+const passArgs_1 = require("../helpers/passArgs");
 //
 /**
  * @module functions
@@ -27,7 +27,7 @@ const zipObject_1 = require("../helpers/zipObject");
  */
 const lambda = async function (_, args, { evaluate }) {
     const [argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 2 });
-    return createPrepareFn('lambda', argnames, body);
+    return (0, exports.createPrepareFn)('lambda', argnames, body);
 };
 exports.lambda = lambda;
 const createPrepareFn = function (name, argnames, body) {
@@ -36,7 +36,7 @@ const createPrepareFn = function (name, argnames, body) {
     const fn = async function lambda(_, argvalues, st) {
         const { evaluate, runner, logger, scopes } = st;
         argvalues = await (0, series_1.series)(argvalues, st);
-        const sc = (0, zipObject_1.zipObject)(argnames, argvalues);
+        const sc = (0, passArgs_1.passArgs)(argnames, argvalues);
         logger.debug('lambda:execute: scope:', sc, ',body:', body);
         st = st.newNextUp(name);
         st.scopes = st.scopes.copy().new(sc);
@@ -48,10 +48,11 @@ const createPrepareFn = function (name, argnames, body) {
     };
     return fn;
 };
+exports.createPrepareFn = createPrepareFn;
 const defun = async function (_, args, state) {
     const [name, argnames, body] = (0, util_1.fn_check_params)(args, { exactCount: 3 });
     (0, types_1.ensureString)(name, `Expect string as a name of function`);
-    state.actions[name] = createPrepareFn(name, argnames, body);
+    state.actions[name] = (0, exports.createPrepareFn)(name, argnames, body);
     return name;
 };
 exports.defun = defun;
@@ -59,7 +60,7 @@ exports.defun = defun;
  * @name null_
  */
 // prettier-ignore
-exports.null_ = createPrepareFn('null_', ['x'], ['eq', 'x', []]);
+exports.null_ = (0, exports.createPrepareFn)('null_', ['x'], ['eq', 'x', []]);
 // export const null_: ActionListExecutor = async function (_, args, {evaluate}) {
 //   const [x] = fn_check_params(args, {exactCount: 1});
 //   // prettier-ignore
@@ -69,7 +70,7 @@ exports.null_ = createPrepareFn('null_', ['x'], ['eq', 'x', []]);
  * @name and_
  */
 // prettier-ignore
-exports.and_ = createPrepareFn('and_', ['x', 'y'], ['cond', ['x', ['cond', ['y', ['quote', types_1.T]], [['quote', types_1.T], ['quote', []]]]],
+exports.and_ = (0, exports.createPrepareFn)('and_', ['x', 'y'], ['cond', ['x', ['cond', ['y', ['quote', types_1.T]], [['quote', types_1.T], ['quote', []]]]],
     [['quote', types_1.T], ['quote', []]]]);
 // export const and_: ActionListExecutor = async function (_, args, {evaluate}) {
 //   const [x, y] = fn_check_params(args, {exactCount: 2});

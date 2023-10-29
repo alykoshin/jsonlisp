@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {ensureFile} from '../../lib/fileUtils/fileUtils';
 import {
   ExecutorFn,
@@ -22,7 +22,7 @@ export const $ensureFile: ExecutorFn = async function (
   args,
   {evaluate, logger}
 ) {
-  fn_check_params(args, {minCount: 1});
+  validateArgs(args, {minCount: 1});
 
   logger.debug(`$ensureFile: parameters: ${JSON.stringify(args)}`);
   const result: Parameters = [];

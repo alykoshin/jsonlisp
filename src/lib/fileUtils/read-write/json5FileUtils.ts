@@ -4,7 +4,7 @@ import json5 from 'json5';
 import {readTextFile, writeTextFile} from './textFileUtils';
 
 export const readJson5 = async (pathname: string): Promise<any> => {
-  console.log(`Reading and parsing file "${pathname}"`);
+  // console.log(`Reading and parsing file "${pathname}"`);
   const content = await readTextFile(pathname);
   return json5.parse(content);
 };

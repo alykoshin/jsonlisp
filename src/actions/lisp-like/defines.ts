@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Runner} from '../../apps/runner/runner';
 import {Actions, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
@@ -54,7 +54,7 @@ export const actions: Actions = {
    * {@link https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp}
    */
   setq: async function (_, args, {evaluate, scopes, logger}) {
-    fn_check_params(args, {exactCount: 2});
+    validateArgs(args, {exactCount: 2});
 
     const pName = await evaluate(args[0]);
     const sName = String(pName);

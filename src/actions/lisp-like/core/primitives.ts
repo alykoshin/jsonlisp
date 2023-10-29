@@ -16,7 +16,7 @@ import {
 } from '../../../apps/runner/lib/types';
 import {asBoolean} from '../../../actions/lisp-like/helpers/typecast';
 import {series, seriesn} from '../helpers/series';
-import {fn_check_params} from '../../../apps/runner/lib/util';
+import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 
 //
 
@@ -28,7 +28,7 @@ import {fn_check_params} from '../../../apps/runner/lib/util';
  *  @name quote
  */
 export const quote: ExecutorFn = async function (_, args, st) {
-  const [a] = fn_check_params(args, {exactCount: 1});
+  const [a] = validateArgs(args, {exactCount: 1});
   // no evaluation
   return a;
 };
@@ -37,7 +37,7 @@ export const quote: ExecutorFn = async function (_, args, st) {
  * @name atom
  */
 export const atom: ExecutorFn = async function (_, args, st) {
-  const [a] = fn_check_params(args, {exactCount: 1});
+  const [a] = validateArgs(args, {exactCount: 1});
   const ea = await st.evaluate(a);
   return isAtom(ea) || isEmptyList(ea) ? T : NIL;
 };
@@ -47,7 +47,7 @@ export const atom: ExecutorFn = async function (_, args, st) {
  */
 export const eq: ExecutorFn = async function (_, args, st) {
   // const [a, b] =
-  fn_check_params(args, {exactCount: 2});
+  validateArgs(args, {exactCount: 2});
   // const ea = await st.evaluate(a);
   // const eb = await st.evaluate(b);
   const [ea, eb] = await series(args, st);
@@ -60,7 +60,7 @@ export const eq: ExecutorFn = async function (_, args, st) {
  * @name car
  */
 export const car: ExecutorFn = async function (_, args, st) {
-  const [arg0] = fn_check_params(args, {exactCount: 1});
+  const [arg0] = validateArgs(args, {exactCount: 1});
   const earg0 = await st.evaluate(arg0);
   ensureList(earg0);
   return earg0.length > 0 ? earg0[0] : NIL;
@@ -70,7 +70,7 @@ export const car: ExecutorFn = async function (_, args, st) {
  * @name cdr
  */
 export const cdr: ExecutorFn = async function (_, args, st) {
-  const [arg0] = fn_check_params(args, {exactCount: 1});
+  const [arg0] = validateArgs(args, {exactCount: 1});
   const earg0 = await st.evaluate(arg0);
   ensureList(earg0);
   return earg0.length > 1 ? earg0.slice(1) : NIL;
@@ -81,7 +81,7 @@ export const cdr: ExecutorFn = async function (_, args, st) {
  */
 export const cons: ExecutorFn = async function (_, args, st) {
   // const [x, y] =
-  fn_check_params(args, {exactCount: 2});
+  validateArgs(args, {exactCount: 2});
   // const ex = await evaluate(x);
   // const ey = await evaluate(y);
   const [ex, ey] = await series(args, st);
@@ -128,7 +128,7 @@ export const cons: ExecutorFn = async function (_, args, st) {
 //
 //-------------------------------------------------------------------------
 export const cond: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {minCount: 1});
+  validateArgs(args, {minCount: 1});
 
   for (const current of args) {
     ensureList(current);

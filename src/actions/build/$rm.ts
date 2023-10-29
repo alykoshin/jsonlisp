@@ -1,7 +1,7 @@
 /** @format */
 
 import fs from 'fs/promises';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 /**

@@ -1,19 +1,34 @@
 /** @format */
 
-import * as path from 'path';
-
-import {execute} from '../lisp-like/helpers/exec';
-import $versionActions from '../build/$version';
-import {fn_check_params} from '../../apps/runner/lib/util';
-import {ExecutorFn, Actions, Parameters} from '../../apps/runner/lib/types';
+// import {actions as $versionActions} from '../build/$version';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
+import {
+  Actions,
+  EvaluateFn,
+  ExecutorFn,
+  ensureString,
+} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
+import {formatFilenameDate} from '../../lib/fileUtils/fileUtils';
+import {sevenZip, type SevenZipOptions} from './helpers/7zip';
+import {zipDirectory} from './helpers/archiver';
+import {stat} from 'fs';
 
-export type ZipActionConfig = {
-  file_names: string[];
-  archive_prefix: string;
-  out_dir: string;
-  exclude_files: string[];
-};
+async function getVersion(evaluate: EvaluateFn): Promise<string> {
+  // const version = await ($versionActions.$version as ExecutorFn).call(
+  //   state,
+  //   action,
+  //   [],
+  //   state
+  // );
+  const version = await evaluate('$version');
+  ensureString(version);
+  return version;
+}
+
+function getArchiveBasename(archive_prefix: string, version: string): string {
+  return [archive_prefix, `v${version}`, formatFilenameDate()].join('-');
+}
 
 /**
  * @module $zip
@@ -21,65 +36,52 @@ export type ZipActionConfig = {
 
 /**
  * @name $zip
+ * @description Uses `7zip` executable to create zip archive (*Windows* only).
  */
-export const $zip: ExecutorFn = async function (
-  action,
-  args,
-  state
-): Promise<string> {
-  const {runner, logger} = state;
-  fn_check_params(args, {exactCount: 1});
-  const [pConfig] = args;
+export const $zip: ExecutorFn = async function (_, args, st): Promise<string> {
+  // const {runner, logger} = st;
+  validateArgs(args, {exactCount: 1});
+  const options = args[0] as SevenZipOptions;
 
-  const version = await ($versionActions.$version as ExecutorFn).call(
-    state,
-    action,
-    [],
-    state
-  );
+  const version = await getVersion(st.evaluate);
+  const {archive_prefix} = options;
+  const archiveBaseName = getArchiveBasename(archive_prefix, version);
 
-  const {file_names, archive_prefix, out_dir, exclude_files} =
-    pConfig as ZipActionConfig;
-
-  const date = new Date()
-    .toISOString()
-    .replace(/[:T]/g, '-')
-    .replace(/\..+/, '');
-
-  // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-  const zip_exe = '"c:/Program Files/7-Zip/7z.exe"';
-
-  const archive_name = `${archive_prefix}-v${version}-${date}.zip`;
-  const archive_pathname = path.join(out_dir, archive_name);
-
-  const sFileNames = file_names.join(' ');
-
-  // prettier-ignore
-  const switches = [
-    '-r',
-    '-t'+'zip',
-    ...exclude_files.map(f => `-x!${f}`),
-  ]
-  // prettier-ignore
-  const zip_args = [
-    'a', //  a : Add files to archive
-    ...switches,
-    archive_pathname,
-    sFileNames,
-  ];
-
-  const command_line = [zip_exe, ...zip_args].join(' ');
-
-  const options = {
-    // cwd: activity.base_dir,
-  };
-
-  const r = await execute(command_line, options, {state});
-  return r.stdout;
+  return sevenZip(archiveBaseName, options, st);
 };
 
-// export const actions: Actions = {
-// $zip: $zip,
-// }
+/**
+ * @name $zipDir
+ * @description Uses `archiver` module to create zip archive.
+ */
+export const $zipDir: ExecutorFn = async function (
+  _,
+  args,
+  st
+): Promise<string> {
+  // const {runner, logger} = st;
+  validateArgs(args, {exactCount: 3});
+  const [sourceDir, out_dir, archive_prefix] = args;
+  ensureString(sourceDir);
+  ensureString(out_dir);
+  ensureString(archive_prefix);
 
-// export default actions
+  const version = await getVersion(st.evaluate);
+  const archiveBaseName = getArchiveBasename(archive_prefix, version);
+
+  const finalName = await zipDirectory(
+    sourceDir,
+    out_dir,
+    archiveBaseName,
+    st.logger
+  );
+  return finalName;
+};
+
+export const actions: Actions = {
+  $zip: $zip,
+  $zipDir: $zipDir,
+  // 'zip:get-name': getArchiveBasename,
+};
+
+export default actions;

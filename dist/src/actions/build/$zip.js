@@ -55,9 +55,10 @@ const $zip = async function (action, args, state) {
     const sFileNames = file_names.join(' ');
     // prettier-ignore
     const switches = [
+        '-bb1',
         '-r',
         '-t' + 'zip',
-        ...exclude_files.map(f => `-x!${f}`),
+        ...exclude_files.map((f) => `-x!${f}`),
     ];
     // prettier-ignore
     const zip_args = [

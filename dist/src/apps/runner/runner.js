@@ -25,7 +25,8 @@ class Runner {
                 ...activity.actions,
             };
         }
-        // st.logger.debug(`this.actions: ${Object.keys(this.actions).join(',')}`);
+        // st.logger.debug(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
+        console.log(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
         const logLevel = activity?.logLevel ? activity?.logLevel : 'log';
         const scopes = scope ? new object_1.Scopes([scope]) : new object_1.Scopes();
         const st = new state_1.State({

@@ -1,7 +1,7 @@
 /** @format */
 
 import fs from 'fs/promises';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {
   ExecutorFn,
   Actions,
@@ -41,7 +41,7 @@ import path from 'path';
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
 export const readFileIntoString: ExecutorFn = async function (_, args, st) {
-  let [pFname] = fn_check_params(args, {exactCount: 1});
+  let [pFname] = validateArgs(args, {exactCount: 1});
 
   let fname = await st.evaluate(pFname);
   ensureString(fname);
@@ -68,7 +68,7 @@ export const writeStringIntoFile: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  let [pFname, s] = fn_check_params(params, {exactCount: 2});
+  let [pFname, s] = validateArgs(params, {exactCount: 2});
 
   let fname = await evaluate(pFname);
   ensureString(fname);
@@ -94,7 +94,7 @@ export const renameFile: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  let [source, dest] = fn_check_params(params, {exactCount: 2});
+  let [source, dest] = validateArgs(params, {exactCount: 2});
   ensureString((source = await evaluate(source)));
   ensureString((dest = await evaluate(dest)));
   source = path.resolve(source);
@@ -113,7 +113,7 @@ export const deleteFile: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  let [source] = fn_check_params(params, {exactCount: 1});
+  let [source] = validateArgs(params, {exactCount: 1});
   ensureString((source = await evaluate(source)));
   logger.debug(`"${source}"`);
   const p = path.resolve(source);
@@ -130,7 +130,7 @@ export const probeFile: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  let [source] = fn_check_params(params, {exactCount: 1});
+  let [source] = validateArgs(params, {exactCount: 1});
   ensureString((source = await evaluate(source)));
   logger.debug(`"${source}"`);
   const p = path.resolve(source);
@@ -164,7 +164,7 @@ export const directory: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  let [source] = fn_check_params(params, {exactCount: 1});
+  let [source] = validateArgs(params, {exactCount: 1});
   ensureString((source = await evaluate(source)));
   logger.debug(`"${source}"`);
   const p = path.resolve(source);

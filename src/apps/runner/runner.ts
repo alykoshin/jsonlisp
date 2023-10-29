@@ -2,7 +2,7 @@
 
 import {ScopeObject, Scopes} from '@utilities/object';
 import {ErrorLevel, Logger} from '../../lib/log';
-import type {Activity} from './lib/config';
+import type {Activities, Activity} from './startup/Activities';
 import type {
   Atom,
   Actions,
@@ -13,8 +13,7 @@ import type {
 import {type IState, State} from './lib/state';
 import {Tracer, TracerConstructorOptions} from './lib/tracer';
 
-import {actions} from '../../actions';
-import {execNamedAction} from '../../actions/lisp-like/core/eval';
+import {actions as defaultActions} from '../../actions';
 
 interface RunnerConstructorOptions extends TracerConstructorOptions {
   errorLevel?: ErrorLevel;
@@ -31,29 +30,31 @@ export class Runner {
     maxSteps,
     errorLevel,
   }: RunnerConstructorOptions = {}) {
-    this.actions = actions;
+    this.actions = defaultActions;
     this.tracer = new Tracer({maxLevels, maxSteps});
     this.errorLevel = errorLevel;
   }
 
   async init({
-    activity,
+    activities,
     scope,
   }: {
-    activity?: Activity;
+    activities?: Activities;
     scope?: ScopeObject<Atom>;
   } = {}) {
     //
     // `this.actions` must be populated before creating `state`
-    if (activity) {
+    if (activities) {
       this.actions = {
         ...this.actions,
-        ...activity.actions,
+        ...activities.actions(),
       };
     }
-    // st.logger.debug(`this.actions: ${Object.keys(this.actions).join(',')}`);
+    // st.logger.debug(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
+    // console.log(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
 
-    const logLevel = activity?.logLevel ? activity?.logLevel : 'log';
+    // const logLevel = activities?.logLevel ? activities?.logLevel : 'log';
+    const logLevel = /* activities?.logLevel ? activities?.logLevel : */ 'log';
 
     const scopes = scope ? new Scopes<Atom>([scope]) : new Scopes<Atom>();
     const st = new State({

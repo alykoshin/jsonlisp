@@ -8,7 +8,7 @@ import {
   ensureList,
   isList,
 } from '../../../apps/runner/lib/types';
-import {fn_check_params} from '../../../apps/runner/lib/util';
+import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 
 // export const lengthEqual = (lists: any[]): boolean =>
 //   lists.every((l) => lists[0].length === l.length);
@@ -34,7 +34,7 @@ export const series = async (
   args: Parameters,
   st: State
 ): Promise<Parameters> => {
-  fn_check_params(args, {minCount: 0});
+  validateArgs(args, {minCount: 0});
   const result = [];
   for (const a of args) {
     const res = await st.evaluate(a);
@@ -53,7 +53,7 @@ export const seriesnth = async (
   if (index < 0) {
     index = result.length - 1;
   }
-  fn_check_params(result, {minCount: index});
+  validateArgs(result, {minCount: index});
   return result[index];
 };
 

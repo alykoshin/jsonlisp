@@ -21,7 +21,7 @@ import {
 } from '../../../apps/runner/lib/types';
 import {State} from '../../../apps/runner/lib/state';
 import {series, seriesn} from '../helpers/series';
-import {fn_check_params} from '../../../apps/runner/lib/util';
+import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 
 //
 
@@ -155,7 +155,7 @@ export const eval_: ExecutorFn = async function (_, args, st) {
   st.logger.debug('eval_:enter');
   st.next();
 
-  const [expr] = fn_check_params(args, {exactCount: 1});
+  const [expr] = validateArgs(args, {exactCount: 1});
 
   let res;
   if (isList(expr) && !isEmptyList(expr)) {

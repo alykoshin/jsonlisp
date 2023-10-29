@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Runner} from '../../apps/runner/runner';
 import {
   ExecutorFn,
@@ -83,7 +83,7 @@ async function fn_rest(
 
 /** @name quote */
 export const quote: ExecutorFn = async (_, params, st) => {
-  fn_check_params(params, {exactCount: 1});
+  validateArgs(params, {exactCount: 1});
   // return first argument without evaluation
   return params[0];
 };
@@ -96,7 +96,7 @@ export const list: ExecutorFn = async (_, params, st) => {
 
 /** @name length */
 export const length: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
   const a0 = await st.evaluate(args[0]);
   ensureList(a0);
   return a0.length;
@@ -104,7 +104,7 @@ export const length: ExecutorFn = async (_, args, st) => {
 
 /** @name nth */
 export const nth: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {exactCount: 2});
+  validateArgs(args, {exactCount: 2});
   console.log('nth:args:', JSON.stringify(args));
   // return fn_nth(params[0], params[1], evaluate);
 
@@ -168,7 +168,7 @@ export const cdr: ExecutorFn = async (_, args, st) => {
 
 /** @name consp */
 export const consp: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
   const a0 = await st.evaluate(args[0]);
   // return isList(a0) && !isEmptyList(a0);
   return _consp(a0);
@@ -176,7 +176,7 @@ export const consp: ExecutorFn = async (_, args, st) => {
 
 /** @name listp */
 export const listp: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
   const a0 = await st.evaluate(args[0]);
   // return isList(a0);
   return _listp(a0);
@@ -184,7 +184,7 @@ export const listp: ExecutorFn = async (_, args, st) => {
 
 /** @name nullp */
 export const nullp: ExecutorFn = async (_, args, st) => {
-  fn_check_params(args, {exactCount: 1});
+  validateArgs(args, {exactCount: 1});
   const a0 = await st.evaluate(args[0]);
   // return isList(a0) && isEmptyList(a0);
   return _nullp(a0);

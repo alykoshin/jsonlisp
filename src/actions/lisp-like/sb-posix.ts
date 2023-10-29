@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {
   ExecutorFn,
   Actions,
@@ -26,7 +26,7 @@ import {series} from './helpers/series';
  */
 export const setenv: ExecutorFn = async function (_, params, st) {
   const {evaluate, logger} = st;
-  fn_check_params(params, {exactCount: [2, 3]});
+  validateArgs(params, {exactCount: [2, 3]});
   // const [pName, pValue, pOverwrite] = await series(params, evaluate);
   const [pName, pValue, pOverwrite] = params;
   const eName = await evaluate(pName);
@@ -50,7 +50,7 @@ export const getenv: ExecutorFn = async function (
   params,
   {evaluate, logger}
 ) {
-  fn_check_params(params, {exactCount: 1});
+  validateArgs(params, {exactCount: 1});
   const [pName] = params;
   const eName = await evaluate(pName);
   ensureString(eName);
@@ -67,7 +67,7 @@ export const getenv: ExecutorFn = async function (
  *
  */
 export const chdir: ExecutorFn = async function (_, params, {evaluate}) {
-  fn_check_params(params, {exactCount: 1});
+  validateArgs(params, {exactCount: 1});
   const dir = await evaluate(params[0]);
   ensureString(dir);
   const res = process.chdir(dir);
@@ -78,7 +78,7 @@ export const chdir: ExecutorFn = async function (_, params, {evaluate}) {
  * @name getcwd
  */
 export const getcwd: ExecutorFn = async function (_, params, {logger}) {
-  fn_check_params(params, {exactCount: 0});
+  validateArgs(params, {exactCount: 0});
   const res = process.cwd();
   logger.debug(stringify(res));
   return res;

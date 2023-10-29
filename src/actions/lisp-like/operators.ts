@@ -2,7 +2,7 @@
 
 import Ajv, {Schema, JSONSchemaType, ValidateFunction} from 'ajv';
 import {JTDDataType} from 'ajv/dist/jtd';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Runner} from '../../apps/runner/runner';
 import {
   ExecutorFn,
@@ -19,7 +19,7 @@ import {Logger} from '../../lib/log';
  * @module operators
  */
 
-const schema: Schema = {
+/* const schema: Schema = {
   type: 'array',
   minItems: 2,
   items: [{type: 'integer'}, {type: 'integer'}],
@@ -40,6 +40,7 @@ if (validate(data)) {
 } else {
   console.log(validate.errors);
 }
+ */
 
 type LogicalUnaryFn = (a: boolean) => boolean;
 const logicalUnaryFns: Record<string, LogicalUnaryFn> = {
@@ -167,7 +168,7 @@ function calcBinary(
 
 const operators: ExecutorFn = async function (action, args, state) {
   const {evaluate} = state;
-  fn_check_params(args, {minCount: 1});
+  validateArgs(args, {minCount: 1});
   if (args.length === 1) {
     const v1 = await evaluate(args[0]);
     return calcUnary(action, v1);
@@ -329,13 +330,13 @@ export const actions: Actions = {
 
   /** @name 1+ */
   '1+': async (action, args, {evaluate, logger}) => {
-    fn_check_params(args, {exactCount: 1});
+    validateArgs(args, {exactCount: 1});
     return evaluate(['+', ...args, 1]);
   },
 
   /** @name 1- */
   '1-': async (action, args, {evaluate, logger}) => {
-    fn_check_params(args, {exactCount: 1});
+    validateArgs(args, {exactCount: 1});
     return evaluate(['-', ...args, 1]);
   },
 

@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, ExecutorFn } from '../../../apps/runner/lib/types';
+import { Actions, Parameter, ExecutorFn } from '../../../apps/runner/lib/types';
 /**
  * @module functions
  * @see
@@ -19,6 +19,7 @@ import { Actions, ExecutorFn } from '../../../apps/runner/lib/types';
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
 export declare const lambda: ExecutorFn;
+export declare const createPrepareFn: (name: string, argnames: Parameter, body: Parameter) => ExecutorFn;
 export declare const defun: ExecutorFn;
 /**
  * @name null_

@@ -93,7 +93,17 @@ function debugPrimitive(value: Atom): string {
 
 //
 
-export abstract class AbstractLogger {
+export interface ILogger {
+  fatal(...params: LogParam[]): never;
+  error(...params: LogParam[]): void;
+  warn(...params: LogParam[]): void;
+  success(...params: LogParam[]): void;
+  info(...params: LogParam[]): void;
+  log(...params: LogParam[]): void;
+  debug(...params: LogParam[]): void;
+}
+
+export abstract class AbstractLogger implements ILogger {
   _errorLevel: ErrorLevel = DEFAULT_ERROR_LEVEL;
 
   constructor(errorLevel: ErrorLevel = DEFAULT_ERROR_LEVEL) {

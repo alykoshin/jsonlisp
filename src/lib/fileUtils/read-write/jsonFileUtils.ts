@@ -10,7 +10,7 @@ import {readTextFile, writeTextFile} from './textFileUtils';
 // };
 
 export async function readJsonFile(pathname: string): Promise<any> {
-  console.log(`Reading and parsing file "${pathname}"`);
+  // console.log(`Reading and parsing file "${pathname}"`);
   // return require(pathname);
   const s = await readTextFile(pathname);
   // console.log(`readJsonFile: s:`, s);

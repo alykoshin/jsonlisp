@@ -34,6 +34,7 @@ const commander_1 = require("commander");
 const package_json_1 = __importDefault(require("../package.json"));
 const runner_1 = require("./apps/runner/runner");
 const config_1 = require("./apps/runner/lib/config");
+require("../_settings"); // init config and dotenv
 const program = new commander_1.Command();
 program
     .name(package_json_1.default.name)

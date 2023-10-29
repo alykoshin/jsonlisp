@@ -1,7 +1,7 @@
 /** @format */
 
 import {execute, type ExecActionConfig} from './helpers/exec';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, ensureString} from '../../apps/runner/lib/types';
 
 /**
@@ -18,7 +18,7 @@ export const actions: Actions = {
    */
   'shell-command': async function (_, args, state) {
     const {evaluate} = state;
-    fn_check_params(args, {minCount: 1});
+    validateArgs(args, {minCount: 1});
 
     const lastParam = args[args.length - 1];
     let config: Object = {};
@@ -52,13 +52,13 @@ export const actions: Actions = {
 
   /** @name os-process-id */
   'os-process-id': async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: 0});
+    validateArgs(args, {exactCount: 0});
     return process.pid;
   },
 
   /** @name get-env-var */
   'get-env-var': async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: 1});
+    validateArgs(args, {exactCount: 1});
     const name = evaluate(args[0]);
     ensureString(name);
     return process.env[name];

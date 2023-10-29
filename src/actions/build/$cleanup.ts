@@ -3,7 +3,7 @@
 import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 import {removeDirRecursive} from '../../lib/fileUtils/fileUtils';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 
 /**
  * @module $build
@@ -18,7 +18,7 @@ export const $cleanup: ExecutorFn = async function (
   args,
   {evaluate, logger}
 ) {
-  fn_check_params(args, {minCount: 1});
+  validateArgs(args, {minCount: 1});
 
   // const result: Parameters = [];
   // for (const p of parameters) {

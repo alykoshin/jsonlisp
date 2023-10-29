@@ -1,6 +1,6 @@
 /** @format */
 
-import {Activity} from '../../apps/runner/lib/config';
+import {Activity} from '../../apps/runner/startup/Activities';
 import $sbcl from '../../actions/$sbcl';
 import {NIL, T} from '../../apps/runner/lib/types';
 

@@ -159,8 +159,15 @@ export async function ensureNoFile(filenames: string | string[]) {
     }
   );
 }
-export function buildPathname(filename: string) {
-  const baseDir = process.cwd();
-  const pathname = path.join(baseDir, filename);
+
+export function absPathname(pathname: string) {
+  if (!path.isAbsolute(pathname)) {
+    const baseDir = process.cwd();
+    pathname = path.join(baseDir, pathname);
+  }
   return path.resolve(pathname);
+}
+
+export function formatFilenameDate(date: Date = new Date()): string {
+  return date.toISOString().replace(/[:T]/g, '-').replace(/\..+/, '');
 }

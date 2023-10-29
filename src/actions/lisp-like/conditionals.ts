@@ -1,6 +1,6 @@
 /** @format */
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {
   Actions,
   Parameters,
@@ -18,7 +18,7 @@ import {asBoolean} from './helpers/typecast';
 export const actions: Actions = {
   /** @name if */
   if: async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: [2, 3]});
+    validateArgs(args, {exactCount: [2, 3]});
     // const [pTest, pThen, pElse] = args;
     //
     //   const condition = asBoolean(await evaluate(pTest));
@@ -57,7 +57,7 @@ export const actions: Actions = {
 
   /** @name when */
   when: async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: 2});
+    validateArgs(args, {exactCount: 2});
     const [testClause, actionWhenTrue] = args;
 
     const condition = await evaluate(testClause);
@@ -72,7 +72,7 @@ export const actions: Actions = {
 
   /** @name unless */
   unless: async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: 2});
+    validateArgs(args, {exactCount: 2});
     const [testClause, actionWhenFalse] = args;
 
     const condition = await evaluate(testClause);
@@ -86,7 +86,7 @@ export const actions: Actions = {
   },
 
   zerop: async function (_, args, {evaluate, logger}) {
-    fn_check_params(args, {exactCount: 1});
+    validateArgs(args, {exactCount: 1});
     const value = await evaluate(args[0]);
     ensureNumber(value);
     return evaluate(['=', value, 0]);

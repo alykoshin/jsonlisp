@@ -19,9 +19,9 @@ import {
 import {State} from '../../../apps/runner/lib/state';
 import {asBoolean} from '../helpers/typecast';
 import {series, seriesn} from '../helpers/series';
-import {fn_check_params} from '../../../apps/runner/lib/util';
+import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 import {cons} from './primitives';
-import {zipObject} from '../helpers/zipObject';
+import {passArgs} from '../helpers/passArgs';
 
 //
 
@@ -45,11 +45,11 @@ import {zipObject} from '../helpers/zipObject';
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
 export const lambda: ExecutorFn = async function (_, args, {evaluate}) {
-  const [argnames, body] = fn_check_params(args, {exactCount: 2});
+  const [argnames, body] = validateArgs(args, {exactCount: 2});
   return createPrepareFn('lambda', argnames, body);
 };
 
-const createPrepareFn = function (
+export const createPrepareFn = function (
   name: string,
   argnames: Parameter,
   body: Parameter
@@ -60,7 +60,7 @@ const createPrepareFn = function (
     const {evaluate, runner, logger, scopes} = st;
     argvalues = await series(argvalues, st);
 
-    const sc = zipObject(argnames, argvalues);
+    const sc = passArgs(argnames, argvalues);
     logger.debug('lambda:execute: scope:', sc, ',body:', body);
 
     st = st.newNextUp(name);
@@ -77,7 +77,7 @@ const createPrepareFn = function (
 };
 
 export const defun: ExecutorFn = async function (_, args, state) {
-  const [name, argnames, body] = fn_check_params(args, {exactCount: 3});
+  const [name, argnames, body] = validateArgs(args, {exactCount: 3});
   ensureString(name, `Expect string as a name of function`);
   state.actions[name] = createPrepareFn(name, argnames, body);
   return name;

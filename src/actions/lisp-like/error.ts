@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, Atom, Parameters} from '../../apps/runner/lib/types';
 import {State} from '../../apps/runner/lib/state';
 
@@ -15,7 +15,7 @@ export const actions: Actions = {
    * @name error
    */
   error: async function error(action, params, {evaluate, logger}) {
-    fn_check_params(params, {exactCount: 1});
+    validateArgs(params, {exactCount: 1});
 
     const pValue = await evaluate(params[0]);
     const sValue = String(pValue);
@@ -28,7 +28,7 @@ export const actions: Actions = {
    * @see {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node336.html}
    */
   assert: async function (action, params, {evaluate, scopes, logger}) {
-    fn_check_params(params, {minCount: 1});
+    validateArgs(params, {minCount: 1});
 
     const pActual = await evaluate(params[0]);
     // console.log('>>>', actual)

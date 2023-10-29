@@ -1,9 +1,8 @@
 /** @format */
 
 import shelljs, {ShellString} from 'shelljs';
-import {fn_check_params} from '../../apps/runner/lib/util';
+import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Actions, Parameters, ensureFunction} from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
 
 const TRIM_RESULT = true;
 /**
@@ -15,7 +14,7 @@ export const actions: Actions = {
    */
   $shelljs: async function (_, args, {evaluate, logger}) {
     //runner.debug('$shelljs', { parameters, prevResult });
-    fn_check_params(args, {minCount: 1});
+    validateArgs(args, {minCount: 1});
 
     let shellParams: string[] = [];
     for (const p of args) {
@@ -26,32 +25,22 @@ export const actions: Actions = {
     const shellCmd = shellParams.shift();
     if (!shellCmd) throw new Error(`shellCmd can't be empty`);
 
-    // const fn = shelljs[shellCmd as keyof typeof shelljs];
     const fn = shelljs[shellCmd as keyof typeof shelljs];
     ensureFunction(fn, `expect shelljs method`);
 
     logger.log(shellCmd, shellParams);
     // typecast fn to generic Function to avoid parameters typecheck
     let res: ShellString = (fn as Function)(...shellParams);
-    // const s = String(shellRes).trim();
+
     if (TRIM_RESULT) {
       res.stdout = res.stdout?.trim() || '';
       res.stderr = res.stderr?.trim() || '';
     }
 
-    // logger.log(`[${action}] ` + res );
-    // logger.log(
-    //   [
-    //     // `s: "${s}"`,
-    //     `stdout: "${res.stdout}"`,
-    //     `stderr: "${res.stderr}"`,
-    //     `code: ${res.code}`,
-    //   ].join(', ')
-    // );
     if (res.stdout) logger.log(res.stdout);
     if (res.stderr) logger.warn(res.stderr);
     if (res.code !== 0) logger.warn(`Exit code: ${res.code}`);
-    // print(shellParams);
+
     return res.stdout;
   },
 };
