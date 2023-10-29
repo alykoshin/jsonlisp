@@ -8,11 +8,9 @@ import {
   ExecutorFn,
   ensureString,
 } from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
 import {formatFilenameDate} from '../../lib/fileUtils/fileUtils';
 import {sevenZip, type SevenZipOptions} from './helpers/7zip';
 import {zipDirectory} from './helpers/archiver';
-import {stat} from 'fs';
 
 async function getVersion(evaluate: EvaluateFn): Promise<string> {
   // const version = await ($versionActions.$version as ExecutorFn).call(
@@ -21,7 +19,7 @@ async function getVersion(evaluate: EvaluateFn): Promise<string> {
   //   [],
   //   state
   // );
-  const version = await evaluate('$version');
+  const version = await evaluate(['$version']);
   ensureString(version);
   return version;
 }
