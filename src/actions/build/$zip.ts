@@ -19,13 +19,16 @@ async function getVersion(evaluate: EvaluateFn): Promise<string> {
   //   [],
   //   state
   // );
+  // ensureString(version);
+  // return 'v'+version;
+  //
   const version = await evaluate(['$version']);
   ensureString(version);
   return version;
 }
 
 function getArchiveBasename(archive_prefix: string, version: string): string {
-  return [archive_prefix, `v${version}`, formatFilenameDate()].join('-');
+  return [archive_prefix, version, formatFilenameDate()].join('-');
 }
 
 /**
