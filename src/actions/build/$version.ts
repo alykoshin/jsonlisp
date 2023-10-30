@@ -10,12 +10,16 @@ import {createPrepareFn} from '../lisp-like/core/functions';
  * @module $build
  */
 
+// $version: [ 'shell-command', 'npm version patch' ],
+//             'yarn version --new-version patch', {}],
+
 // prettier-ignore
 export const $version_ = createPrepareFn(
   '$version_',
   ['$$release'],
   ['list',
-    ['when', '$$release', ['shell-command', 'npm version ${$$release}']],
+    ['when', '$$release',
+      ['shell-command', 'npm version ${$$release}']],
     ['shell-command', 'node -p -e "require(\'./package.json\').version"'],
   ]
 );
@@ -33,12 +37,12 @@ export const $version: ExecutorFn = async function $version(
   if (params.length > 0) {
     const release = params[0] as ReleaseType;
 
-    const cmd = `npm version ${release}`;
-    // const cmd = `yarn version ${release}`;
-    // const cmd = `yarn version --new-version ${release}`; // yarn version --new-version patch
+    const NPM_CMD = `npm version ${release}`;
+    // /. const YARN_CMD = `yarn version ${release}`;
+    // const YARN_CMD = `yarn version --new-version ${release}`; // yarn version --new-version patch
     const execDefinition: Expression = [
       'shell-command',
-      cmd,
+      NPM_CMD,
       {
         /* ...(pConfig as BuildActionConfig), */
       },

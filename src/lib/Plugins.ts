@@ -10,7 +10,7 @@ export interface Plugin {
   dependencies?: string[];
 }
 
-type PluginMap<T> = Record<string, T>;
+export type PluginMap<T> = Record<string, T>;
 
 export class Plugins<T extends Plugin> {
   plugins: PluginMap<T> = {};
@@ -19,7 +19,14 @@ export class Plugins<T extends Plugin> {
     // console.log(`>>> Plugins: _plug "${name}"`, plugin);
     // this.plugins[name] = plugin;
     // return plugin;
-    this.plugins = {...this.plugins, ...pluginMap};
+    //
+    // this.plugins = {...this.plugins, ...pluginMap};
+    Object.keys(pluginMap).reduce((acc, k) => {
+      if (this.plugins[k])
+        console.warn(`WARN: Plugin name "${k}" overrides another plugin`);
+      acc[k] = pluginMap[k];
+      return acc;
+    }, this.plugins);
   }
 
   // async _plug(name: string, plugin: T): Promise<T> {

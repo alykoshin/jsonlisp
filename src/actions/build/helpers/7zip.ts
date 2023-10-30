@@ -10,10 +10,14 @@ import {State} from '../../../apps/runner/lib/state';
 
 export type SevenZipOptions = {
   file_names: string[];
-  archive_prefix: string;
+  // archive_prefix: string;
   out_dir: string;
   exclude_files: string[];
 };
+
+// const DEFAULT_ZIP_EXE = "C:\\Program Files\\7-Zip\\7z.exe";
+const DEFAULT_ZIP_EXE = '"c:/Program Files/7-Zip/7z.exe"';
+const DEFAULT_EXTNAME = '.zip';
 
 export const sevenZip = async function (
   archive_basename: string,
@@ -22,15 +26,14 @@ export const sevenZip = async function (
 ): Promise<string> {
   // const {runner, logger} = state;
 
-  const {file_names, archive_prefix, out_dir, exclude_files} =
-    options as SevenZipOptions;
+  const {file_names, /* archive_prefix, */ out_dir, exclude_files} = options;
 
-  // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-  const zip_exe = '"c:/Program Files/7-Zip/7z.exe"';
+  if (!out_dir) throw new Error('out_dir is required');
 
-  const EXTNAME = '.zip';
-
-  const archive_pathname = path.join(out_dir, archive_basename + EXTNAME);
+  const archive_pathname = path.join(
+    out_dir,
+    archive_basename + DEFAULT_EXTNAME
+  );
 
   const sFileNames = file_names.join(' ');
 
@@ -49,7 +52,7 @@ export const sevenZip = async function (
     sFileNames,
   ];
 
-  const cmd_line = [zip_exe, ...zip_args].join(' ');
+  const cmd_line = [DEFAULT_ZIP_EXE, ...zip_args].join(' ');
 
   const cmd_options = {
     // cwd: activity.base_dir,
