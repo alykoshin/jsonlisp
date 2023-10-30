@@ -23,7 +23,7 @@ async function getVersion(evaluate) {
     return version;
 }
 function getArchiveBasename(archive_prefix, version) {
-    return [archive_prefix, version, (0, fileUtils_1.formatFilenameDate)()].join('-');
+    return [archive_prefix, 'v' + version, (0, fileUtils_1.formatFilenameDate)()].join('-');
 }
 /**
  * @name $zip

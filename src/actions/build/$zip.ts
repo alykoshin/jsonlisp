@@ -28,7 +28,7 @@ async function getVersion(evaluate: EvaluateFn): Promise<string> {
 }
 
 function getArchiveBasename(archive_prefix: string, version: string): string {
-  return [archive_prefix, version, formatFilenameDate()].join('-');
+  return [archive_prefix, 'v' + version, formatFilenameDate()].join('-');
 }
 
 /**
