@@ -27,13 +27,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sevenZip = void 0;
 const path = __importStar(require("path"));
 const exec_1 = require("../../lisp-like/helpers/exec");
+// const DEFAULT_ZIP_EXE = "C:\\Program Files\\7-Zip\\7z.exe";
+const DEFAULT_ZIP_EXE = '"c:/Program Files/7-Zip/7z.exe"';
+const DEFAULT_EXTNAME = '.zip';
 const sevenZip = async function (archive_basename, options, state) {
     // const {runner, logger} = state;
-    const { file_names, archive_prefix, out_dir, exclude_files } = options;
-    // const zip_exe = "C:\\Program Files\\7-Zip\\7z.exe";
-    const zip_exe = '"c:/Program Files/7-Zip/7z.exe"';
-    const EXTNAME = '.zip';
-    const archive_pathname = path.join(out_dir, archive_basename + EXTNAME);
+    const { file_names, /* archive_prefix, */ out_dir, exclude_files } = options;
+    if (!out_dir)
+        throw new Error('out_dir is required');
+    const archive_pathname = path.join(out_dir, archive_basename + DEFAULT_EXTNAME);
     const sFileNames = file_names.join(' ');
     // prettier-ignore
     const switches = [
@@ -49,7 +51,7 @@ const sevenZip = async function (archive_basename, options, state) {
         archive_pathname,
         sFileNames,
     ];
-    const cmd_line = [zip_exe, ...zip_args].join(' ');
+    const cmd_line = [DEFAULT_ZIP_EXE, ...zip_args].join(' ');
     const cmd_options = {
     // cwd: activity.base_dir,
     };

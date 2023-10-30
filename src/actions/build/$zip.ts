@@ -35,6 +35,13 @@ function getArchiveBasename(archive_prefix: string, version: string): string {
  * @module $zip
  */
 
+export interface $zipOptions {
+  file_names: string[];
+  archive_prefix: string;
+  out_dir: string;
+  exclude_files: string[];
+}
+
 /**
  * @name $zip
  * @description Uses `7zip` executable to create zip archive (*Windows* only).
@@ -42,7 +49,7 @@ function getArchiveBasename(archive_prefix: string, version: string): string {
 export const $zip: ExecutorFn = async function (_, args, st): Promise<string> {
   // const {runner, logger} = st;
   validateArgs(args, {exactCount: 1});
-  const options = args[0] as SevenZipOptions;
+  const options = args[0] as $zipOptions;
 
   const version = await getVersion(st.evaluate);
   const {archive_prefix} = options;

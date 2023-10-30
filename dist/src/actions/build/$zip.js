@@ -26,9 +26,6 @@ function getArchiveBasename(archive_prefix, version) {
     return [archive_prefix, version, (0, fileUtils_1.formatFilenameDate)()].join('-');
 }
 /**
- * @module $zip
- */
-/**
  * @name $zip
  * @description Uses `7zip` executable to create zip archive (*Windows* only).
  */

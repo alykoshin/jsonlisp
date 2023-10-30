@@ -7,9 +7,12 @@ const functions_1 = require("../lisp-like/core/functions");
 /**
  * @module $build
  */
+// $version: [ 'shell-command', 'npm version patch' ],
+//             'yarn version --new-version patch', {}],
 // prettier-ignore
 exports.$version_ = (0, functions_1.createPrepareFn)('$version_', ['$$release'], ['list',
-    ['when', '$$release', ['shell-command', 'npm version ${$$release}']],
+    ['when', '$$release',
+        ['shell-command', 'npm version ${$$release}']],
     ['shell-command', 'node -p -e "require(\'./package.json\').version"'],
 ]);
 /**
@@ -19,12 +22,12 @@ const $version = async function $version(a, params, { evaluate, logger }) {
     (0, validateArgs_1.validateArgs)(params, { exactCount: [0, 1] });
     if (params.length > 0) {
         const release = params[0];
-        const cmd = `npm version ${release}`;
-        // const cmd = `yarn version ${release}`;
-        // const cmd = `yarn version --new-version ${release}`; // yarn version --new-version patch
+        const NPM_CMD = `npm version ${release}`;
+        // /. const YARN_CMD = `yarn version ${release}`;
+        // const YARN_CMD = `yarn version --new-version ${release}`; // yarn version --new-version patch
         const execDefinition = [
             'shell-command',
-            cmd,
+            NPM_CMD,
             {
             /* ...(pConfig as BuildActionConfig), */
             },

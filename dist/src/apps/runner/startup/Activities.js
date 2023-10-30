@@ -10,16 +10,30 @@ class Activities extends Plugins_1.Plugins {
     // }
     actions() {
         // console.log('Object.keys(this.plugins):', Object.keys(this.plugins));
-        const r = Object.keys(this.plugins).reduce((acc, cur) => {
-            // console.log(
-            //   'acc:', acc,
-            //   'cur:', cur,
-            //   'this.plugins[cur]:', this.plugins[cur]
-            // );
-            return { ...acc, ...this.plugins[cur].actions };
-        }, {});
+        //
+        // const r = Object.keys(this.plugins).reduce((acc, cur) => {
+        //   // console.log(
+        //   //   'acc:', acc,
+        //   //   'cur:', cur,
+        //   //   'this.plugins[cur]:', this.plugins[cur]
+        //   // );
+        //   return {...acc, ...this.plugins[cur].actions};
+        // }, {});
         // console.log('r:', r);
-        return r;
+        // return r;
+        //
+        const mergedActions = {};
+        Object.keys(this.plugins).forEach((pluginName) => {
+            const plugin = this.plugins[pluginName];
+            Object.keys(plugin.actions).forEach((actionName) => {
+                const action = plugin.actions[actionName];
+                if (mergedActions[actionName]) {
+                    console.warn(`WARN: Activity "${pluginName}" action name "${actionName}" overrides another action`);
+                }
+                mergedActions[actionName] = action;
+            });
+        });
+        return mergedActions;
     }
 }
 exports.Activities = Activities;

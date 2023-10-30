@@ -7,13 +7,15 @@ import $versionActions from '../../build/$version';
 import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 import {ExecutorFn, Actions, Parameters} from '../../../apps/runner/lib/types';
 import {State} from '../../../apps/runner/lib/state';
+import {$zipOptions} from '../$zip';
 
-export type SevenZipOptions = {
-  file_names: string[];
-  // archive_prefix: string;
-  out_dir: string;
-  exclude_files: string[];
-};
+// export type SevenZipOptions = {
+// file_names: string[];
+// // archive_prefix: string;
+// out_dir: string;
+// exclude_files: string[];
+// };
+export type SevenZipOptions = Omit<$zipOptions, 'archive_prefix'>;
 
 // const DEFAULT_ZIP_EXE = "C:\\Program Files\\7-Zip\\7z.exe";
 const DEFAULT_ZIP_EXE = '"c:/Program Files/7-Zip/7z.exe"';

@@ -12,5 +12,5 @@ export interface Activity extends Plugin {
     actions: ActivityActionsDefinition;
 }
 export declare class Activities extends Plugins<Activity> {
-    actions(): {};
+    actions(): Actions;
 }

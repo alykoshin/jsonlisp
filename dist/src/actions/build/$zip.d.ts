@@ -3,6 +3,12 @@ import { Actions, ExecutorFn } from '../../apps/runner/lib/types';
 /**
  * @module $zip
  */
+export interface $zipOptions {
+    file_names: string[];
+    archive_prefix: string;
+    out_dir: string;
+    exclude_files: string[];
+}
 /**
  * @name $zip
  * @description Uses `7zip` executable to create zip archive (*Windows* only).
