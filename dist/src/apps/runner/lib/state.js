@@ -33,7 +33,8 @@ class State {
     async evaluate(expr) {
         // return this.runner.evaluate.call(this, expr, this);
         this.logger.debug('state.evaluate -> eval');
-        return await (0, eval_1.execNamedAction)('eval', [expr], this);
+        // return await execNamedAction('eval', [expr], this);
+        return await (0, eval_1.eval_)('|', [expr], this);
     }
     new() {
         return new State(this);

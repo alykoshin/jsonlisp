@@ -1,5 +1,5 @@
 /** @format */
-import { Parameters } from './types';
+import { Parameters } from '../../../actions/lisp-like/helpers/types';
 interface ValidateOptions {
     exactCount?: number | number[];
     minCount?: number;

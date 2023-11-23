@@ -1,5 +1,5 @@
 /** @format */
-import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from './helpers/types';
 /**
  * @module file-system
  *
@@ -27,16 +27,20 @@ import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
+export declare const strFromFile: ExecutorFn;
 export declare const readFileIntoString: ExecutorFn;
+/**
+ * @name str:to-file
+ * @see
+ * - {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
+ */
+export declare const strToFile: ExecutorFn;
 /**
  * @name write-string-into-file
  * @see
  * - {@link https://gitlab.common-lisp.net/alexandria/alexandria/-/blob/master/alexandria-1/io.lisp#L83}
- * - Other references:
- *   - The Common Lisp Cookbook – Files and Directories --
- *     {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
- *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- to-file
- *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
  */
 export declare const writeStringIntoFile: ExecutorFn;
 /**

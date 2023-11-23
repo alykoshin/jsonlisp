@@ -5,7 +5,7 @@
 //   console.log(...args);
 // }
 
-import {Parameter} from '../../../apps/runner/lib/types';
+import {Parameter} from './types';
 
 export const EOL = '\n';
 

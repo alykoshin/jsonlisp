@@ -10,7 +10,7 @@ const functions_1 = require("../lisp-like/core/functions");
 // $version: [ 'shell-command', 'npm version patch' ],
 //             'yarn version --new-version patch', {}],
 // prettier-ignore
-exports.$version_ = (0, functions_1.createPrepareFn)('$version_', ['$$release'], ['list',
+exports.$version_ = (0, functions_1.createExecutorFn)('$version_', ['$$release'], ['list',
     ['when', '$$release',
         ['shell-command', 'npm version ${$$release}']],
     ['shell-command', 'node -p -e "require(\'./package.json\').version"'],

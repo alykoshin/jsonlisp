@@ -1,9 +1,9 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.getcwd = exports.chdir = exports.getenv = exports.setenv = void 0;
+exports.actions = exports.getcwd = exports.chdir = exports.getenv = exports.unsetenv = exports.setenv = void 0;
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("./helpers/types");
 const print_1 = require("./helpers/print");
 /**
  * @module sb-posix
@@ -19,18 +19,45 @@ const print_1 = require("./helpers/print");
  */
 const setenv = async function (_, params, st) {
     const { evaluate, logger } = st;
-    (0, validateArgs_1.validateArgs)(params, { exactCount: [2, 3] });
+    (0, validateArgs_1.validateArgs)(params, { exactCount: [3] });
     // const [pName, pValue, pOverwrite] = await series(params, evaluate);
     const [pName, pValue, pOverwrite] = params;
     const eName = await evaluate(pName);
     (0, types_1.ensureString)(eName);
     const eValue = await evaluate(pValue);
-    const eOverwrite = await evaluate(pOverwrite);
+    (0, types_1.ensureString)(eValue);
+    let eOverwrite = await evaluate(pOverwrite);
+    /*
+      ?  if (eOverwrite === undefined) eOverwrite = 0;
+     */ (0, types_1.ensureNumber)(eOverwrite);
+    const curr = process.env[eName];
+    if (!curr || eOverwrite !== 0) {
+        process.env[eName] = eValue;
+    }
     const res = process.env[eName];
-    logger.debug(`$${eName}="${eName}"`);
+    logger.debug(`$${eName}="${curr}" (old) <= "${res}" (new)`);
     return res;
 };
 exports.setenv = setenv;
+/**
+ * @name unsetenv
+ *
+ * @see
+ * - Function: SB-POSIX:UNSETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/UNSETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
+ */
+const unsetenv = async function (_, params, st) {
+    const { evaluate, logger } = st;
+    (0, validateArgs_1.validateArgs)(params, { exactCount: [1] });
+    const [pName] = params;
+    const eName = await evaluate(pName);
+    (0, types_1.ensureString)(eName);
+    delete process.env[eName];
+    const res = process.env[eName];
+    logger.debug(`$${eName}="${res}"`);
+    return res;
+};
+exports.unsetenv = unsetenv;
 /**
  * @name getenv
  * @see
@@ -44,7 +71,7 @@ const getenv = async function (_, params, { evaluate, logger }) {
     const eName = await evaluate(pName);
     (0, types_1.ensureString)(eName);
     const res = process.env[eName];
-    logger.debug(`$${eName}="${eName}"`);
+    logger.debug(`$${eName}="${res}"`);
     return res;
 };
 exports.getenv = getenv;
@@ -74,6 +101,7 @@ const getcwd = async function (_, params, { logger }) {
 };
 exports.getcwd = getcwd;
 exports.actions = {
+    unsetenv: exports.unsetenv,
     setenv: exports.setenv,
     getenv: exports.getenv,
     chdir: exports.chdir,

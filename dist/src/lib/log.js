@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = exports.AbstractLogger = void 0;
+exports.Logger = exports.errorLevelToNumber = exports.AbstractLogger = exports.DEFAULT_ERROR_LEVEL = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 function getLogStrs(color, prefix = '', data) {
     data = String(data);
@@ -25,7 +25,7 @@ const errorLevels = [
     'debug',
 ];
 // const DEFAULT_DEBUG: ErrorLevel = 'info';
-const DEFAULT_ERROR_LEVEL = 'debug';
+exports.DEFAULT_ERROR_LEVEL = 'debug';
 const errorColors = {
     fatal: 'redBright',
     error: 'red',
@@ -68,8 +68,8 @@ function debugPrimitive(value) {
     return result;
 }
 class AbstractLogger {
-    _errorLevel = DEFAULT_ERROR_LEVEL;
-    constructor(errorLevel = DEFAULT_ERROR_LEVEL) {
+    _errorLevel = exports.DEFAULT_ERROR_LEVEL;
+    constructor(errorLevel = exports.DEFAULT_ERROR_LEVEL) {
         this.setErrorLevel(errorLevel);
         // this._errorLevel = errorLevel;
     }
@@ -124,9 +124,13 @@ exports.AbstractLogger = AbstractLogger;
   }
 }
 */
+function errorLevelToNumber(el) {
+    return errorLevels.indexOf(el);
+}
+exports.errorLevelToNumber = errorLevelToNumber;
 class Logger extends AbstractLogger {
     state;
-    constructor(state, errorLevel = DEFAULT_ERROR_LEVEL) {
+    constructor(state, errorLevel = exports.DEFAULT_ERROR_LEVEL) {
         super(errorLevel);
         this.state = state;
     }

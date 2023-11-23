@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("../../actions/lisp-like/helpers/types");
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const octo_1 = require("./lib/octo");
 const GIT_ACTIONS = {

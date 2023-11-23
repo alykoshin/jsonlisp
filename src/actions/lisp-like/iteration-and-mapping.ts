@@ -1,6 +1,6 @@
 /** @format */
 
-import {Actions, ensureList, isNil} from '../../apps/runner/lib/types';
+import {Actions, ensureList, isNil} from './helpers/types';
 import {series1, series2, seriesn} from './helpers/series';
 import {sliceListList} from './helpers/series';
 

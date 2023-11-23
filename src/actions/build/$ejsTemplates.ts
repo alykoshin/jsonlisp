@@ -6,7 +6,7 @@ import ejs from 'ejs';
 
 import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../lisp-like/helpers/types';
 import {State} from '../../apps/runner/lib/state';
 
 const DEBUG = false;

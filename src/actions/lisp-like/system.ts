@@ -1,8 +1,7 @@
 /** @format */
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, Parameters} from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
+import {Actions, Parameters, ensureNumber} from './helpers/types';
 
 /**
  * @module system
@@ -14,22 +13,23 @@ export const actions: Actions = {
   sleep: async function (action, params, {evaluate, logger}) {
     validateArgs(params, {exactCount: 1});
 
-    const pValue = await evaluate(params[0]);
-    const nValue = Number(pValue);
+    const value = await evaluate(params[0]);
+    ensureNumber(value);
+    // const nValue = Number(pValue);
 
-    logger.debug(`sleep ${nValue} seconds`);
-    await new Promise((resolve, _reject) => setTimeout(resolve, nValue * 1000));
+    logger.debug(`sleep ${value} seconds`);
+    await new Promise((resolve, _reject) => setTimeout(resolve, value * 1000));
     logger.log(`sleep done`);
   },
 
   /** @name time */
   time: async function (action, params, {evaluate, logger}) {
     validateArgs(params, {exactCount: 1});
-    const [pDuration] = params;
+    const [expr] = params;
 
     const startTime = new Date();
 
-    const value = await evaluate(pDuration);
+    const value = await evaluate(expr);
 
     const endTime = new Date();
     const duration = endTime.getTime() - startTime.getTime();

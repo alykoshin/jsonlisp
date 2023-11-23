@@ -1,7 +1,7 @@
 /** @format */
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, NIL, Parameters, T} from '../../apps/runner/lib/types';
+import {Actions, NIL, Parameters, T} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {print, stringify, EOL, atBOL} from './helpers/print';
 import {confirm as confirm_} from './helpers/confirm';

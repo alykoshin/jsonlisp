@@ -1,15 +1,10 @@
 /** @format */
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {
-  Actions,
-  Parameters,
-  T,
-  ensureNumber,
-} from '../../apps/runner/lib/types';
+import {Actions, Parameters, T, ensureNumber} from './helpers/types';
 
 import {cond} from './core/primitives';
-import {asBoolean} from './helpers/typecast';
+import {asBoolean} from './helpers/types';
 
 /**
  * @module conditionals

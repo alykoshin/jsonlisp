@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.$zipDir = exports.$zip = void 0;
 // import {actions as $versionActions} from '../build/$version';
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("../lisp-like/helpers/types");
 const fileUtils_1 = require("../../lib/fileUtils/fileUtils");
 const _7zip_1 = require("./helpers/7zip");
 const archiver_1 = require("./helpers/archiver");

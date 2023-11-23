@@ -1,6 +1,6 @@
 /** @format */
 
-import {isList, Expression, isNil, Actions} from '../../apps/runner/lib/types';
+import {isList, Expression, isNil, Actions} from '../lisp-like/helpers/types';
 // import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 
 // import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';

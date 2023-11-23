@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.testRunner = void 0;
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("../lisp-like/helpers/types");
 // import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 // import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
 const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");

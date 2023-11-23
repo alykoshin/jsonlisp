@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, ExecutorFn } from '../../apps/runner/lib/types';
+import { Actions, ExecutorFn } from '../lisp-like/helpers/types';
 /**
  * @module $build
  */

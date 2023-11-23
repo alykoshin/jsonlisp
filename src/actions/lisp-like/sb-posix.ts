@@ -6,7 +6,9 @@ import {
   Actions,
   Parameters,
   ensureString,
-} from '../../apps/runner/lib/types';
+  ensureBoolean,
+  ensureNumber,
+} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {stringify} from './helpers/print';
 import {series} from './helpers/series';
@@ -26,15 +28,47 @@ import {series} from './helpers/series';
  */
 export const setenv: ExecutorFn = async function (_, params, st) {
   const {evaluate, logger} = st;
-  validateArgs(params, {exactCount: [2, 3]});
+  validateArgs(params, {exactCount: [3]});
   // const [pName, pValue, pOverwrite] = await series(params, evaluate);
   const [pName, pValue, pOverwrite] = params;
   const eName = await evaluate(pName);
   ensureString(eName);
+
   const eValue = await evaluate(pValue);
-  const eOverwrite = await evaluate(pOverwrite);
+  ensureString(eValue);
+
+  let eOverwrite = await evaluate(pOverwrite);
+  /*
+    ?  if (eOverwrite === undefined) eOverwrite = 0;
+   */ ensureNumber(eOverwrite);
+
+  const curr = process.env[eName];
+  if (!curr || eOverwrite !== 0) {
+    process.env[eName] = eValue;
+  }
   const res = process.env[eName];
-  logger.debug(`$${eName}="${eName}"`);
+  logger.debug(`$${eName}="${curr}" (old) <= "${res}" (new)`);
+  return res;
+};
+
+/**
+ * @name unsetenv
+ *
+ * @see
+ * - Function: SB-POSIX:UNSETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/UNSETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
+ */
+export const unsetenv: ExecutorFn = async function (_, params, st) {
+  const {evaluate, logger} = st;
+  validateArgs(params, {exactCount: [1]});
+  const [pName] = params;
+  const eName = await evaluate(pName);
+  ensureString(eName);
+
+  delete process.env[eName];
+
+  const res = process.env[eName];
+  logger.debug(`$${eName}="${res}"`);
   return res;
 };
 
@@ -55,7 +89,7 @@ export const getenv: ExecutorFn = async function (
   const eName = await evaluate(pName);
   ensureString(eName);
   const res = process.env[eName];
-  logger.debug(`$${eName}="${eName}"`);
+  logger.debug(`$${eName}="${res}"`);
   return res;
 };
 
@@ -85,6 +119,7 @@ export const getcwd: ExecutorFn = async function (_, params, {logger}) {
 };
 
 export const actions: Actions = {
+  unsetenv,
   setenv,
   getenv,
   chdir,

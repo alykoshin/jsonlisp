@@ -2,8 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.cond = exports.cons = exports.cdr = exports.car = exports.eq = exports.atom = exports.quote = void 0;
-const types_1 = require("../../../apps/runner/lib/types");
-const typecast_1 = require("../../../actions/lisp-like/helpers/typecast");
+const types_1 = require("../helpers/types");
+const types_2 = require("../helpers/types");
 const series_1 = require("../helpers/series");
 const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 //
@@ -25,7 +25,7 @@ exports.quote = quote;
 const atom = async function (_, args, st) {
     const [a] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     const ea = await st.evaluate(a);
-    return (0, types_1.isAtom)(ea) || (0, types_1.isEmptyList)(ea) ? types_1.T : types_1.NIL;
+    return (0, types_1.isAtom)(ea) /* || isEmptyList(ea) */ ? types_1.T : types_1.NIL;
 };
 exports.atom = atom;
 /**
@@ -119,7 +119,7 @@ const cond = async (_, args, st) => {
         (0, types_1.ensureList)(current);
         const [cond, ...exprs] = current;
         const econd = await st.evaluate(cond);
-        if ((0, typecast_1.asBoolean)(econd)) {
+        if ((0, types_2.asBoolean)(econd)) {
             return exprs.length === 0 ? econd : (0, series_1.seriesn)(exprs, st);
         }
     }

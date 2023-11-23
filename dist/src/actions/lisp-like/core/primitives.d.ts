@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, ExecutorFn } from '../../../apps/runner/lib/types';
+import { Actions, ExecutorFn } from '../helpers/types';
 /**
  * @module primitives
  */

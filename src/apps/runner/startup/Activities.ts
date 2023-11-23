@@ -1,8 +1,15 @@
 /** @format */
 
-import {ActionDefinition, Actions} from '../lib/types';
+import {
+  ActionDefinition,
+  Actions,
+} from '../../../actions/lisp-like/helpers/types';
 
-import {ErrorLevel} from '../../../lib/log';
+import {
+  DEFAULT_ERROR_LEVEL,
+  ErrorLevel,
+  errorLevelToNumber,
+} from '../../../lib/log';
 import {Plugin, PluginMap, Plugins} from '../../../lib/Plugins';
 
 export type ActivityActionsDefinition = Actions & {
@@ -50,5 +57,17 @@ export class Activities extends Plugins<Activity> {
       });
     });
     return mergedActions;
+  }
+
+  logLevel(): ErrorLevel {
+    return Object.keys(this.plugins).reduce<ErrorLevel>((acc, pluginName) => {
+      const p = this.plugins[pluginName];
+      if (p.logLevel) {
+        if (errorLevelToNumber(p.logLevel) > errorLevelToNumber(acc)) {
+          acc = p.logLevel;
+        }
+      }
+      return acc;
+    }, DEFAULT_ERROR_LEVEL);
   }
 }

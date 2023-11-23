@@ -1,13 +1,7 @@
 /** @format */
 
 import assert from 'assert';
-import {
-  Atom,
-  List,
-  NIL,
-  ensureList,
-  ensureString,
-} from '../../../apps/runner/lib/types';
+import {Atom, List, NIL, ensureList, ensureString} from './types';
 
 interface KeyValueObject<V> {
   [key: string]: V | V[] | NIL;

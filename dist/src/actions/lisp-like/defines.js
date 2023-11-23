@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
+const types_1 = require("./helpers/types");
 const print_1 = require("./helpers/print");
 /**
  * @module defines
@@ -50,13 +51,13 @@ exports.actions = {
      */
     setq: async function (_, args, { evaluate, scopes, logger }) {
         (0, validateArgs_1.validateArgs)(args, { exactCount: 2 });
-        const pName = await evaluate(args[0]);
-        const sName = String(pName);
-        const pValue = await evaluate(args[1]);
+        const name = await evaluate(args[0]);
+        (0, types_1.ensureString)(name, `Expect string as a name of variable`);
+        const value = await evaluate(args[1]);
         // creates variable at local scope
-        scopes.current().set(sName, pValue);
-        logger.debug(`${sName} = ${(0, print_1.stringify)(pValue)}`);
-        return pValue;
+        scopes.current().set(name, value);
+        logger.debug(`${name} = ${(0, print_1.stringify)(value)}`);
+        return value;
     },
 };
 exports.default = exports.actions;

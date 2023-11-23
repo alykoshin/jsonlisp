@@ -13,8 +13,8 @@ import {
   NIL,
   List,
   isNil,
-} from '../../../apps/runner/lib/types';
-import {asBoolean} from '../../../actions/lisp-like/helpers/typecast';
+} from '../helpers/types';
+import {asBoolean} from '../helpers/types';
 import {series, seriesn} from '../helpers/series';
 import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 
@@ -39,7 +39,7 @@ export const quote: ExecutorFn = async function (_, args, st) {
 export const atom: ExecutorFn = async function (_, args, st) {
   const [a] = validateArgs(args, {exactCount: 1});
   const ea = await st.evaluate(a);
-  return isAtom(ea) || isEmptyList(ea) ? T : NIL;
+  return isAtom(ea) /* || isEmptyList(ea) */ ? T : NIL;
 };
 
 /**

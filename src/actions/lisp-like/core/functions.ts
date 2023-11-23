@@ -15,9 +15,9 @@ import {
   ensureString,
   Expression,
   Atom,
-} from '../../../apps/runner/lib/types';
+} from '../helpers/types';
 import {State} from '../../../apps/runner/lib/state';
-import {asBoolean} from '../helpers/typecast';
+import {asBoolean} from '../helpers/types';
 import {series, seriesn} from '../helpers/series';
 import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 import {cons} from './primitives';
@@ -34,22 +34,7 @@ import {passArgs} from '../helpers/passArgs';
  *   {@link http://clhs.lisp.se/Body/f_apply.htm}
  */
 
-/**
- * @name lambda
- * @see
- * - An Introduction to Programming in Emacs Lisp -- C.4.3 A lambda Expression: Useful Anonymity --
- *   {@link https://www.gnu.org/software/emacs/manual/html_node/eintr/lambda.html} <br>
- * - An Introduction to Programming in Emacs Lisp -- 13.2 Lambda Expressions --
- *   {@link https://www.gnu.org/software/emacs/manual/html_node/elisp/Lambda-Expressions.html} <br>
- * - Common Lisp the Language, 2nd Edition -- 5.2.2. Lambda-Expressions --
- *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
- */
-export const lambda: ExecutorFn = async function (_, args, {evaluate}) {
-  const [argnames, body] = validateArgs(args, {exactCount: 2});
-  return createPrepareFn('lambda', argnames, body);
-};
-
-export const createPrepareFn = function (
+export const createExecutorFn = function (
   name: string,
   argnames: Parameter,
   body: Parameter
@@ -76,10 +61,28 @@ export const createPrepareFn = function (
   return fn;
 };
 
+/**
+ * @name lambda
+ * @see
+ * - An Introduction to Programming in Emacs Lisp -- C.4.3 A lambda Expression: Useful Anonymity --
+ *   {@link https://www.gnu.org/software/emacs/manual/html_node/eintr/lambda.html} <br>
+ * - An Introduction to Programming in Emacs Lisp -- 13.2 Lambda Expressions --
+ *   {@link https://www.gnu.org/software/emacs/manual/html_node/elisp/Lambda-Expressions.html} <br>
+ * - Common Lisp the Language, 2nd Edition -- 5.2.2. Lambda-Expressions --
+ *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
+ */
+export const lambda: ExecutorFn = async function (_, args, {evaluate}) {
+  const [argnames, body] = validateArgs(args, {exactCount: 2});
+  return createExecutorFn('lambda', argnames, body);
+};
+
+/**
+ * @name defun
+ */
 export const defun: ExecutorFn = async function (_, args, state) {
   const [name, argnames, body] = validateArgs(args, {exactCount: 3});
   ensureString(name, `Expect string as a name of function`);
-  state.actions[name] = createPrepareFn(name, argnames, body);
+  state.actions[name] = createExecutorFn(name, argnames, body);
   return name;
 };
 
@@ -87,7 +90,7 @@ export const defun: ExecutorFn = async function (_, args, state) {
  * @name null_
  */
 // prettier-ignore
-export const null_ = createPrepareFn(
+export const null_ = createExecutorFn(
   'null_', 
   [ 'x' ], [ 'eq', 'x', [] ]
 );
@@ -101,7 +104,7 @@ export const null_ = createPrepareFn(
  * @name and_
  */
 // prettier-ignore
-export const and_ = createPrepareFn(
+export const and_ = createExecutorFn(
   'and_',
   ['x', 'y'],
   ['cond', ['x', ['cond', ['y', ['quote', T]], [['quote', T], ['quote', []]]]],

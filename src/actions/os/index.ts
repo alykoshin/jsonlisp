@@ -1,6 +1,6 @@
 /** @format */
 
-import {Actions} from '../../apps/runner/lib/types';
+import {Actions} from '../lisp-like/helpers/types';
 
 import $shelljsActions from './$shelljs';
 

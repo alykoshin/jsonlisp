@@ -1,6 +1,6 @@
 /** @format */
 
-import {Parameter, Parameters} from './types';
+import {Parameter, Parameters} from '../../../actions/lisp-like/helpers/types';
 
 interface ValidateOptions {
   exactCount?: number | number[];

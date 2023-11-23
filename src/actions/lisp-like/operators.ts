@@ -10,7 +10,7 @@ import {
   Atom,
   Parameter,
   Parameters,
-} from '../../apps/runner/lib/types';
+} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {start} from 'repl';
 import {Logger} from '../../lib/log';

@@ -1,7 +1,7 @@
 /** @format */
 
 import axios from 'axios';
-import {ExecutorFn, Actions, ensureString} from '../apps/runner/lib/types';
+import {ExecutorFn, Actions, ensureString} from './lisp-like/helpers/types';
 import {validateArgs} from '../apps/runner/lib/validateArgs';
 
 /**

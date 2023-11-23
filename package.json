@@ -10,7 +10,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json",
+    "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json5",
     "test-core": "ts-node ./src/apps/test-runner/core-test-runner.ts",
     "build": "npm start build",
     "start-ts": "ts-node --esm ./src/cli.ts",

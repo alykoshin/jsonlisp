@@ -6,7 +6,7 @@ import {
   Actions,
   Parameters,
   ensureString,
-} from '../../apps/runner/lib/types';
+} from '../lisp-like/helpers/types';
 import {
   parse_sbcl_bool,
   parse_sbcl_list,

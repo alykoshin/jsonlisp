@@ -2,7 +2,7 @@
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {Runner} from '../../apps/runner/runner';
-import {Actions, Parameter, Parameters} from '../../apps/runner/lib/types';
+import {Actions, Parameter, Parameters, ensureString} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {stringify} from './helpers/print';
 
@@ -56,16 +56,16 @@ export const actions: Actions = {
   setq: async function (_, args, {evaluate, scopes, logger}) {
     validateArgs(args, {exactCount: 2});
 
-    const pName = await evaluate(args[0]);
-    const sName = String(pName);
+    const name = await evaluate(args[0]);
+    ensureString(name, `Expect string as a name of variable`);
 
-    const pValue = await evaluate(args[1]);
+    const value = await evaluate(args[1]);
 
     // creates variable at local scope
-    scopes.current().set(sName, pValue);
+    scopes.current().set(name, value);
 
-    logger.debug(`${sName} = ${stringify(pValue)}`);
-    return pValue;
+    logger.debug(`${name} = ${stringify(value)}`);
+    return value;
   },
 };
 

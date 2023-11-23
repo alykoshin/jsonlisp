@@ -1,5 +1,5 @@
 /** @format */
-import { Actions, Parameter, ExecutorFn } from '../../../apps/runner/lib/types';
+import { Actions, Parameter, ExecutorFn } from '../helpers/types';
 /**
  * @module functions
  * @see
@@ -8,6 +8,7 @@ import { Actions, Parameter, ExecutorFn } from '../../../apps/runner/lib/types';
  * - LispWorks -- Common Lisp HyperSpec -- Function APPLY --
  *   {@link http://clhs.lisp.se/Body/f_apply.htm}
  */
+export declare const createExecutorFn: (name: string, argnames: Parameter, body: Parameter) => ExecutorFn;
 /**
  * @name lambda
  * @see
@@ -19,7 +20,9 @@ import { Actions, Parameter, ExecutorFn } from '../../../apps/runner/lib/types';
  *   {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node64.html} <br>
  */
 export declare const lambda: ExecutorFn;
-export declare const createPrepareFn: (name: string, argnames: Parameter, body: Parameter) => ExecutorFn;
+/**
+ * @name defun
+ */
 export declare const defun: ExecutorFn;
 /**
  * @name null_

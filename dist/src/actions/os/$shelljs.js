@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const shelljs_1 = __importDefault(require("shelljs"));
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("../lisp-like/helpers/types");
 const TRIM_RESULT = true;
 /**
  * @module $shelljs

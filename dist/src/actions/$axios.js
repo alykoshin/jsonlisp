@@ -6,7 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$axios = void 0;
 const axios_1 = __importDefault(require("axios"));
-const types_1 = require("../apps/runner/lib/types");
+const types_1 = require("./lisp-like/helpers/types");
 const validateArgs_1 = require("../apps/runner/lib/validateArgs");
 /**
  * @module $axios

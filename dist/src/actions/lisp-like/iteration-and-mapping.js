@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("./helpers/types");
 const series_1 = require("./helpers/series");
 const series_2 = require("./helpers/series");
 let actions = {};

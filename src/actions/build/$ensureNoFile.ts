@@ -1,7 +1,7 @@
 /** @format */
 
 import {ensureNoFile} from '../../lib/fileUtils/fileUtils';
-import {ExecutorFn, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameters} from '../lisp-like/helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
 

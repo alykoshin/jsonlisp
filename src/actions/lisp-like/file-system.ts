@@ -8,7 +8,7 @@ import {
   Parameters,
   T,
   ensureString,
-} from '../../apps/runner/lib/types';
+} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import path from 'path';
 
@@ -40,7 +40,7 @@ import path from 'path';
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
-export const readFileIntoString: ExecutorFn = async function (_, args, st) {
+export const strFromFile: ExecutorFn = async function (_, args, st) {
   let [pFname] = validateArgs(args, {exactCount: 1});
 
   let fname = await st.evaluate(pFname);
@@ -53,18 +53,19 @@ export const readFileIntoString: ExecutorFn = async function (_, args, st) {
   return s;
 };
 
+export const readFileIntoString: ExecutorFn = async function (_, args, st) {
+  let [pFname] = validateArgs(args, {exactCount: 1});
+  return strFromFile(_, [pFname], st);
+};
+
 /**
- * @name write-string-into-file
+ * @name str:to-file
  * @see
- * - {@link https://gitlab.common-lisp.net/alexandria/alexandria/-/blob/master/alexandria-1/io.lisp#L83}
- * - Other references:
- *   - The Common Lisp Cookbook – Files and Directories --
- *     {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
- *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- to-file
- *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
  */
-export const writeStringIntoFile: ExecutorFn = async function (
-  action,
+export const strToFile: ExecutorFn = async function (
+  _,
   params,
   {evaluate, logger}
 ) {
@@ -80,6 +81,17 @@ export const writeStringIntoFile: ExecutorFn = async function (
 
   logger.debug(`Wrote ${s.length} chars`);
   return s;
+};
+
+/**
+ * @name write-string-into-file
+ * @see
+ * - {@link https://gitlab.common-lisp.net/alexandria/alexandria/-/blob/master/alexandria-1/io.lisp#L83}
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
+ */
+export const writeStringIntoFile: ExecutorFn = async function (_, params, st) {
+  let [pFname, s] = validateArgs(params, {exactCount: 2});
+  return strToFile(_, [s, pFname], st);
 };
 
 /**
@@ -180,6 +192,8 @@ export const actions: Actions = {
   directory: directory,
   'read-file-into-string': readFileIntoString,
   'write-string-into-file': writeStringIntoFile,
+  'str:to-file': strToFile,
+  'str:from-file': strFromFile,
 };
 ``;
 export default actions;

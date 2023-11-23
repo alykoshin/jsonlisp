@@ -15,7 +15,7 @@ import {
   ensureNumber,
   isEmptyList,
   isList,
-} from '../../apps/runner/lib/types';
+} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {series} from './helpers/series';
 

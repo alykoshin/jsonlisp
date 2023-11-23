@@ -1,7 +1,7 @@
 /** @format */
 
 import {inspect} from 'util';
-import {Actions, Expression, List} from '../runner/lib/types';
+import {Actions, Expression, List} from '../../actions/lisp-like/helpers/types';
 
 import {testRunner} from '../../actions/$sbcl/test-runner';
 

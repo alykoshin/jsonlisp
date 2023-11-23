@@ -1,5 +1,5 @@
 /** @format */
-import { ExecutorFn } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../lisp-like/helpers/types';
 export type EjsTemplatesActionConfig = {
     sourceDir: string;
     excludeDirs: string | string[];

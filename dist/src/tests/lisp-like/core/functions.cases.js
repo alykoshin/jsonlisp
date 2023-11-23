@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cases = void 0;
-const types_1 = require("../../../apps/runner/lib/types");
+const types_1 = require("../../../actions/lisp-like/helpers/types");
 // prettier-ignore
 exports.cases = [
     [["lambda", [], ['atom', 1]],

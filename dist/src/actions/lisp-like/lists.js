@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = exports.nullp = exports.listp = exports.consp = exports.cdr = exports.nthcdr = exports.third = exports.second = exports.car = exports.nth = exports.length = exports.list = exports.quote = void 0;
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("./helpers/types");
 const series_1 = require("./helpers/series");
 /**
  * @module list

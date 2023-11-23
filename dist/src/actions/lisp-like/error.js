@@ -12,9 +12,8 @@ exports.actions = {
      */
     error: async function error(action, params, { evaluate, logger }) {
         (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
-        const pValue = await evaluate(params[0]);
-        const sValue = String(pValue);
-        logger.fatal(sValue);
+        const value = await evaluate(params[0]);
+        logger.fatal(value);
     },
     /**
      * @name assert

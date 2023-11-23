@@ -1,5 +1,5 @@
 /** @format */
-import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from './helpers/types';
 /**
  * @module simple-parallel-tasks
  * @description <br>

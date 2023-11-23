@@ -2,7 +2,7 @@
 
 import {execute, type ExecActionConfig} from './helpers/exec';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, ensureString} from '../../apps/runner/lib/types';
+import {Actions, ensureString} from './helpers/types';
 
 /**
  * @module trivial-shell

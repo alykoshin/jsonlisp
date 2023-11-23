@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sliceListList = exports.seriesn = exports.series2 = exports.series1 = exports.seriesnth = exports.series = void 0;
-const types_1 = require("../../../apps/runner/lib/types");
+const types_1 = require("./types");
 const validateArgs_1 = require("../../../apps/runner/lib/validateArgs");
 // export const lengthEqual = (lists: any[]): boolean =>
 //   lists.every((l) => lists[0].length === l.length);

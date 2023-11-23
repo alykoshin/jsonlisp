@@ -1,13 +1,7 @@
 /** @format */
 
 import {State} from '../../../apps/runner/lib/state';
-import {
-  EvaluateFn,
-  Parameter,
-  Parameters,
-  ensureList,
-  isList,
-} from '../../../apps/runner/lib/types';
+import {EvaluateFn, Parameter, Parameters, ensureList, isList} from './types';
 import {validateArgs} from '../../../apps/runner/lib/validateArgs';
 
 // export const lengthEqual = (lists: any[]): boolean =>

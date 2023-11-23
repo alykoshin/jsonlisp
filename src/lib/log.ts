@@ -1,7 +1,7 @@
 /** @format */
 
 import chalk from 'chalk';
-import {Atom, Parameter} from '../apps/runner/lib/types';
+import {Atom, Parameter} from '../actions/lisp-like/helpers/types';
 import {ILoggerState} from '../apps/runner/lib/state';
 
 type LogStrPrefix = number | string;
@@ -36,7 +36,7 @@ const errorLevels = [
 export type ErrorLevel = (typeof errorLevels)[number];
 
 // const DEFAULT_DEBUG: ErrorLevel = 'info';
-const DEFAULT_ERROR_LEVEL: ErrorLevel = 'debug';
+export const DEFAULT_ERROR_LEVEL: ErrorLevel = 'debug';
 
 type ErrorColorsMap = Record<ErrorLevel, typeof chalk.Color>;
 
@@ -173,6 +173,10 @@ export abstract class AbstractLogger implements ILogger {
   }
 }
 */
+
+export function errorLevelToNumber(el: ErrorLevel): number {
+  return errorLevels.indexOf(el);
+}
 
 export class Logger extends AbstractLogger {
   state: ILoggerState;

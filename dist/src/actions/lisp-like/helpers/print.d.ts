@@ -1,5 +1,5 @@
 /** @format */
-import { Parameter } from '../../../apps/runner/lib/types';
+import { Parameter } from './types';
 export declare const EOL = "\n";
 export declare let atBOL: boolean;
 export declare const print: (...args: any[]) => string;

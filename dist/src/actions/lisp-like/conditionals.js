@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("./helpers/types");
 const primitives_1 = require("./core/primitives");
 /**
  * @module conditionals

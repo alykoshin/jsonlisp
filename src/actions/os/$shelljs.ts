@@ -2,7 +2,7 @@
 
 import shelljs, {ShellString} from 'shelljs';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, Parameters, ensureFunction} from '../../apps/runner/lib/types';
+import {Actions, Parameters, ensureFunction} from '../lisp-like/helpers/types';
 
 const TRIM_RESULT = true;
 /**

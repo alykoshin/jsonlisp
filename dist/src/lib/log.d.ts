@@ -1,9 +1,10 @@
 /** @format */
-import { Parameter } from '../apps/runner/lib/types';
+import { Parameter } from '../actions/lisp-like/helpers/types';
 import { ILoggerState } from '../apps/runner/lib/state';
 type LogParam = Parameter;
 declare const errorLevels: readonly ["fatal", "error", "warn", "success", "info", "log", "debug"];
 export type ErrorLevel = (typeof errorLevels)[number];
+export declare const DEFAULT_ERROR_LEVEL: ErrorLevel;
 export interface ILogger {
     fatal(...params: LogParam[]): never;
     error(...params: LogParam[]): void;
@@ -28,6 +29,7 @@ export declare abstract class AbstractLogger implements ILogger {
     log(...params: LogParam[]): void;
     debug(...params: LogParam[]): void;
 }
+export declare function errorLevelToNumber(el: ErrorLevel): number;
 export declare class Logger extends AbstractLogger {
     state: ILoggerState;
     constructor(state: ILoggerState, errorLevel?: ErrorLevel);

@@ -7,7 +7,7 @@ import {
   Atom,
   Parameters,
   ensureString,
-} from '../../apps/runner/lib/types';
+} from '../lisp-like/helpers/types';
 import {State} from '../../apps/runner/lib/state';
 
 /**

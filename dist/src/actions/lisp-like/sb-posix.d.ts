@@ -1,5 +1,5 @@
 /** @format */
-import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
+import { ExecutorFn, Actions } from './helpers/types';
 /**
  * @module sb-posix
  *
@@ -13,6 +13,14 @@ import { ExecutorFn, Actions } from '../../apps/runner/lib/types';
  * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
  */
 export declare const setenv: ExecutorFn;
+/**
+ * @name unsetenv
+ *
+ * @see
+ * - Function: SB-POSIX:UNSETENV -- {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/UNSETENV.html} <br>
+ * - sbcl/contrib/sb-posix/interface.lisp -- {@link https://github.com/sbcl/sbcl/blob/master/contrib/sb-posix/interface.lisp} <br>
+ */
+export declare const unsetenv: ExecutorFn;
 /**
  * @name getenv
  * @see

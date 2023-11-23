@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$sbclToList = exports.$sbcl = void 0;
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("../lisp-like/helpers/types");
 const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");
 const exec_prepare_1 = require("./exec-prepare");
 /**

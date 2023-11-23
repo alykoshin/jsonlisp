@@ -1,7 +1,7 @@
 /** @format */
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Actions, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Actions, Parameters} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 
 /**

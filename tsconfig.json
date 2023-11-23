@@ -1,26 +1,29 @@
 {
   "compilerOptions": {
-    "declaration": false,
-    "lib": ["es2022"],
-    "module": "commonjs",
-    //    "module": "nod",
-    "moduleResolution": "node",
+    "lib": ["es2023"],
+    "module": "Node16",
+    //    "module": "Node16",
+    "target": "es2022",
+    //    "target": "es5",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16",
+
+    "declaration": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": "dist",
     "preserveConstEnums": true,
     "sourceMap": true,
-    "strict": true,
-    //    "target": "es5",
-    "target": "esnext",
-    "esModuleInterop": true,
     "resolveJsonModule": true,
     "plugins": []
   },
+  "include": ["./src/**/*"],
   "exclude": ["dist", "example", "node_modules", "_archive"],
   "ts-node": {
-    "esm": true,
     "experimentalSpecifierResolution": "node"
   }
 }

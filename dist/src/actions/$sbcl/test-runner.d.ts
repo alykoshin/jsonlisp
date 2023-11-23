@@ -1,5 +1,5 @@
 /** @format */
-import { Expression, Actions } from '../../apps/runner/lib/types';
+import { Expression, Actions } from '../lisp-like/helpers/types';
 export declare const testRunner: (actions: Actions, exprJlIn: Expression, strSbclIn: string) => Promise<{
     exprJlIn: Expression;
     exprJlOut: Expression;

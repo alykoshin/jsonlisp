@@ -1,5 +1,5 @@
 /** @format */
-import { ExecutorFn } from '../../apps/runner/lib/types';
+import { ExecutorFn } from '../lisp-like/helpers/types';
 export type CopyResourcesRecursiveActionConfig = {
     sourceDir: string;
     excludeDirs: string[];

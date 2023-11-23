@@ -5,7 +5,7 @@ import * as path from 'path';
 import {execute} from '../../lisp-like/helpers/exec';
 import $versionActions from '../../build/$version';
 import {validateArgs} from '../../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Actions, Parameters} from '../../../apps/runner/lib/types';
+import {ExecutorFn, Actions, Parameters} from '../../lisp-like/helpers/types';
 import {State} from '../../../apps/runner/lib/state';
 import {$zipOptions} from '../$zip';
 

@@ -3,8 +3,8 @@
 import {coerce, ReleaseType} from 'semver';
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, ExecutorFn, Expression} from '../../apps/runner/lib/types';
-import {createPrepareFn} from '../lisp-like/core/functions';
+import {Actions, ExecutorFn, Expression} from '../lisp-like/helpers/types';
+import {createExecutorFn} from '../lisp-like/core/functions';
 
 /**
  * @module $build
@@ -14,7 +14,7 @@ import {createPrepareFn} from '../lisp-like/core/functions';
 //             'yarn version --new-version patch', {}],
 
 // prettier-ignore
-export const $version_ = createPrepareFn(
+export const $version_ = createExecutorFn(
   '$version_',
   ['$$release'],
   ['list',

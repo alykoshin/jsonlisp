@@ -83,18 +83,38 @@ SBCL:
   - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/numbers.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/numbers.lisp)
   - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/query.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/query.lisp)
   - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/list.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/list.lisp)
+  - https://github.com/sbcl/sbcl/blob/master/src/code/target-format.lisp -- format
 
 CLISP
 
 - [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/)
   - [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/lispbibl.d](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/lispbibl.d)
   - [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/list.d](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/list.d)
+  - https://github.com/JoshCheek/clisp/blob/master/src/format.lisp -- format
 
 Klisp:
 
 - [https://github.com/thesephist/klisp/blob/main/src/klisp.ink](https://github.com/thesephist/klisp/blob/main/src/klisp.ink)
 - [https://github.com/thesephist/klisp/blob/main/lib/klisp.klisp](https://github.com/thesephist/klisp/blob/main/src/klisp.ink)
 - [https://github.com/thesephist/klisp/blob/main/lib/math.klisp](https://github.com/thesephist/klisp/blob/main/lib/math.klisp)
+
+SICL:
+
+- https://github.com/robert-strandh/SICL/tree/master
+  - https://github.com/s-expressionists/Incless
+  - https://github.com/s-expressionists/Invistra/tree/main/code
+
+ECL:
+
+- https://gitlab.com/embeddable-common-lisp/ecl/blob/develop/src/lsp/format.lsp -- format
+
+ABCL -- Armed Bear Common Lisp is a conforming implementation of ANSI Common Lisp that runs in a Java virtual machine. It compiles Lisp code directly to Java byte code.
+
+- https://github.com/slyrus/abcl/blob/master/src/org/armedbear/lisp/format.lisp -- format
+
+Clozure
+
+- https://github.com/Clozure/ccl/blob/003917cbbce90b7a7b5fa4bf90e9fe424e5637e9/lib/format.lisp -- format
 
 ---
 

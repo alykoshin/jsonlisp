@@ -1,5 +1,5 @@
 /** @format */
-import { EvaluateFn, Actions, Atom, Expression, Parameter } from './types';
+import { EvaluateFn, Actions, Atom, Expression, Parameter } from '../../../actions/lisp-like/helpers/types';
 import { Scopes } from '@utilities/object';
 import { ErrorLevel, Logger } from '../../../lib/log';
 import { Runner } from '../runner';

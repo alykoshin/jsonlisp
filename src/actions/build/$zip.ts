@@ -7,7 +7,7 @@ import {
   EvaluateFn,
   ExecutorFn,
   ensureString,
-} from '../../apps/runner/lib/types';
+} from '../lisp-like/helpers/types';
 import {formatFilenameDate} from '../../lib/fileUtils/fileUtils';
 import {sevenZip, type SevenZipOptions} from './helpers/7zip';
 import {zipDirectory} from './helpers/archiver';

@@ -1,12 +1,18 @@
 /** @format */
 
 import {omit} from 'lodash';
-import {EvaluateFn, Actions, Atom, Expression, Parameter} from './types';
+import {
+  EvaluateFn,
+  Actions,
+  Atom,
+  Expression,
+  Parameter,
+} from '../../../actions/lisp-like/helpers/types';
 
 import {Scopes} from '@utilities/object';
 import {ErrorLevel, Logger} from '../../../lib/log';
 import {Runner} from '../runner';
-import {execNamedAction} from '../../../actions/lisp-like/core/eval';
+import {eval_, execNamedAction} from '../../../actions/lisp-like/core/eval';
 
 const GLOBAL_ACTION_ID = true;
 let lastActionId = 0;
@@ -70,7 +76,8 @@ export class State implements IState, ILoggerState {
   async evaluate(expr: Expression): Promise<Parameter> {
     // return this.runner.evaluate.call(this, expr, this);
     this.logger.debug('state.evaluate -> eval');
-    return await execNamedAction('eval', [expr], this);
+    // return await execNamedAction('eval', [expr], this);
+    return await eval_('|', [expr], this);
   }
 
   new(): State {

@@ -3,7 +3,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Parameter, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Parameter, Parameters} from '../lisp-like/helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
 

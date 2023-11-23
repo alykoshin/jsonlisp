@@ -3,7 +3,7 @@
 import _ from 'lodash';
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, Atom, Parameters} from '../../apps/runner/lib/types';
+import {Actions, Atom, Parameters} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 import {Scope, Scopes} from '@utilities/object';
 

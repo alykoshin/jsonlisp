@@ -2,7 +2,7 @@
 
 import {execute} from '../lisp-like/helpers/exec';
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Atom, Parameters} from '../../apps/runner/lib/types';
+import {ExecutorFn, Atom, Parameters} from '../lisp-like/helpers/types';
 import {State} from '../../apps/runner/lib/state';
 
 export type YarnInstallProdActionConfig = {

@@ -1,10 +1,7 @@
 /** @format */
 
-import _ from 'lodash';
-
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, Atom, Parameters} from '../../apps/runner/lib/types';
-import {State} from '../../apps/runner/lib/state';
+import {Actions} from './helpers/types';
 
 /**
  * @module error
@@ -16,11 +13,8 @@ export const actions: Actions = {
    */
   error: async function error(action, params, {evaluate, logger}) {
     validateArgs(params, {exactCount: 1});
-
-    const pValue = await evaluate(params[0]);
-    const sValue = String(pValue);
-
-    logger.fatal(sValue);
+    const value = await evaluate(params[0]);
+    logger.fatal(value);
   },
 
   /**

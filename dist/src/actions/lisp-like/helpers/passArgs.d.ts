@@ -1,5 +1,5 @@
 /** @format */
-import { Atom, List, NIL } from '../../../apps/runner/lib/types';
+import { Atom, List, NIL } from './types';
 interface KeyValueObject<V> {
     [key: string]: V | V[] | NIL;
 }

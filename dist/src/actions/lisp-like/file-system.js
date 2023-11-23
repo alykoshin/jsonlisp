@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.directory = exports.probeFile = exports.deleteFile = exports.renameFile = exports.writeStringIntoFile = exports.readFileIntoString = void 0;
+exports.actions = exports.directory = exports.probeFile = exports.deleteFile = exports.renameFile = exports.writeStringIntoFile = exports.strToFile = exports.readFileIntoString = exports.strFromFile = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
-const types_1 = require("../../apps/runner/lib/types");
+const types_1 = require("./helpers/types");
 const path_1 = __importDefault(require("path"));
 /**
  * @module file-system
@@ -36,7 +36,7 @@ const path_1 = __importDefault(require("path"));
  *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- from-file
  *     {@link https://github.com/vindarel/cl-str#from-file-filename}  <br>
  */
-const readFileIntoString = async function (_, args, st) {
+const strFromFile = async function (_, args, st) {
     let [pFname] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
     let fname = await st.evaluate(pFname);
     (0, types_1.ensureString)(fname);
@@ -46,18 +46,19 @@ const readFileIntoString = async function (_, args, st) {
     st.logger.debug(`Read ${s.length} chars`);
     return s;
 };
+exports.strFromFile = strFromFile;
+const readFileIntoString = async function (_, args, st) {
+    let [pFname] = (0, validateArgs_1.validateArgs)(args, { exactCount: 1 });
+    return (0, exports.strFromFile)(_, [pFname], st);
+};
 exports.readFileIntoString = readFileIntoString;
 /**
- * @name write-string-into-file
+ * @name str:to-file
  * @see
- * - {@link https://gitlab.common-lisp.net/alexandria/alexandria/-/blob/master/alexandria-1/io.lisp#L83}
- * - Other references:
- *   - The Common Lisp Cookbook – Files and Directories --
- *     {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
- *   - A modern and consistent Common Lisp string manipulation library -- To and from files -- to-file
- *     {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://github.com/vindarel/cl-str#to-file-filename-s} <br>
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
  */
-const writeStringIntoFile = async function (action, params, { evaluate, logger }) {
+const strToFile = async function (_, params, { evaluate, logger }) {
     let [pFname, s] = (0, validateArgs_1.validateArgs)(params, { exactCount: 2 });
     let fname = await evaluate(pFname);
     (0, types_1.ensureString)(fname);
@@ -67,6 +68,17 @@ const writeStringIntoFile = async function (action, params, { evaluate, logger }
     await promises_1.default.writeFile(fname, s, { encoding: 'utf8' });
     logger.debug(`Wrote ${s.length} chars`);
     return s;
+};
+exports.strToFile = strToFile;
+/**
+ * @name write-string-into-file
+ * @see
+ * - {@link https://gitlab.common-lisp.net/alexandria/alexandria/-/blob/master/alexandria-1/io.lisp#L83}
+ * - {@link https://lispcookbook.github.io/cl-cookbook/files.html#writing-content-to-a-file} <br>
+ */
+const writeStringIntoFile = async function (_, params, st) {
+    let [pFname, s] = (0, validateArgs_1.validateArgs)(params, { exactCount: 2 });
+    return (0, exports.strToFile)(_, [s, pFname], st);
 };
 exports.writeStringIntoFile = writeStringIntoFile;
 /**
@@ -151,6 +163,8 @@ exports.actions = {
     directory: exports.directory,
     'read-file-into-string': exports.readFileIntoString,
     'write-string-into-file': exports.writeStringIntoFile,
+    'str:to-file': exports.strToFile,
+    'str:from-file': exports.strFromFile,
 };
 ``;
 exports.default = exports.actions;

@@ -9,7 +9,7 @@ import type {
   Parameter,
   Expression,
   EvaluateFn,
-} from './lib/types';
+} from '../../actions/lisp-like/helpers/types';
 import {type IState, State} from './lib/state';
 import {Tracer, TracerConstructorOptions} from './lib/tracer';
 
@@ -54,7 +54,9 @@ export class Runner {
     // console.log(`this.actions: ${Object.keys(this.actions).sort().join(',')}`);
 
     // const logLevel = activities?.logLevel ? activities?.logLevel : 'log';
-    const logLevel = /* activities?.logLevel ? activities?.logLevel : */ 'log';
+    const logLevel =
+      /* activities?.logLevel ? activities?.logLevel : */
+      this.errorLevel ?? 'log';
 
     const scopes = scope ? new Scopes<Atom>([scope]) : new Scopes<Atom>();
     const st = new State({

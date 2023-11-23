@@ -3,7 +3,7 @@
 import * as path from 'path';
 import {Activity} from '../../apps/runner/startup/Activities';
 import {State} from '../../apps/runner/lib/state';
-import {Actions} from '../../apps/runner/lib/types';
+import {Actions} from '../../actions/lisp-like/helpers/types';
 
 const MONGO_ACTIONS: Actions = {
   default: ['print', `Please run one of $backup|$restore actions`],

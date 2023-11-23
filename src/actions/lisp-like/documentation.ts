@@ -1,7 +1,7 @@
 /** @format */
 
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {Actions, Parameters} from '../../apps/runner/lib/types';
+import {Actions, Parameters} from './helpers/types';
 import {State} from '../../apps/runner/lib/state';
 
 /**

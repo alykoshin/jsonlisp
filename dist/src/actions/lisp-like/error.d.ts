@@ -1,5 +1,5 @@
 /** @format */
-import { Actions } from '../../apps/runner/lib/types';
+import { Actions } from './helpers/types';
 /**
  * @module error
  */

@@ -1,5 +1,5 @@
 /** @format */
-import { ActionDefinition, Actions } from '../lib/types';
+import { ActionDefinition, Actions } from '../../../actions/lisp-like/helpers/types';
 import { ErrorLevel } from '../../../lib/log';
 import { Plugin, Plugins } from '../../../lib/Plugins';
 export type ActivityActionsDefinition = Actions & {
@@ -13,4 +13,5 @@ export interface Activity extends Plugin {
 }
 export declare class Activities extends Plugins<Activity> {
     actions(): Actions;
+    logLevel(): ErrorLevel;
 }
