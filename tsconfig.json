@@ -19,7 +19,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "plugins": []
+    "plugins": [],
+    "rootDir": "./src"
   },
   "include": ["./src/**/*"],
   "exclude": ["dist", "example", "node_modules", "_archive"],

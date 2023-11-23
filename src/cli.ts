@@ -10,8 +10,8 @@ import {Command} from 'commander';
 import {Runner} from './apps/runner/runner';
 import {Activities} from './apps/runner/startup/Activities';
 
-import '../_settings'; // init config and dotenv
-import {PROJECT_DIR, packageJson as pkg} from '../_settings';
+import './_settings'; // init config and dotenv
+import {PROJECT_DIR, packageJson as pkg} from './_settings';
 import {absPathname} from './lib/fileUtils/fileUtils';
 import {
   readUniversal,

@@ -1,2 +1,0 @@
-/** @format */
-import '../_settings';

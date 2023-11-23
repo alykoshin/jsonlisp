@@ -34,5 +34,5 @@ const config = dotenv.config();
 const PRODUCTION_STR = 'production';
 exports.PRODUCTION = process.env.NODE_ENV === PRODUCTION_STR;
 exports.PROJECT_DIR = __dirname;
-exports.packageJson = require('./package.json');
+exports.packageJson = require('../package.json');
 //# sourceMappingURL=_settings.js.map
