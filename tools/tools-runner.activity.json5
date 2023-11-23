@@ -5,10 +5,14 @@
   "actions": {
     "default": [ "print", "\nThis Activity requires specific Action name to be provided\n" ],
 
-    "build": [ "list",
+    "_build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
       ["clean-dist"],
       ["tsc-build"], 
+    ],
+
+    "build": [ "list",
+      ["_build"], 
       ["$version", "patch" ]],
 
     "clean-dist": [ "list",
@@ -99,8 +103,9 @@
       ["shell-command", 
         "ts-node ./src/cli.ts ./src/tests/lisp-like/conditionals.jl.ts", { "cwd": "./", "env": {} } ]],
     "build-commit-push": [ "list",
-      ["build"], 
+      ["_build"], 
       ["git-commit"], 
+      ["$version", "patch" ],
       ["git-assert-clean"],
       ["git-push"] ]
   }
