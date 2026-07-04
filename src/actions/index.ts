@@ -2,9 +2,11 @@
 
 /**
  * Host assembly of the built-in vocabulary.
- * Spread order preserved from the pre-layers layout (later spreads win).
- * NB: kernel actions (quote..cond, lambda, defun) are NOT registered here
- * yet — see ARCHITECTURE.md; wiring them is a separate, isolated change.
+ * Spread order preserved from the pre-layers layout (later spreads win),
+ * with two deliberate changes:
+ * - the kernel (quote atom eq car cdr cons cond, lambda, defun) is now
+ *   registered — the language tests always assumed it (see ARCHITECTURE.md);
+ * - $sbcl is actually spread (it was imported and forgotten).
  */
 
 import {Actions} from '../eval/sexpr';
@@ -15,6 +17,7 @@ import buildActions from '../contrib/build';
 import osActions from '../contrib/os';
 
 import eval_ from '../eval/eval';
+import kernel from '../kernel';
 
 import conditionals from '../cl/conditionals';
 import defines from '../cl/defines';
@@ -34,6 +37,8 @@ import trivialShell from '../contrib/trivial-shell';
 
 export const actions: Actions = {
   ...buildActions,
+  // the axiomatic kernel first — cl modules may consciously extend it:
+  ...kernel,
   // former lisp-like merge, original order:
   ...conditionals,
   ...defines,
@@ -53,6 +58,7 @@ export const actions: Actions = {
   //
   ...osActions,
   ...$axios,
+  ...$sbcl,
 };
 
 export default actions;

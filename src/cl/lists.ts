@@ -15,6 +15,7 @@ import {
   isList,
 } from '../eval/sexpr';
 import {NIL} from '../kernel/booleans';
+import {car as kernelCar, cdr as kernelCdr} from '../kernel/primitives';
 import {State} from '../eval/environment';
 import {series} from '../eval/evlis';
 
@@ -80,12 +81,8 @@ async function fn_rest(
 
 //===========================================================================//
 
-/** @name quote */
-export const quote: ExecutorFn = async (_, params, st) => {
-  validateArgs(params, {exactCount: 1});
-  // return first argument without evaluation
-  return params[0];
-};
+// quote, car, cdr are owned by kernel/primitives (SBCL-verified);
+// this module keeps only the CL synonyms (first/rest) and nth-based helpers.
 
 /** @name list */
 export const list: ExecutorFn = async (_, params, st) => {
@@ -121,15 +118,6 @@ export const nth: ExecutorFn = async (_, args, st) => {
   return res;
 };
 
-/** @name car */
-export const car: ExecutorFn = async (_, args, st) => {
-  // fn_check_params(args, {exactCount: 1});
-  // const list = await evaluate(args[1]);
-  // ensureList(list);
-  // return nth(_, [0, args[0]], state);
-  return st.evaluate(['nth', 0, ...args]);
-};
-
 /** @name second */
 export const second: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 1});
@@ -153,13 +141,6 @@ export const third: ExecutorFn = async (_, args, st) => {
 export const nthcdr: ExecutorFn = async (_, args, st) => {
   // fn_check_params(args, {exactCount: 2});
   return fn_rest(args[0], args[1], st);
-  // return evaluate(['rest', ...args]);
-};
-
-/** @name cdr */
-export const cdr: ExecutorFn = async (_, args, st) => {
-  // fn_check_params(args, {exactCount: 1});
-  return fn_rest(1, args[0], st);
   // return evaluate(['rest', ...args]);
 };
 
@@ -192,19 +173,16 @@ export const nullp: ExecutorFn = async (_, args, st) => {
 //===========================================================================//
 
 export const actions: Actions = {
-  quote,
   list,
   length,
   //
   nth,
-  car,
-  first: car,
+  first: kernelCar,
   second,
   third,
   //
   nthcdr,
-  cdr,
-  rest: cdr,
+  rest: kernelCdr,
   //
   consp,
   listp,

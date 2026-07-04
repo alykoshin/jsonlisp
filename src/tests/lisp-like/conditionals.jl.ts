@@ -1,7 +1,6 @@
 /** @format */
 
 import {Activity} from '../../apps/runner/startup/Activities';
-import $sbcl from '../../contrib/sbcl';
 import { NIL, T } from '../../kernel/booleans';
 
 // prettier-ignore
@@ -9,10 +8,10 @@ export const config: Activity = {
   base_dir: './',
   version: '0.0.0',
   actions: {
-    ...$sbcl,
+    // $sbcl / cond / quote come from the built-in vocabulary now
     default: [
       'list',
-      // [ 'test-cond' ],
+      [ 'test-cond' ],
       [ 'test-if' ],
       // [ 'test-when' ],
       // [ 'test-unless' ],
