@@ -30,7 +30,7 @@ export type EjsTemplatesActionConfig = {
  * @name $ejsTemplates
  */
 export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
-  const { runner, logger } = state;
+  const { logger } = state;
   validateArgs(args, { exactCount: 1 });
 
   const {

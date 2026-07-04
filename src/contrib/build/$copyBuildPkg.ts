@@ -13,7 +13,7 @@ import {State} from '../../eval/environment';
  */
 
 export const $copyBuildPkg: ExecutorFn = async function (_, args, state) {
-  const {runner, logger} = state;
+  const {logger} = state;
   validateArgs(args, {exactCount: 0});
   throw new Error(`Not implemented`);
 };

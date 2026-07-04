@@ -93,7 +93,7 @@ const GIT_ACTIONS: ActionDefinition = {
   async createGithubRepo(
     _: string,
     args: Parameters,
-    {evaluate, runner, level, logger}: State
+    {evaluate, level, logger}: State
   ) {
     const [username, name, description] = validateArgs(args, {
       exactCount: 3,

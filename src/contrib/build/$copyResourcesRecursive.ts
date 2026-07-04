@@ -26,7 +26,7 @@ export const $copyResourcesRecursive: ExecutorFn = async function (
   args,
   state
 ) {
-  const {runner, logger} = state;
+  const {logger} = state;
   validateArgs(args, {exactCount: 1});
 
   const [pConfig] = args;

@@ -1,20 +1,31 @@
 /** @format */
 
 import chalk from 'chalk';
-import {Atom, Parameter} from '../actions/lisp-like/helpers/types';
-import {ILoggerState} from '../apps/runner/lib/state';
+
+/**
+ * lib/ is layer-neutral (SB-INT style): no imports from eval/kernel/cl/contrib.
+ * The logger state shape is declared structurally here; eval/environment
+ * implements it.
+ */
+export interface ILoggerState {
+  id: number;
+  level: number;
+  // name: string;
+  names: string[];
+}
 
 type LogStrPrefix = number | string;
 // type LogParam = undefined | null | boolean | number | string;
-type LogParam = Parameter;
+type LogParam = unknown;
+type Atom = unknown;
 
 function getLogStrs(
   color: typeof chalk.Color,
   prefix: LogStrPrefix = '',
   data: LogParam
 ): string[] {
-  data = String(data);
-  return data.split(/\r?\n/).map((line) => {
+  const sData = String(data);
+  return sData.split(/\r?\n/).map((line) => {
     const colorPrefix =
       typeof prefix !== 'undefined' ? chalk.grey(prefix) + ' ' : '';
     const colorData = chalk[color](line);
