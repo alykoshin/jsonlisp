@@ -8,6 +8,7 @@ import {testRunner} from './test-runner';
 import eval from '../../eval/eval';
 import functions from '../../kernel/lambda';
 import primitives from '../../kernel/primitives';
+import derived from '../../kernel/derived';
 //
 import functionsCases from '../../tests/lisp-like/core/functions.cases';
 import primitivesCases from '../../tests/lisp-like/core/primitives.cases';
@@ -18,6 +19,7 @@ const actions: Actions = {
   ...eval,
   ...functions,
   ...primitives,
+  ...derived,
 };
 
 type SbclExpression = string;

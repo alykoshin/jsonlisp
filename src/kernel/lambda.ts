@@ -21,7 +21,6 @@ import {
   ExecutorFn,
   ensureString,
 } from '../eval/sexpr';
-import {T} from './booleans';
 import {series} from '../eval/evlis';
 import {validateArgs} from '../eval/validate-args';
 import {passArgs} from './passArgs';
@@ -82,30 +81,12 @@ export const defun: ExecutorFn = async function (_, args, state) {
   return name;
 };
 
-/**
- * @name null_
- */
-// prettier-ignore
-export const null_ = createExecutorFn(
-  'null_',
-  [ 'x' ], [ 'eq', 'x', [] ]
-);
-
-/**
- * @name and_
- */
-// prettier-ignore
-export const and_ = createExecutorFn(
-  'and_',
-  ['x', 'y'],
-  ['cond', ['x', ['cond', ['y', ['quote', T]], [['quote', T], ['quote', []]]]],
-          [['quote', T], ['quote', []]]]);
+// null_ and and_ moved to kernel/derived (the paper's derived-function
+// sequence lives there in full).
 
 export const actions: Actions = {
   lambda,
   defun,
-  null_,
-  and_,
 };
 
 export default actions;

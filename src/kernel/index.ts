@@ -10,12 +10,14 @@ import {Actions} from '../eval/sexpr';
 
 import primitives from './primitives';
 import lambda from './lambda';
+import derived from './derived';
 
 export * from './booleans';
 
 export const actions: Actions = {
   ...primitives,
   ...lambda,
+  ...derived,
 };
 
 export default actions;

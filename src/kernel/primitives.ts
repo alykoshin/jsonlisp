@@ -79,6 +79,8 @@ export const cons: ExecutorFn = async function (_, args, st) {
   // const ex = await evaluate(x);
   // const ey = await evaluate(y);
   const [ex, ey] = await series(args, st);
+  // CL: (cons x nil) => (x) — nil is the empty list
+  if (isNil(ey)) return [ex];
   ensureList(ey);
   return [ex, ...ey];
 };

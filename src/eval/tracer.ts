@@ -6,8 +6,12 @@
  * Error messages keep the historical "JsonScript" name.
  */
 
-const DFLT_MAX_STEPS = 1000;
-const DFLT_MAX_LEVELS = 100;
+// NB: raised from the historical 1000/100 (which predate enforcement and
+// were sized for coarse jsonScript steps, not per-eval steps): every
+// argument evaluation counts as a step now, and meta-circular interpretation
+// multiplies steps further.
+const DFLT_MAX_STEPS = 100_000;
+const DFLT_MAX_LEVELS = 500;
 
 export interface TracerConstructorOptions {
   maxLevels?: number;
