@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 /** @format */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -27,7 +28,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// #!/usr/bin/env ts-node
 const _ = __importStar(require("lodash"));
 const json5_1 = __importDefault(require("json5"));
 const commander_1 = require("commander");

@@ -1,5 +1,5 @@
 /** @format */
-import { ActionDefinition, Actions } from '../../../actions/lisp-like/helpers/types';
+import { ActionDefinition, Actions } from '../../../eval/sexpr';
 import { ErrorLevel } from '../../../lib/log';
 import { Plugin, Plugins } from '../../../lib/Plugins';
 export type ActivityActionsDefinition = Actions & {

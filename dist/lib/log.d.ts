@@ -1,7 +1,15 @@
 /** @format */
-import { Parameter } from '../actions/lisp-like/helpers/types';
-import { ILoggerState } from '../apps/runner/lib/state';
-type LogParam = Parameter;
+/**
+ * lib/ is layer-neutral (SB-INT style): no imports from eval/kernel/cl/contrib.
+ * The logger state shape is declared structurally here; eval/environment
+ * implements it.
+ */
+export interface ILoggerState {
+    id: number;
+    level: number;
+    names: string[];
+}
+type LogParam = unknown;
 declare const errorLevels: readonly ["fatal", "error", "warn", "success", "info", "log", "debug"];
 export type ErrorLevel = (typeof errorLevels)[number];
 export declare const DEFAULT_ERROR_LEVEL: ErrorLevel;

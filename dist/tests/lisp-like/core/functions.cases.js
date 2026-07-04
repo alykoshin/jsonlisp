@@ -2,7 +2,7 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.cases = void 0;
-const types_1 = require("../../../actions/lisp-like/helpers/types");
+const booleans_1 = require("../../../kernel/booleans");
 // prettier-ignore
 exports.cases = [
     [["lambda", [], ['atom', 1]],
@@ -36,11 +36,11 @@ exports.cases = [
         "( and    (atom    1)  ( eq   1  2))"],
     // we use 'cond' because at this context this is the only function at the moment
     // able to run sequence of expressions
-    [["cond", [types_1.T, ["defun", "test1", [], ['atom', 1]],
+    [["cond", [booleans_1.T, ["defun", "test1", [], ['atom', 1]],
                 ["test1"]]],
         ` (cond   (T  ( defun    test1   ()  (atom    1))
                 ( test1 )))`],
-    [["cond", [types_1.T, ["defun", "test1", [], ['atom', ['quote', [1]]]],
+    [["cond", [booleans_1.T, ["defun", "test1", [], ['atom', ['quote', [1]]]],
                 ["test1"]]],
         ` (cond   (T  ( defun    test1   ()  ( atom   ( quote   ( 1 ))))
                 ( test1 )))`],

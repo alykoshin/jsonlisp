@@ -7,8 +7,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logger = exports.errorLevelToNumber = exports.AbstractLogger = exports.DEFAULT_ERROR_LEVEL = void 0;
 const chalk_1 = __importDefault(require("chalk"));
 function getLogStrs(color, prefix = '', data) {
-    data = String(data);
-    return data.split(/\r?\n/).map((line) => {
+    const sData = String(data);
+    return sData.split(/\r?\n/).map((line) => {
         const colorPrefix = typeof prefix !== 'undefined' ? chalk_1.default.grey(prefix) + ' ' : '';
         const colorData = chalk_1.default[color](line);
         return colorPrefix + colorData + '\n';

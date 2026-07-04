@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
-const _sbcl_1 = __importDefault(require("../../actions/$sbcl"));
+const sbcl_1 = __importDefault(require("../../contrib/sbcl"));
 // prettier-ignore
 const actions = {
-    ..._sbcl_1.default,
+    ...sbcl_1.default,
     default: [
         'list',
         ['print', 'This will test Iteration and mapping'],

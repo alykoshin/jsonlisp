@@ -18,11 +18,12 @@ src/cl/         L2  standard vocabulary  — the COMMON-LISP package (ANSI)
 src/contrib/    L3  host bindings        — SBCL's contrib/ tree
 ```
 
-**Layer law** (enforced by `check:layers`):
+**Layer law** (enforced by `npm run check:layers`):
 
 ```
-eval ← kernel ← cl          contrib → eval (always), contrib → kernel (T/NIL only)
+eval ← kernel ← cl          contrib → eval, kernel (e.g. T/NIL, createExecutorFn)
 contrib never → cl          eval imports nothing above it
+lib/ is layer-neutral (SB-INT style): it imports no layer
 ```
 
 The host (`apps/runner`, `cli.ts`) assembles all four layers plus user activities.
@@ -103,17 +104,18 @@ paper's order:
 | ------------------------------------------------ | ---------------------------------- | ------ |
 | seven primitives                                 | `primitives.ts`                    | done   |
 | `lambda`, `label` (as `defun`)                   | `lambda.ts`                        | done   |
-| derived: `null.` `and.`                          | `derived.ts` (`null_`, `and_`)     | done   |
-| derived: `not.` `append.` `list.` `pair.` `assoc.` | `derived.ts`                     | TODO   |
-| `eval.` `evcon.` `evlis.` (meta-circular)        | JL translation as a test activity  | TODO   |
+| derived: `null.` `and.` `not.` `append.` `list.` `pair.` `assoc.` | `derived.ts`      | done   |
+| `eval.` `evcon.` `evlis.` (meta-circular)        | `src/tests/lisp-like/jmc-eval.jl.ts` | done — 14/14 incl. the label/subst example |
 
 The derived functions are written *in JL itself* (via `createExecutorFn`),
 mirroring the paper's self-hosting construction — `_` replaces Graham's `.`
 suffix (`null.` → `null_`).
 
-**Acceptance gate:** the meta-circular test — Graham's `eval.` translated to JL
-runs through the CLI and its results match SBCL. If the kernel can run the
-paper's evaluator, it is complete and correctly wired.
+**Acceptance gate (passing):** the meta-circular test — Graham's `eval.`
+translated to JL runs through the CLI (`ts-node ./src/cli.ts
+./src/tests/lisp-like/jmc-eval.jl.ts`) and reproduces the paper's examples,
+including the `label subst` case. Completing it surfaced one kernel gap, now
+fixed: CL's `(cons x nil)` — `cons` accepts nil as the empty list.
 
 ---
 

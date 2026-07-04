@@ -5,7 +5,7 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
-  "typings": "dist/cli.d.ts",
+  "typings": "dist/index.d.ts",
   "engines": {
     "node": ">=10.0.0"
   },

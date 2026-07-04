@@ -1,21 +1,17 @@
 "use strict";
 /** @format */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
-const _sbcl_1 = __importDefault(require("../../actions/$sbcl"));
-const types_1 = require("../../actions/lisp-like/helpers/types");
+const booleans_1 = require("../../kernel/booleans");
 // prettier-ignore
 exports.config = {
     base_dir: './',
     version: '0.0.0',
     actions: {
-        ..._sbcl_1.default,
+        // $sbcl / cond / quote come from the built-in vocabulary now
         default: [
             'list',
-            // [ 'test-cond' ],
+            ['test-cond'],
             ['test-if'],
             // [ 'test-when' ],
             // [ 'test-unless' ],
@@ -59,7 +55,7 @@ exports.config = {
             ['setq', 'res', 1],
             ['assert-equal',
                 ['if', ['/=', 1, 1], ['setq', 'res', 2]],
-                types_1.NIL
+                booleans_1.NIL
             ],
             ['assert-equal',
                 ['if', [], 1],

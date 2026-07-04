@@ -2,8 +2,8 @@
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
-const types_1 = require("../../actions/lisp-like/helpers/types");
-const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
+const sexpr_1 = require("../../eval/sexpr");
+const validate_args_1 = require("../../eval/validate-args");
 const octo_1 = require("./lib/octo");
 const GIT_ACTIONS = {
     default: ['queryClean'],
@@ -67,7 +67,7 @@ const GIT_ACTIONS = {
     //  ],
     //],
     async ensureClean(_, args, { evaluate, logger }) {
-        (0, validateArgs_1.validateArgs)(args, { exactCount: 0 });
+        (0, validate_args_1.validateArgs)(args, { exactCount: 0 });
         // const git_clean = await this.queryClean();
         // const git_clean = await this['queryClean']();
         const git_clean = await evaluate('queryClean');
@@ -80,13 +80,13 @@ const GIT_ACTIONS = {
             // throw new Error(m);
         }
     },
-    async createGithubRepo(_, args, { evaluate, runner, level, logger }) {
-        const [username, name, description] = (0, validateArgs_1.validateArgs)(args, {
+    async createGithubRepo(_, args, { evaluate, level, logger }) {
+        const [username, name, description] = (0, validate_args_1.validateArgs)(args, {
             exactCount: 3,
         });
-        (0, types_1.ensureString)(username);
-        (0, types_1.ensureString)(name);
-        (0, types_1.ensureString)(description);
+        (0, sexpr_1.ensureString)(username);
+        (0, sexpr_1.ensureString)(name);
+        (0, sexpr_1.ensureString)(description);
         const octo = new octo_1.Octo();
         await octo.createGithubRepo({ username, name, description });
     },

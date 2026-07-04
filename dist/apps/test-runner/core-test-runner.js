@@ -5,18 +5,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = require("util");
-const test_runner_1 = require("../../actions/$sbcl/test-runner");
-const eval_1 = __importDefault(require("../../actions/lisp-like/core/eval"));
-const functions_1 = __importDefault(require("../../actions/lisp-like/core/functions"));
-const primitives_1 = __importDefault(require("../../actions/lisp-like/core/primitives"));
+const test_runner_1 = require("./test-runner");
+const eval_1 = __importDefault(require("../../eval/eval"));
+const lambda_1 = __importDefault(require("../../kernel/lambda"));
+const primitives_1 = __importDefault(require("../../kernel/primitives"));
+const derived_1 = __importDefault(require("../../kernel/derived"));
 //
 const functions_cases_1 = __importDefault(require("../../tests/lisp-like/core/functions.cases"));
 const primitives_cases_1 = __importDefault(require("../../tests/lisp-like/core/primitives.cases"));
 const allCases = [...functions_cases_1.default, ...primitives_cases_1.default];
 const actions = {
     ...eval_1.default,
-    ...functions_1.default,
+    ...lambda_1.default,
     ...primitives_1.default,
+    ...derived_1.default,
 };
 const COLS = [
     ['JL EXPRESSION', 50],

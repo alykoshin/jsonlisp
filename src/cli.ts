@@ -1,6 +1,5 @@
+#!/usr/bin/env node
 /** @format */
-
-// #!/usr/bin/env ts-node
 
 import * as _ from 'lodash';
 import JSON5 from 'json5';

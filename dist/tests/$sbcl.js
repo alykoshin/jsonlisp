@@ -5,13 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.config = void 0;
-const _sbcl_1 = __importDefault(require("../actions/$sbcl"));
+const sbcl_1 = __importDefault(require("../contrib/sbcl"));
 // prettier-ignore
 exports.config = {
     base_dir: '.',
     version: '0.0.0',
     actions: {
-        ..._sbcl_1.default,
+        ...sbcl_1.default,
         default: ['list',
             ['print', 'Testing sbcl'],
             ['assert-equal', 1, ["$sbcl-to-list", '1']],
