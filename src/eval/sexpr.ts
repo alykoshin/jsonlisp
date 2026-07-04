@@ -8,7 +8,7 @@
  */
 
 import {inspect} from 'util';
-import {State} from '../apps/runner/lib/state';
+import type {State} from './environment';
 
 //---------------------------------------------------------------------------//
 

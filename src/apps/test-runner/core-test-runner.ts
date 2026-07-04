@@ -1,13 +1,13 @@
 /** @format */
 
 import {inspect} from 'util';
-import {Actions, Expression, List} from '../../actions/lisp-like/helpers/types';
+import {Actions, Expression, List} from '../../eval/sexpr';
 
-import {testRunner} from '../../actions/$sbcl/test-runner';
+import {testRunner} from './test-runner';
 
-import eval from '../../actions/lisp-like/core/eval';
-import functions from '../../actions/lisp-like/core/functions';
-import primitives from '../../actions/lisp-like/core/primitives';
+import eval from '../../eval/eval';
+import functions from '../../kernel/lambda';
+import primitives from '../../kernel/primitives';
 //
 import functionsCases from '../../tests/lisp-like/core/functions.cases';
 import primitivesCases from '../../tests/lisp-like/core/primitives.cases';

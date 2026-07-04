@@ -3,7 +3,6 @@
 import Ajv, {Schema, JSONSchemaType, ValidateFunction} from 'ajv';
 import {JTDDataType} from 'ajv/dist/jtd';
 import {validateArgs} from '../eval/validate-args';
-import {Runner} from '../apps/runner/runner';
 import {
   ExecutorFn,
   Actions,

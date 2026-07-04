@@ -7,7 +7,7 @@
  * matching the paper (see ARCHITECTURE.md).
  */
 
-import {State} from '../apps/runner/lib/state';
+import type {State} from './environment';
 import {Parameter, Parameters, ensureList, isList} from './sexpr';
 import {validateArgs} from './validate-args';
 

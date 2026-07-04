@@ -1,8 +1,8 @@
 /** @format */
 
 import {Activity} from '../../apps/runner/startup/Activities';
-import $sbcl from '../../actions/$sbcl';
-import { NIL, T } from '../../actions/lisp-like/helpers/types';
+import $sbcl from '../../contrib/sbcl';
+import { NIL, T } from '../../kernel/booleans';
 
 // prettier-ignore
 export const config: Activity = {

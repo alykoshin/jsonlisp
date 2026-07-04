@@ -7,10 +7,10 @@ import {isNil} from '../../kernel/booleans';
 // import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
 import {parse_sbcl_list} from 'lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive';
 
-import {get_sbcl_cmd, preprocess_sbcl_expr} from './exec-prepare';
-import {execute} from '../exec';
+import {get_sbcl_cmd, preprocess_sbcl_expr} from '../../contrib/sbcl/exec-prepare';
+import {execute} from '../../contrib/exec';
 import {State} from '../../eval/environment';
-import {Runner} from '../../apps/runner/runner';
+import {Runner} from '../runner/runner';
 
 export const testRunner = async function (
   actions: Actions,

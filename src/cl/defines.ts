@@ -1,7 +1,6 @@
 /** @format */
 
 import {validateArgs} from '../eval/validate-args';
-import {Runner} from '../apps/runner/runner';
 import {Actions, Parameter, Parameters, ensureString} from '../eval/sexpr';
 import {State} from '../eval/environment';
 import {stringify} from '../eval/printer';

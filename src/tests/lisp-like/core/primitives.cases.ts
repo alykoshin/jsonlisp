@@ -1,6 +1,6 @@
 /** @format */
 
-import {NIL, T} from '../../../actions/lisp-like/helpers/types';
+import {NIL, T} from '../../../kernel/booleans';
 import {TestCase} from '../../../apps/test-runner/core-test-runner';
 
 // prettier-ignore

@@ -1,7 +1,6 @@
 /** @format */
 
 import {validateArgs} from '../eval/validate-args';
-import {Runner} from '../apps/runner/runner';
 import {
   ExecutorFn,
   Actions,

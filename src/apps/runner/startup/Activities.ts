@@ -3,7 +3,7 @@
 import {
   ActionDefinition,
   Actions,
-} from '../../../actions/lisp-like/helpers/types';
+} from '../../../eval/sexpr';
 
 import {
   DEFAULT_ERROR_LEVEL,

@@ -5,9 +5,9 @@ import {
   ActionDefinition,
   Parameters,
   ensureString,
-} from '../../actions/lisp-like/helpers/types';
-import {State} from '../../apps/runner/lib/state';
-import {validateArgs} from '../../apps/runner/lib/validateArgs';
+} from '../../eval/sexpr';
+import {State} from '../../eval/environment';
+import {validateArgs} from '../../eval/validate-args';
 import {Octo} from './lib/octo';
 import {Activity} from '../../apps/runner/startup/Activities';
 
