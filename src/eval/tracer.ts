@@ -49,6 +49,18 @@ export class Tracer {
     return this.actionCount;
   }
 
+  /**
+   * Per-evaluation guard called by eval_: counts a step and checks the
+   * environment's recursion level against maxLevels.
+   */
+  guard(currentLevel: number): void {
+    this._incSteps();
+    if (currentLevel > this.maxLevels)
+      throw new Error(
+        `JsonScript: Script stack overflow. Script went deeper than ${this.maxLevels} levels. You can increase this value by setting maxLevels value in options.`
+      );
+  }
+
   reset(): void {
     this.actionCount = 0;
     this.level = 0;

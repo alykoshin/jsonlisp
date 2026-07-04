@@ -17,19 +17,23 @@ import {ErrorLevel, Logger} from '../lib/log';
 import {Actions, Atom} from './sexpr';
 import {Environment} from './environment';
 import {eval_} from './eval';
+import {Tracer} from './tracer';
 
 export * from './sexpr';
 export * from './evlis';
 export * from './validate-args';
 export * from './environment';
 export * from './tracer';
-export {eval_, execNamedAction, execFunction} from './eval';
+export * from './conditions';
+export {eval_} from './eval';
+export {execNamedAction, execFunction, evaluateListList} from './apply';
 
 export interface MakeEvaluatorOptions {
   actions: Actions;
   scopes?: Scopes<Atom>;
   logger?: Logger;
   errorLevel?: ErrorLevel;
+  tracer?: Tracer;
 }
 
 /** CL's make-* constructor convention. */

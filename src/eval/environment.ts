@@ -22,6 +22,7 @@ import {
 
 import {Scopes} from '@utilities/object';
 import {ErrorLevel, Logger} from '../lib/log';
+import type {Tracer} from './tracer';
 
 export type {ILoggerState} from '../lib/log';
 import type {ILoggerState} from '../lib/log';
@@ -37,6 +38,7 @@ interface IEnvironmentInit {
 
   actions: Actions;
   evalFn?: ExecutorFn;
+  tracer?: Tracer;
   scopes?: Scopes<Atom>;
   logger?: Logger;
   errorLevel?: ErrorLevel;
@@ -62,6 +64,7 @@ export class Environment implements IState, ILoggerState {
   public scopes: Scopes<Atom>;
   public actions: Actions;
   public evalFn: ExecutorFn;
+  public tracer?: Tracer;
   public logger: Logger;
 
   constructor(init: IEnvironmentInit) {
@@ -72,6 +75,7 @@ export class Environment implements IState, ILoggerState {
 
     this.actions = init.actions;
     this.evalFn = init.evalFn ?? evalNotWired;
+    this.tracer = init.tracer;
     this.scopes = init.scopes == undefined ? new Scopes() : init.scopes.copy();
     this.logger = init.logger ? init.logger : new Logger(this);
     if (init.errorLevel) this.logger.setErrorLevel(init.errorLevel);

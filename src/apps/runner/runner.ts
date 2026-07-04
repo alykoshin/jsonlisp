@@ -51,6 +51,7 @@ export class Runner {
       actions: this.actions,
       scopes,
       errorLevel: logLevel,
+      tracer: this.tracer,
     });
     st.logger.warn(`need to clean up the scopes on start`);
     return st;
