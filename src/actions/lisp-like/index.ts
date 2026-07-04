@@ -1,23 +1,27 @@
 /** @format */
 
-import {Actions} from './helpers/types';
+/**
+ * Shim — modules moved to src/cl (standard vocabulary) and src/contrib
+ * (host bindings); eval stays in src/eval. Spread order preserved exactly.
+ */
 
-import conditionals from './conditionals';
-import defines from './defines';
-import documentation from './documentation';
-import eval_ from './core/eval';
-// import eval from './eval';
-import fileSystem from './file-system';
-import error from './error';
-import inputOutput from './input-output';
-import iterationAndMapping from './iteration-and-mapping';
-import lispUnit from './lisp-unit';
-import lists from './lists';
-import operators from './operators';
-import sbPosix from './sb-posix';
-import simpleParallelTasks from './simple-parallel-tasks';
-import system from './system';
-import trivialShell from './trivial-shell';
+import {Actions} from '../../eval/sexpr';
+
+import conditionals from '../../cl/conditionals';
+import defines from '../../cl/defines';
+import documentation from '../../cl/documentation';
+import eval_ from '../../eval/eval';
+import fileSystem from '../../contrib/file-system';
+import error from '../../cl/error';
+import inputOutput from '../../cl/input-output';
+import iterationAndMapping from '../../cl/iteration-and-mapping';
+import lispUnit from '../../contrib/lisp-unit';
+import lists from '../../cl/lists';
+import operators from '../../cl/operators';
+import sbPosix from '../../contrib/sb-posix';
+import simpleParallelTasks from '../../contrib/simple-parallel-tasks';
+import system from '../../cl/system';
+import trivialShell from '../../contrib/trivial-shell';
 
 export const actions: Actions = {
   ...conditionals,

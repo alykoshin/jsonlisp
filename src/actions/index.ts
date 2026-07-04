@@ -1,13 +1,13 @@
 /** @format */
 
-import {Actions} from './lisp-like/helpers/types';
+import {Actions} from '../eval/sexpr';
 
-import $sbcl from './$sbcl';
-import $axios from './$axios';
+import $sbcl from '../contrib/sbcl';
+import $axios from '../contrib/axios';
 
-import buildActions from './build/';
+import buildActions from '../contrib/build';
 import lispLike from './lisp-like';
-import osActions from './os/';
+import osActions from '../contrib/os';
 
 export const actions: Actions = {
   ...buildActions,

@@ -1,0 +1,11 @@
+/** @format */
+
+import {Actions} from '../../eval/sexpr';
+
+import $shelljsActions from './$shelljs';
+
+export const actions: Actions = {
+  ...$shelljsActions,
+};
+
+export default actions;
