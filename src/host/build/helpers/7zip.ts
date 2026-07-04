@@ -2,7 +2,7 @@
 
 import * as path from 'path';
 
-import {execute} from '../../exec';
+import {execute} from '../../../lib/exec';
 import $versionActions from '../$version';
 import {validateArgs} from '../../../eval/validate-args';
 import {ExecutorFn, Actions, Parameters} from '../../../eval/sexpr';

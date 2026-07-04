@@ -1,6 +1,6 @@
 /** @format */
 
-import {execute, type ExecActionConfig} from './exec';
+import {execute, type ExecActionConfig} from '../lib/exec';
 import {validateArgs} from '../eval/validate-args';
 import {Actions, ensureString} from '../eval/sexpr';
 

@@ -1,7 +1,17 @@
 /** @format */
 
 import {spawn, SpawnOptionsWithoutStdio} from 'child_process';
-import {State} from '../eval/environment';
+import type {ILogger} from './log';
+
+/**
+ * lib/ is layer-neutral: instead of importing the Environment class, the
+ * evaluation context is accepted structurally (Environment satisfies this).
+ */
+export interface ExecContext {
+  logger: ILogger;
+  'new'(): ExecContext;
+  up(name: string): ExecContext;
+}
 
 // export async function execute(options: {cwd: string}, command_line: string, log: (s: number | string) => void) {
 //   log(command_line);
@@ -39,7 +49,7 @@ export async function execute(
     encoding?: BufferEncoding;
     timeout?: number;
     trim?: boolean;
-    state: State;
+    state: ExecContext;
   }
 ): Promise<ExecResult> {
   let {encoding, timeout, trim, state} = execOptions;

@@ -1,39 +1,46 @@
 /** @format */
 
 /**
- * Host assembly of the built-in vocabulary.
- * Spread order preserved from the pre-layers layout (later spreads win),
- * with two deliberate changes:
- * - the kernel (quote atom eq car cdr cons cond, lambda, defun) is now
- *   registered — the language tests always assumed it (see ARCHITECTURE.md);
- * - $sbcl is actually spread (it was imported and forgotten).
+ * Host assembly of the built-in vocabulary, organized by origin
+ * (see ARCHITECTURE.md):
+ *   kernel     — the axiomatic kernel
+ *   cl/        — ANSI COMMON-LISP
+ *   sbcl/      — SBCL packages we emulate (sb-posix)
+ *   quicklisp/ — third-party CL systems (trivial-shell, lisp-unit, …)
+ *   jl/        — JL's own dialect extensions
+ *   host/      — non-Lisp, $-marked npm/host tooling
+ * Spread order preserved from the pre-layers layout (later spreads win).
  */
 
 import {Actions} from '../eval/sexpr';
 
-import $sbcl from '../contrib/sbcl';
-import $axios from '../contrib/axios';
-import buildActions from '../contrib/build';
-import osActions from '../contrib/os';
+import $sbclBridge from '../host/sbcl-bridge';
+import $axios from '../host/axios';
+import buildActions from '../host/build';
+import osActions from '../host/os';
 
 import eval_ from '../eval/eval';
 import kernel from '../kernel';
 
 import conditionals from '../cl/conditionals';
 import defines from '../cl/defines';
-import documentation from '../cl/documentation';
 import error from '../cl/error';
+import files from '../cl/files';
 import inputOutput from '../cl/input-output';
 import iterationAndMapping from '../cl/iteration-and-mapping';
 import lists from '../cl/lists';
 import operators from '../cl/operators';
 import system from '../cl/system';
 
-import fileSystem from '../contrib/file-system';
-import lispUnit from '../contrib/lisp-unit';
-import sbPosix from '../contrib/sb-posix';
-import simpleParallelTasks from '../contrib/simple-parallel-tasks';
-import trivialShell from '../contrib/trivial-shell';
+import jl from '../jl';
+
+import sbPosix from '../sbcl/sb-posix';
+
+import alexandria from '../quicklisp/alexandria';
+import str from '../quicklisp/str';
+import lispUnit from '../quicklisp/lisp-unit';
+import simpleParallelTasks from '../quicklisp/simple-parallel-tasks';
+import trivialShell from '../quicklisp/trivial-shell';
 
 export const actions: Actions = {
   ...buildActions,
@@ -42,10 +49,12 @@ export const actions: Actions = {
   // former lisp-like merge, original order:
   ...conditionals,
   ...defines,
-  ...documentation,
+  ...jl, // was cl/documentation ('?', ';')
   ...eval_,
   ...error,
-  ...fileSystem,
+  ...files,
+  ...alexandria,
+  ...str,
   ...inputOutput,
   ...iterationAndMapping,
   ...lispUnit,
@@ -58,7 +67,7 @@ export const actions: Actions = {
   //
   ...osActions,
   ...$axios,
-  ...$sbcl,
+  ...$sbclBridge,
 };
 
 export default actions;

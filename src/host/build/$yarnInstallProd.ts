@@ -1,6 +1,6 @@
 /** @format */
 
-import {execute} from '../exec';
+import {execute} from '../../lib/exec';
 import {validateArgs} from '../../eval/validate-args';
 import {ExecutorFn, Atom, Parameters} from '../../eval/sexpr';
 import {State} from '../../eval/environment';

@@ -3,11 +3,12 @@
 /**
  * Layer-law enforcement (see ARCHITECTURE.md):
  *
- *   eval    -> lib only (nothing in kernel/cl/contrib/actions/apps/activities)
- *   kernel  -> eval, lib
- *   cl      -> eval, kernel, lib
- *   contrib -> eval, kernel, lib   (never cl, never apps)
- *   lib     -> layer-neutral: none of eval/kernel/cl/contrib/actions/apps
+ *   eval      -> lib only
+ *   kernel    -> eval, lib
+ *   cl        -> eval, kernel, lib
+ *   sbcl / quicklisp / jl / host
+ *             -> eval, kernel, lib (never cl, never each other, never apps)
+ *   lib       -> layer-neutral: imports no layer at all
  *
  * Exits non-zero listing every violation.
  */
@@ -17,12 +18,18 @@ const path = require('path');
 
 const SRC = path.join(__dirname, '..', 'src');
 
+const LAYERS = ['eval', 'kernel', 'cl', 'sbcl', 'quicklisp', 'jl', 'host'];
+const HOSTY = ['actions', 'apps', 'activities'];
+
 const FORBIDDEN = {
-  eval: ['kernel', 'cl', 'contrib', 'actions', 'apps', 'activities'],
-  kernel: ['cl', 'contrib', 'actions', 'apps', 'activities'],
-  cl: ['contrib', 'actions', 'apps', 'activities'],
-  contrib: ['cl', 'actions', 'apps', 'activities'],
-  lib: ['eval', 'kernel', 'cl', 'contrib', 'actions', 'apps', 'activities'],
+  eval: ['kernel', 'cl', 'sbcl', 'quicklisp', 'jl', 'host', ...HOSTY],
+  kernel: ['cl', 'sbcl', 'quicklisp', 'jl', 'host', ...HOSTY],
+  cl: ['sbcl', 'quicklisp', 'jl', 'host', ...HOSTY],
+  sbcl: ['cl', 'quicklisp', 'jl', 'host', ...HOSTY],
+  quicklisp: ['cl', 'sbcl', 'jl', 'host', ...HOSTY],
+  jl: ['cl', 'sbcl', 'quicklisp', 'host', ...HOSTY],
+  host: ['cl', 'sbcl', 'quicklisp', 'jl', ...HOSTY],
+  lib: [...LAYERS, ...HOSTY],
 };
 
 function walk(dir, out = []) {
