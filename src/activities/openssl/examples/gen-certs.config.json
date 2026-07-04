@@ -1,17 +1,22 @@
 {
+  "$schema": "../gen-certs.activity-config.schema.json",
   "dir": "./demo/temp",
   "password": "your-password",
   "files": {
     "ca_key": "ca-key.pem",
     "ca": "ca.pem",
+
     "server_key": "server-key.pem",
+    "server_cert": "server-cert.pem",
+
     "server_csr": "server.csr",
     "server_ext": "server-extfile.cnf",
-    "server_cert": "server-cert.pem",
+
     "client_key": "client-key.pem",
+    "client_cert": "client-cert.pem",
+
     "client_csr": "client.csr",
-    "client_ext": "client-extfile.cnf",
-    "client_cert": "client-cert.pem"
+    "client_ext": "client-extfile.cnf"
   },
   "serverExtFile": "subjectAltName = DNS:localhost,IP:127.0.0.1",
   "clientExtFile": "extendedKeyUsage = clientAuth",

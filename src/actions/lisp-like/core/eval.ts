@@ -19,10 +19,11 @@ import {
   Expression,
   Atom,
 } from '../helpers/types';
-import {State} from '../../../apps/runner/lib/state';
-import {series, seriesn} from '../helpers/series';
-import {validateArgs} from '../../../apps/runner/lib/validateArgs';
-import {isArray, isFunction} from 'lodash';
+import { State } from '../../../apps/runner/lib/state';
+import { series, seriesn } from '../helpers/series';
+import { validateArgs } from '../../../apps/runner/lib/validateArgs';
+import { isArray, isFunction } from 'lodash';
+import { createExecutorFn } from './functions';
 
 //
 
@@ -40,19 +41,21 @@ class EEvalError extends Error {
  */
 
 export const execNamedAction = async (
-  op: string,
+  name: string,
   args: Parameters,
   st: State
 ): Promise<Expression> => {
-  st.logger.debug(`eval: execNamedAction: "${op}"`);
+  st.logger.debug(`eval: execNamedAction: "${name}"`);
 
-  const action = st.actions[op];
+  const action = st.actions[name];
 
   if (isList(action)) {
-    return await eval_(op, [action], st);
+    return await eval_(name, [action], st);
+    // const fn = createExecutorFn(name, [ .... ], [ .... ]);
+    // return await execFunction(fn, name, args, st);
   } else {
-    ensureFunction(action, `function definition not found for "${op}"`);
-    return await execFunction(action as ExecutorFn, op, args, st);
+    ensureFunction(action, `function definition not found for "${name}"\n\n`);
+    return await execFunction(action as ExecutorFn, name, args, st);
   }
 };
 
@@ -75,7 +78,7 @@ export const execFunction = async (
   }
 };
 
-async function evaluateListAtom(
+/* async function evaluateListAtom(
   arg0: string,
   args: List,
   st: State
@@ -85,7 +88,9 @@ async function evaluateListAtom(
 
   return execNamedAction(arg0, args, st);
 }
+ */
 
+// const evaluateListList: RuleDoEval = async function (
 async function evaluateListList(
   outer_arg0: List,
   outer_args: List,
@@ -133,8 +138,20 @@ function matchReserved(expr: string): boolean {
   return isString(expr) && expr.startsWith('$');
 }
  */
-function isVarName(expr: string, st: State): boolean {
-  return st.scopes.get(expr) !== undefined;
+function isVarName(name: string, st: State): boolean {
+  return st.scopes.get(name) !== undefined;
+}
+
+function isActionName(name: string, st: State): boolean {
+  return st.actions[name] !== undefined;
+}
+
+function isListActionName(name: string, st: State): boolean {
+  return isActionName(name, st) && isList(st.actions[name]);
+}
+
+function isFunctionActionName(name: string, st: State): boolean {
+  return isActionName(name, st) && isFunction(st.actions[name]);
 }
 
 async function evaluateAtomVar(expr: string, st: State): Promise<Parameter> {
@@ -189,6 +206,11 @@ async function evaluateAtomString(expr: string, st: State): Promise<string> {
  */
 type RuleIf = (e: any, st: State) => boolean;
 type RuleDo = (e: any, st: State) => Promise<Expression>;
+// type RuleDoEval = (
+//   arg0: string | List,
+//   args: List,
+//   st: State
+// ) => Promise<Expression>;
 interface Rule {
   if?: RuleIf;
   do?: RuleDo | Rule[];
@@ -200,11 +222,55 @@ const rules: Rule[] = [
     do: [
       {
         if: (e) => isList(e[0]),
-        do: (e, st) => evaluateListList(e[0], e.slice(1), st),
+        do: (e, st) => evaluateListList(e[0] as List, e.slice(1), st),
       },
       {
         if: (e) => isString(e[0]),
-        do: (e, st) => evaluateListAtom(e[0], e.slice(1), st),
+        // do: (e, st) => evaluateListAtom(e[0] as string, e.slice(1), st),
+        do: async (e, st) => {
+          const name = e[0];
+          const action = st.actions[e[0]];
+          return do_rule(
+            [
+              {
+                if: (e, st) => isListActionName(name, st),
+                do: async (e, st) => await eval_(name, [action], st),
+              },
+              {
+                if: (e, st) => isFunctionActionName(name, st),
+                do: async (e, st) => {
+                  // await execFunction(
+                  //   action as ExecutorFn,
+                  //   name,
+                  //   e.slice(1),
+                  //   st
+                  // ),
+                  const fn = action as ExecutorFn;
+                  try {
+                    return fn.call(st, e[0], e.slice(1), st);
+                    // return (fn as Function).call(st, fn, args, st);
+                  } catch (e1) {
+                    throw new EEvalError(e, `Error executing "${fn}"`, {
+                      cause: e1,
+                    });
+                  }
+                },
+              },
+              {
+                do: (e, st) => {
+                  throw new EEvalError(
+                    e,
+                    `Expect first element in unquoted list` +
+                      ` to be a name of function/action,` +
+                      ` but its definition not found for "${e[0]}"\n\n`
+                  );
+                },
+              },
+            ],
+            e,
+            st
+          );
+        },
       },
       {
         // if: all other cases (default rule)
@@ -249,6 +315,27 @@ const rules: Rule[] = [
   // },
 ];
 
+function find_rule(rules: Rule[], e: Expression, st: State): Rule {
+  const r = rules.find((rule) => !rule.if /* default */ || rule.if(e, st));
+  if (!r) {
+    console.log(`rules:`, rules);
+    throw new EEvalError(e, `Rule not found`);
+  }
+  if (isArray(r.do)) return find_rule(r.do, e, st);
+  return r;
+}
+
+async function do_rule(
+  rules: Rule[],
+  e: Expression,
+  st: State
+): Promise<Expression> {
+  const r = find_rule(rules, e, st);
+  if (!r.do) return e; // return unchanged value
+  else if (isFunction(r.do)) return r.do(e, st); // execute the function
+  else throw new EEvalError(e, `Invalid rule.do method`); // unexpected
+}
+
 /**
  * @name eval
  */
@@ -256,24 +343,9 @@ export const eval_: ExecutorFn = async function (_, args, st) {
   st.logger.debug('eval_:enter');
   st.next();
 
-  const [expr] = validateArgs(args, {exactCount: 1});
+  const [expr] = validateArgs(args, { exactCount: 1 });
 
-  function find_rule(rules: Rule[], e: Expression): Rule {
-    const r = rules.find((rule) => !rule.if /* default */ || rule.if(e, st));
-    if (!r) {
-      console.log(`rules:`, rules);
-      throw new EEvalError(e, `Rule not found`);
-    }
-    if (isArray(r.do)) return find_rule(r.do, e);
-    return r;
-  }
-  function find_do_rule(rules: Rule[], e: Expression, st: State): Expression {
-    const r = find_rule(rules, expr);
-    if (!r.do) return e; // return unchanged value
-    else if (isFunction(r.do)) return r.do(e, st); // execute the function
-    else throw new EEvalError(e, `Invalid rule.do method`); // unexpected
-  }
-  const res = find_do_rule(rules, expr, st);
+  const res = do_rule(rules, expr, st);
 
   /*
   let res;

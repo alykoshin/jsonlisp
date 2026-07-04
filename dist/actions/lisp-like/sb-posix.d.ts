@@ -31,8 +31,8 @@ export declare const unsetenv: ExecutorFn;
 export declare const getenv: ExecutorFn;
 /**
  * @name chdir
- * @see Function: SB-POSIX:MKDIR --
- * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
+ * @see Function: SB-POSIX:CHDIR --
+ * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/CHDIR.html} <br>
  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
  *
  */

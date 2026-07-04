@@ -52,7 +52,8 @@ const $ejsTemplates = async function (_, args, state) {
     for (const currSourcePathname of ejsFiles) {
         // const currSourcePathname = ejsFiles[i]
         const currSourceDir = path_1.default.dirname(currSourcePathname);
-        const currRelDir = path_1.default.relative(currSourceDir, currSourceDir);
+        // const currRelDir = path.relative(currSourceDir, currSourceDir);
+        const currRelDir = path_1.default.relative(sourceDir, currSourceDir);
         const currTargetDir = path_1.default.resolve(targetDir, currRelDir);
         const currSourceFilename = path_1.default.basename(currSourcePathname);
         const currTargetFilename = path_1.default.basename(currSourcePathname, path_1.default.extname(currSourcePathname)) +

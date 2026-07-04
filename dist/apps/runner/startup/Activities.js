@@ -26,6 +26,8 @@ class Activities extends Plugins_1.Plugins {
         const mergedActions = {};
         Object.keys(this.plugins).forEach((pluginName) => {
             const plugin = this.plugins[pluginName];
+            if (!plugin.actions)
+                throw new Error(`actions property cannot be empty for "${pluginName}"`);
             Object.keys(plugin.actions).forEach((actionName) => {
                 const action = plugin.actions[actionName];
                 if (mergedActions[actionName]) {

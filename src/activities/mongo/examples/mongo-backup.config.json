@@ -1,0 +1,6 @@
+{
+  "$schema": "../mongo-backup-restore.activity-config.schema.json",
+  "host": "localhost",
+  "port": 3001,
+  "baseDir": "./demo/temp/backup"
+}

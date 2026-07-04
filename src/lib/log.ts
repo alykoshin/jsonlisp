@@ -35,8 +35,8 @@ const errorLevels = [
 
 export type ErrorLevel = (typeof errorLevels)[number];
 
-// const DEFAULT_DEBUG: ErrorLevel = 'info';
-export const DEFAULT_ERROR_LEVEL: ErrorLevel = 'debug';
+export const DEFAULT_ERROR_LEVEL: ErrorLevel = 'info';
+// export const DEFAULT_ERROR_LEVEL: ErrorLevel = 'debug';
 
 type ErrorColorsMap = Record<ErrorLevel, typeof chalk.Color>;
 

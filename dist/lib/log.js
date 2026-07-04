@@ -24,8 +24,7 @@ const errorLevels = [
     'log',
     'debug',
 ];
-// const DEFAULT_DEBUG: ErrorLevel = 'info';
-exports.DEFAULT_ERROR_LEVEL = 'debug';
+exports.DEFAULT_ERROR_LEVEL = 'info';
 const errorColors = {
     fatal: 'redBright',
     error: 'red',

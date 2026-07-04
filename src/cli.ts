@@ -19,6 +19,29 @@ import {
 } from './lib/fileUtils/read-write/universalFileUtils';
 import {DEFAULT_ERROR_LEVEL, ErrorLevel} from './lib/log';
 
+type CliArgsArr = [
+  activity: string,
+  action: string,
+  parameters: string[],
+  options: {
+    dataFile?: string;
+    dataJson?: string;
+    dataJson5?: string;
+    debug?: boolean;
+  },
+];
+type CliArgsObj = {
+  activity: string;
+  action: string;
+  parameters: string[];
+  options: {
+    dataFile?: string;
+    dataJson?: string;
+    dataJson5?: string;
+    debug?: boolean;
+  };
+};
+
 async function loadDataFile(filename?: string): Promise<any> {
   let fileData = {};
   if (filename) {
@@ -32,52 +55,41 @@ async function loadDataFile(filename?: string): Promise<any> {
 
 // type DataJsonType = 'json' | 'json5';
 
-function parseDataArg(options: {dataJson?: string; dataJson5?: string}): any {
-  const cmdlineData = options.dataJson
-    ? JSON.parse(options.dataJson)
-    : options.dataJson5
-    ? JSON5.parse(options.dataJson5)
-    : {};
-  // console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
-  return cmdlineData;
-}
+// function parseDataArg(options: {dataJson?: string; dataJson5?: string}): any {
+//   if (options.dataJson && options.dataJson5) {
+//     const msg = `Options --data-json and --data-json5 are mutually exclusive`;
+//     throw new Error(msg);
+//   }
+//   const d = options.dataJson ? JSON.parse(options.dataJson) : {};
+//   const d5 = options.dataJson5 ? JSON5.parse(options.dataJson5) : {};
+//   return Object.assign({}, d, d5);
+// }
 
-async function prepareAction({
-  activity,
-  action,
-  parameters,
-  dataFile,
-  dataJson,
-  dataJson5,
-}: {
-  activity: string;
-  action: string;
-  parameters: string[];
-  dataFile?: string;
-  dataJson?: string;
-  dataJson5?: string;
-}): Promise<{
+async function prepareAction(cliArgs: CliArgsObj): Promise<{
   activities: Activities;
   args: string[];
   data: any;
   logLevel: ErrorLevel;
 }> {
-  const args = [action, ...parameters];
+  const args = [cliArgs.action, ...cliArgs.parameters];
 
   // console.log(`activity:`, activity);
   const activities = new Activities();
-  if (activity) {
-    await activities.plug(activity);
+  if (cliArgs.activity) {
+    await activities.plug(cliArgs.activity);
   }
   const logLevel = activities.logLevel();
   // console.log(`activities:`, activities);
 
   // console.log(`dataFile:`, dataFile);
-  const fileData = await loadDataFile(dataFile);
-
-  const cmdlineData = parseDataArg({dataJson, dataJson5});
-
-  const data = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
+  const fileData = await loadDataFile(cliArgs.options.dataFile);
+  const cmdJson = cliArgs.options.dataJson
+    ? JSON.parse(cliArgs.options.dataJson)
+    : {};
+  const cmdJson5 = cliArgs.options.dataJson5
+    ? JSON5.parse(cliArgs.options.dataJson5)
+    : {};
+  const data = _.defaultsDeep({}, fileData, cmdJson5, cmdJson); //, {test: 'test-value'}),
   // console.log(`data: "${JSON.stringify(data)}"`);
 
   return {activities, args, data, logLevel};
@@ -97,54 +109,38 @@ program
     'Optional file with data object to pass to the action; supported types: .ts, .js, .json .json5'
   )
   .option(
-    '-j, --data-json <json>',
-    'Optional data (stringified JSON) to pass to the action (deeply overrides --data-file)'
+    '-j, --json-data <json-data-as-string>>',
+    'Optional data (stringified JSON) to pass to the action from command line (deeply overrides --data-file)'
   )
   .option(
-    '-5, --data-json5 <json5>',
-    'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)'
+    '-5, --json5-data <json5-data-as-string>>',
+    'Optional data (stringified JSON5) to pass to the action from command line  (deeply overrides --data-file)'
   )
   .option('-d, --debug', 'Turn on debug mode')
-  .action(
-    async (
-      activity: string,
-      action: string,
-      params: string[],
-      options: {
-        dataFile?: string;
-        dataJson?: string;
-        dataJson5?: string;
-        debug?: boolean;
-      }
-    ) => {
-      if (options.dataJson && options.dataJson5) {
-        const msg = `Options --data-json and --data-json5 are mutually exclusive`;
-        throw new Error(msg);
-      }
-      console.log(
-        `CLI starts: ${JSON.stringify({activity, action, params, options})}`
-      );
-      const {activities, args, data, logLevel} = await prepareAction({
-        activity,
-        action,
-        parameters: params,
-        ...options,
-      });
+  .action(async (...origCliArgs: CliArgsArr) => {
+    const [activity, action, parameters, options] = origCliArgs;
+    const cliArgs = {activity, action, parameters, options};
 
-      const errorLevel = options.debug
-        ? 'debug'
-        : logLevel
-        ? logLevel
-        : DEFAULT_ERROR_LEVEL;
+    console.log(`CLI starts: ${JSON.stringify(cliArgs)}`);
+    const {activities, args, data, logLevel} = await prepareAction(cliArgs);
+    // console.log('activity:', activity);
+    // console.log('activities:', activities);
 
-      const runner = new Runner({errorLevel});
-      const st = await runner.init({
-        activities,
-        scope: data,
-      });
-      await runner.start(args, st);
-    }
-  )
+    const errorLevel = options.debug
+      ? 'debug'
+      : logLevel
+      ? logLevel
+      : DEFAULT_ERROR_LEVEL;
+
+    // console.log('activities:', activities);
+
+    const runner = new Runner({errorLevel});
+    const st = await runner.init({
+      activities,
+      scope: data,
+    });
+    await runner.start(args, st);
+  })
   .addHelpText(
     'after',
     `

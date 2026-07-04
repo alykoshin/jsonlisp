@@ -66,5 +66,14 @@ export declare const probeFile: ExecutorFn;
  * {@link https://www.cs.cmu.edu/Groups/AI/html/cltl/clm/node218.html#SECTION002750000000000000000}
  */
 export declare const directory: ExecutorFn;
+/**
+ * @name ensure-directories-exist
+ * @see
+ * - Common Lisp HyperSpec --
+ * {@link http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_ensure-di_tories-exist.html}
+ * - The Common Lisp Cookbook – Files and Directories --  Creating directories
+ * {@link https://lispcookbook.github.io/cl-cookbook/files.html#creating-directories}
+ */
+export declare const ensureDirectoriesExist: ExecutorFn;
 export declare const actions: Actions;
 export default actions;

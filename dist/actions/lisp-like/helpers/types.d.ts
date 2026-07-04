@@ -29,6 +29,7 @@ export declare function ensureString(val: Parameter, msg?: string): asserts val 
 /******************************************************************************
  * Function
  */
+export declare function isFunction(val: any): val is Function;
 export type ExecutorFn = (name: string, args: Parameters, state: State) => Promise<Parameter>;
 export declare function ensureFunction(val: Parameter, msg?: string): asserts val is Function;
 /******************************************************************************

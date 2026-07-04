@@ -1,5 +1,7 @@
 /** @format */
 
+import fs from 'node:fs/promises';
+
 import {validateArgs} from '../../apps/runner/lib/validateArgs';
 import {
   ExecutorFn,
@@ -93,10 +95,15 @@ export const getenv: ExecutorFn = async function (
   return res;
 };
 
+// ENSURE-DIRECTORIES-EXIST
+// http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_ensure-di_tories-exist.html
+
+//
+
 /**
  * @name chdir
- * @see Function: SB-POSIX:MKDIR --
- * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
+ * @see Function: SB-POSIX:CHDIR --
+ * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/CHDIR.html} <br>
  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
  *
  */
@@ -107,6 +114,21 @@ export const chdir: ExecutorFn = async function (_, params, {evaluate}) {
   const res = process.chdir(dir);
   return 0;
 };
+
+// /**
+//  * @name chdir
+//  * @see Function: SB-POSIX:MKDIR --
+//  * {@link https://koji-kojiro.github.io/sb-docs/build/html/sb-posix/function/MKDIR.html} <br>
+//  * {@link https://www.opennet.ru/man.shtml?topic=chdir} <br>
+//  *
+//  */
+// export const mkdir: ExecutorFn = async function (_, params, {evaluate}) {
+//   validateArgs(params, {exactCount: 1});
+//   const dir = await evaluate(params[0]);
+//   ensureString(dir);
+//   const res = await fs.mkdir(dir);
+//   return 0;
+// };
 
 /**
  * @name getcwd

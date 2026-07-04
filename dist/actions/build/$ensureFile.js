@@ -18,7 +18,7 @@ const $ensureFile = async function (_, args, { evaluate, logger }) {
     for (const p of args) {
         const fname = await evaluate(p);
         (0, types_1.ensureString)(fname);
-        logger.debug(`$ensureFile ${fname}`);
+        logger.debug(`$ensureFile "${fname}"`);
         await (0, fileUtils_1.ensureFile)(fname);
         result.push(fname);
     }

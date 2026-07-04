@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.directory = exports.probeFile = exports.deleteFile = exports.renameFile = exports.writeStringIntoFile = exports.strToFile = exports.readFileIntoString = exports.strFromFile = void 0;
+exports.actions = exports.ensureDirectoriesExist = exports.directory = exports.probeFile = exports.deleteFile = exports.renameFile = exports.writeStringIntoFile = exports.strToFile = exports.readFileIntoString = exports.strFromFile = void 0;
 const promises_1 = __importDefault(require("fs/promises"));
 const validateArgs_1 = require("../../apps/runner/lib/validateArgs");
 const types_1 = require("./helpers/types");
@@ -156,6 +156,23 @@ const directory = async function (action, params, { evaluate, logger }) {
     return res;
 };
 exports.directory = directory;
+/**
+ * @name ensure-directories-exist
+ * @see
+ * - Common Lisp HyperSpec --
+ * {@link http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_ensure-di_tories-exist.html}
+ * - The Common Lisp Cookbook – Files and Directories --  Creating directories
+ * {@link https://lispcookbook.github.io/cl-cookbook/files.html#creating-directories}
+ */
+const ensureDirectoriesExist = async function (action, params, { evaluate, logger }) {
+    let [source] = (0, validateArgs_1.validateArgs)(params, { exactCount: 1 });
+    (0, types_1.ensureString)((source = await evaluate(source)));
+    logger.debug(`"${source}"`);
+    const p = path_1.default.resolve(source);
+    const res = await promises_1.default.mkdir(p, { recursive: true });
+    return res;
+};
+exports.ensureDirectoriesExist = ensureDirectoriesExist;
 exports.actions = {
     'rename-file': exports.renameFile,
     'delete-file': exports.deleteFile,
@@ -165,6 +182,7 @@ exports.actions = {
     'write-string-into-file': exports.writeStringIntoFile,
     'str:to-file': exports.strToFile,
     'str:from-file': exports.strFromFile,
+    'ensure-directories-exist': exports.ensureDirectoriesExist,
 };
 ``;
 exports.default = exports.actions;

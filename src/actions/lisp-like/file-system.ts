@@ -185,6 +185,28 @@ export const directory: ExecutorFn = async function (
   return res;
 };
 
+/**
+ * @name ensure-directories-exist
+ * @see
+ * - Common Lisp HyperSpec --
+ * {@link http://www.ai.mit.edu/projects/iiip/doc/CommonLISP/HyperSpec/Body/fun_ensure-di_tories-exist.html}
+ * - The Common Lisp Cookbook – Files and Directories --  Creating directories
+ * {@link https://lispcookbook.github.io/cl-cookbook/files.html#creating-directories}
+ */
+
+export const ensureDirectoriesExist: ExecutorFn = async function (
+  action,
+  params,
+  {evaluate, logger}
+) {
+  let [source] = validateArgs(params, {exactCount: 1});
+  ensureString((source = await evaluate(source)));
+  logger.debug(`"${source}"`);
+  const p = path.resolve(source);
+  const res = await fs.mkdir(p, {recursive: true});
+  return res;
+};
+
 export const actions: Actions = {
   'rename-file': renameFile,
   'delete-file': deleteFile,
@@ -194,6 +216,7 @@ export const actions: Actions = {
   'write-string-into-file': writeStringIntoFile,
   'str:to-file': strToFile,
   'str:from-file': strFromFile,
+  'ensure-directories-exist': ensureDirectoriesExist,
 };
 ``;
 export default actions;

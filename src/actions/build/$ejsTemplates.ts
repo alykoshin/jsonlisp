@@ -4,10 +4,10 @@ import path from 'path';
 import fs from 'fs/promises';
 import ejs from 'ejs';
 
-import {getFilesRecursive} from '../../lib/fileUtils/fileUtils';
-import {validateArgs} from '../../apps/runner/lib/validateArgs';
-import {ExecutorFn, Parameter, Parameters} from '../lisp-like/helpers/types';
-import {State} from '../../apps/runner/lib/state';
+import { getFilesRecursive } from '../../lib/fileUtils/fileUtils';
+import { validateArgs } from '../../apps/runner/lib/validateArgs';
+import { ExecutorFn, Parameter, Parameters } from '../lisp-like/helpers/types';
+import { State } from '../../apps/runner/lib/state';
 
 const DEBUG = false;
 
@@ -30,8 +30,8 @@ export type EjsTemplatesActionConfig = {
  * @name $ejsTemplates
  */
 export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
-  const {runner, logger} = state;
-  validateArgs(args, {exactCount: 1});
+  const { runner, logger } = state;
+  validateArgs(args, { exactCount: 1 });
 
   const {
     sourceDir,
@@ -70,8 +70,11 @@ export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
   for (const currSourcePathname of ejsFiles) {
     // const currSourcePathname = ejsFiles[i]
     const currSourceDir = path.dirname(currSourcePathname);
-    const currRelDir = path.relative(currSourceDir, currSourceDir);
+    // const currRelDir = path.relative(currSourceDir, currSourceDir);
+    const currRelDir = path.relative(sourceDir, currSourceDir);
     const currTargetDir = path.resolve(targetDir, currRelDir);
+    // console.log(currSourcePathname, '>>>', currTargetPathname);
+  
     const currSourceFilename = path.basename(currSourcePathname);
     const currTargetFilename =
       path.basename(currSourcePathname, path.extname(currSourcePathname)) +
@@ -79,7 +82,7 @@ export const $ejsTemplates: ExecutorFn = async function (_, args, state) {
     const currTargetPathname = path.resolve(currTargetDir, currTargetFilename);
     //console.log(currSourcePathname, '>>>', currTargetPathname);
     //
-    await fs.mkdir(currTargetDir, {recursive: true});
+    await fs.mkdir(currTargetDir, { recursive: true });
     //
     const src = await fs.readFile(currSourcePathname, 'utf8');
     //

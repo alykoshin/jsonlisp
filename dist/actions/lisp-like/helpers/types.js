@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isEmptyList = exports.ensureList = exports.asList = exports.isList = exports.ensureFunction = exports.ensureString = exports.isString = exports.ensureNumber = exports.asNumber = exports.ensureBoolean = exports.asBoolean = exports.isNil = exports.NIL = exports.isT = exports.T = exports.isAtom = exports.ensureGenericType = void 0;
+exports.isEmptyList = exports.ensureList = exports.asList = exports.isList = exports.ensureFunction = exports.isFunction = exports.ensureString = exports.isString = exports.ensureNumber = exports.asNumber = exports.ensureBoolean = exports.asBoolean = exports.isNil = exports.NIL = exports.isT = exports.T = exports.isAtom = exports.ensureGenericType = void 0;
 const util_1 = require("util");
 const jsTypeCheck = {
     array(value) {
@@ -124,6 +124,13 @@ function ensureString(val, msg = '') {
     //   }
 }
 exports.ensureString = ensureString;
+/******************************************************************************
+ * Function
+ */
+function isFunction(val) {
+    return jsTypeCheck.function(val);
+}
+exports.isFunction = isFunction;
 function ensureFunction(val, msg = '') {
     ensureGenericType('function', val, msg);
     // if (!jsTypes.function(val)) {

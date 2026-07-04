@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/gen-certs.activity-config.schema.json",
+  "title": "gen-certs.activity-config.json",
+  "description": "gen-certs.activity-config.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "dir",
+    "password",
+    "files",
+    "serverExtFile",
+    "clientExtFile",
+    "country",
+    "state",
+    "locality",
+    "organization",
+    "organizationalunit",
+    "commonname",
+    "email",
+    "validity_days"
+  ],
+  "properties": {
+    "$schema": {
+      "description": "The schema for the config file",
+      "type": "string"
+    },
+    "dir": {
+      "description": "The directory where the certificates will be stored",
+      "type": "string"
+    },
+    "password": {
+      "description": "The password for the certificates",
+      "type": "string"
+    },
+    "files": {
+      "description": "The files that will be created",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ca_key",
+        "ca",
+        "server_key",
+        "server_cert",
+        "server_csr",
+        "server_ext",
+        "client_key",
+        "client_cert",
+        "client_csr",
+        "client_ext"
+      ],
+      "properties": {
+        "ca_key": {
+          "description": "The name of the file that will be used to store the CA key",
+          "type": "string"
+        },
+        "ca": {
+          "description": "The name of the file that will be used to store the CA certificate",
+          "type": "string"
+        },
+        "server_key": {
+          "description": "The name of the file that will be used to store the server key",
+          "type": "string"
+        },
+        "server_cert": {
+          "description": "The name of the file that will be used to store the server certificate",
+          "type": "string"
+        },
+        "server_csr": {
+          "description": "The name of the file that will be used to store the server certificate signing request",
+          "type": "string"
+        },
+        "server_ext": {
+          "description": "The name of the file that will be used to store the server extensions",
+          "type": "string"
+        },
+        "client_key": {
+          "description": "The name of the file that will be used to store the client key",
+          "type": "string"
+        },
+        "client_cert": {
+          "description": "The name of the file that will be used to store the client certificate",
+          "type": "string"
+        },
+        "client_csr": {
+          "description": "The name of the file that will be used to store the client certificate signing request",
+          "type": "string"
+        },
+        "client_ext": {
+          "description": "The name of the file that will be used to store the client extensions",
+          "type": "string"
+        }
+      }
+    },
+    "serverExtFile": {
+      "description": "Content for the file that will be used to create the server extensions",
+      "type": "string"
+    },
+    "clientExtFile": {
+      "description": "Content for the file that will be used to create the client extensions",
+      "type": "string"
+    },
+    "country": {
+      "description": "The country for the certificates",
+      "type": "string"
+    },
+    "state": {
+      "description": "The state for the certificates",
+      "type": "string"
+    },
+    "locality": {
+      "description": "The locality for the certificates",
+      "type": "string"
+    },
+    "organization": {
+      "description": "The organization for the certificates",
+      "type": "string"
+    },
+    "organizationalunit": {
+      "description": "The organizationalunit for the certificates",
+      "type": "string"
+    },
+    "commonname": {
+      "description": "The commonname for the certificates",
+      "type": "string"
+    },
+    "email": {
+      "description": "The email for the certificates",
+      "type": "string"
+    },
+    "validity_days": {
+      "description": "The validity_days for the certificates",
+      "type": "integer"
+    }
+  },
+  "examples": [
+    {
+      "$schema": "./schema.json",
+      "dir": "./demo/temp",
+      "password": "your-password",
+      "files": {
+        "ca_key": "ca-key.pem",
+        "ca": "ca.pem",
+
+        "server_key": "server-key.pem",
+        "server_cert": "server-cert.pem",
+
+        "server_csr": "server.csr",
+        "server_ext": "server-extfile.cnf",
+
+        "client_key": "client-key.pem",
+        "client_cert": "client-cert.pem",
+
+        "client_csr": "client.csr",
+        "client_ext": "client-extfile.cnf"
+      },
+      "serverExtFile": "subjectAltName = DNS:localhost,IP:127.0.0.1",
+      "clientExtFile": "extendedKeyUsage = clientAuth",
+
+      "country": "RU",
+      "state": "Moscow",
+      "locality": "Moscow",
+      "organization": "username",
+      "organizationalunit": "username",
+      "commonname": "localhost",
+      "email": "username@domain.com",
+      "validity_days": 3650
+    }
+  ]
+}

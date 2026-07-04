@@ -14,6 +14,7 @@ async function readJsonFile(pathname) {
     // return require(pathname);
     const s = await (0, textFileUtils_1.readTextFile)(pathname);
     // console.log(`readJsonFile: s:`, s);
+    // return parseJson(s);
     try {
         return JSON.parse(s);
     }
@@ -24,6 +25,16 @@ async function readJsonFile(pathname) {
     }
 }
 exports.readJsonFile = readJsonFile;
+// export async function parseJson(s: string): Promise<any> {
+//   try {
+//     return JSON.parse(s);
+//   } catch (e1) {
+//     console.error('ERROR JSON:', s);
+//     throw new Error(`Unable to parse JSON\n`, {
+//       cause: e1,
+//     });
+//   }
+// }
 const writeJsonFile = async (pathname, data) => {
     const content = JSON.stringify(data, null, 2);
     await (0, textFileUtils_1.writeTextFile)(pathname, content);

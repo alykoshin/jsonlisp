@@ -50,28 +50,33 @@ async function loadDataFile(filename) {
     return fileData;
 }
 // type DataJsonType = 'json' | 'json5';
-function parseDataArg(options) {
-    const cmdlineData = options.dataJson
-        ? JSON.parse(options.dataJson)
-        : options.dataJson5
-            ? json5_1.default.parse(options.dataJson5)
-            : {};
-    // console.log(`cmdlineData: "${JSON.stringify(cmdlineData)}"`);
-    return cmdlineData;
-}
-async function prepareAction({ activity, action, parameters, dataFile, dataJson, dataJson5, }) {
-    const args = [action, ...parameters];
+// function parseDataArg(options: {dataJson?: string; dataJson5?: string}): any {
+//   if (options.dataJson && options.dataJson5) {
+//     const msg = `Options --data-json and --data-json5 are mutually exclusive`;
+//     throw new Error(msg);
+//   }
+//   const d = options.dataJson ? JSON.parse(options.dataJson) : {};
+//   const d5 = options.dataJson5 ? JSON5.parse(options.dataJson5) : {};
+//   return Object.assign({}, d, d5);
+// }
+async function prepareAction(cliArgs) {
+    const args = [cliArgs.action, ...cliArgs.parameters];
     // console.log(`activity:`, activity);
     const activities = new Activities_1.Activities();
-    if (activity) {
-        await activities.plug(activity);
+    if (cliArgs.activity) {
+        await activities.plug(cliArgs.activity);
     }
     const logLevel = activities.logLevel();
     // console.log(`activities:`, activities);
     // console.log(`dataFile:`, dataFile);
-    const fileData = await loadDataFile(dataFile);
-    const cmdlineData = parseDataArg({ dataJson, dataJson5 });
-    const data = _.defaultsDeep({}, fileData, cmdlineData); //, {test: 'test-value'}),
+    const fileData = await loadDataFile(cliArgs.options.dataFile);
+    const cmdJson = cliArgs.options.dataJson
+        ? JSON.parse(cliArgs.options.dataJson)
+        : {};
+    const cmdJson5 = cliArgs.options.dataJson5
+        ? json5_1.default.parse(cliArgs.options.dataJson5)
+        : {};
+    const data = _.defaultsDeep({}, fileData, cmdJson5, cmdJson); //, {test: 'test-value'}),
     // console.log(`data: "${JSON.stringify(data)}"`);
     return { activities, args, data, logLevel };
 }
@@ -84,26 +89,22 @@ program
     .argument('[action]', "Activity' action name to run", 'default')
     .argument('[parameters...]', 'Parameters to pass to the action', [])
     .option('-f, --data-file <filename>', 'Optional file with data object to pass to the action; supported types: .ts, .js, .json .json5')
-    .option('-j, --data-json <json>', 'Optional data (stringified JSON) to pass to the action (deeply overrides --data-file)')
-    .option('-5, --data-json5 <json5>', 'Optional data (stringified JSON5) to pass to the action (deeply overrides --data-file)')
+    .option('-j, --json-data <json-data-as-string>>', 'Optional data (stringified JSON) to pass to the action from command line (deeply overrides --data-file)')
+    .option('-5, --json5-data <json5-data-as-string>>', 'Optional data (stringified JSON5) to pass to the action from command line  (deeply overrides --data-file)')
     .option('-d, --debug', 'Turn on debug mode')
-    .action(async (activity, action, params, options) => {
-    if (options.dataJson && options.dataJson5) {
-        const msg = `Options --data-json and --data-json5 are mutually exclusive`;
-        throw new Error(msg);
-    }
-    console.log(`CLI starts: ${JSON.stringify({ activity, action, params, options })}`);
-    const { activities, args, data, logLevel } = await prepareAction({
-        activity,
-        action,
-        parameters: params,
-        ...options,
-    });
+    .action(async (...origCliArgs) => {
+    const [activity, action, parameters, options] = origCliArgs;
+    const cliArgs = { activity, action, parameters, options };
+    console.log(`CLI starts: ${JSON.stringify(cliArgs)}`);
+    const { activities, args, data, logLevel } = await prepareAction(cliArgs);
+    // console.log('activity:', activity);
+    // console.log('activities:', activities);
     const errorLevel = options.debug
         ? 'debug'
         : logLevel
             ? logLevel
             : log_1.DEFAULT_ERROR_LEVEL;
+    // console.log('activities:', activities);
     const runner = new runner_1.Runner({ errorLevel });
     const st = await runner.init({
         activities,

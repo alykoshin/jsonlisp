@@ -179,6 +179,10 @@ export function ensureString(
  * Function
  */
 
+export function isFunction(val: any): val is Function {
+  return jsTypeCheck.function(val);
+}
+
 export type ExecutorFn = (
   // this: ActionMethodState,
   name: string,

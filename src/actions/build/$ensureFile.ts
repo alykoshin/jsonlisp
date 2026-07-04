@@ -30,7 +30,7 @@ export const $ensureFile: ExecutorFn = async function (
     const fname = await evaluate(p);
     ensureString(fname);
 
-    logger.debug(`$ensureFile ${fname}`);
+    logger.debug(`$ensureFile "${fname}"`);
     await ensureFile(fname);
 
     result.push(fname);

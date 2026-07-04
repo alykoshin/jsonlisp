@@ -11,10 +11,14 @@
   },
   "scripts": {
     "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json5",
+    "start-activity-openssl": "ts-node ./src/cli.ts ./src/activities/openssl/index.ts",
     "test-core": "ts-node ./src/apps/test-runner/core-test-runner.ts",
     "build": "npm start build",
+    "start-ts-no-esm": "ts-node ./src/cli.ts",
     "start-ts": "ts-node --esm ./src/cli.ts",
-    "start-js": "node ./dist/cli.js"
+    "start-gen-certs": "ts-node --esm ./src/cli.ts src/activities/openssl/index.ts -f .src/activities/openssl/examples/gen-certs.config.json",
+    "start-js": "node ./dist/cli.js",
+    "start-ts-esm-node": "node --experimental-specifier-resolution=node --loader ts-node/esm  ./src/cli.ts"
   },
   "_scripts": {
     "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",

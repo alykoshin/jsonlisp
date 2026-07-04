@@ -4,7 +4,7 @@ import { State } from '../../../apps/runner/lib/state';
 /**
  * @module eval
  */
-export declare const execNamedAction: (op: string, args: Parameters, st: State) => Promise<Expression>;
+export declare const execNamedAction: (name: string, args: Parameters, st: State) => Promise<Expression>;
 export declare const execFunction: (fn: ExecutorFn, name: string, args: Parameters, st: State) => Promise<Expression>;
 /**
  * @name eval

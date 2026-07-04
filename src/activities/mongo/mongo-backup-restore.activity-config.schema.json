@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mongo-backup-restore.activity-config.schema.json",
+  "title": "mongo-backup-restore.activity-config.json",
+  "description": "mongo-backup-restore.activity-config.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["$schema", "host", "port", "baseDir"],
+  "properties": {
+    "$schema": {
+      "description": "The schema for the config file",
+      "type": "string"
+    },
+    "host": {
+      "description": "The host of the mongo database",
+      "type": "string"
+    },
+    "port": {
+      "description": "The port of the mongo database",
+      "type": "integer"
+    },
+    "baseDir": {
+      "description": "The base directory to store the backup files",
+      "type": "string"
+    },
+    "drop_on_restore": {
+      "description": "Drop the database before restoring",
+      "type": "boolean"
+    }
+  },
+  "examples": [
+    {
+      "$schema": "./mongo-backup.activity-config.schema.json",
+      "host": "localhost",
+      "port": 3001,
+      "baseDir": "./demo/temp/backup",
+      "drop_on_restore": true
+    },
+    {
+      "$schema": "./mongo-backup.activity-config.schema.json",
+      "host": "localhost",
+      "port": 3001,
+      "baseDir": "./demo/temp/backup",
+      "drop_on_restore": true
+    }
+  ]
+}
