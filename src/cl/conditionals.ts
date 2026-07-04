@@ -4,7 +4,7 @@ import {validateArgs} from '../eval/validate-args';
 import {Actions, Parameters, ensureNumber} from '../eval/sexpr';
 
 import {cond} from '../kernel/primitives';
-import {T, asBoolean} from '../kernel/booleans';
+import {NIL, asBoolean} from '../kernel/booleans';
 
 /**
  * @module conditionals
@@ -14,23 +14,20 @@ export const actions: Actions = {
   /** @name if */
   if: async function (_, args, {evaluate, logger}) {
     validateArgs(args, {exactCount: [2, 3]});
-    // const [pTest, pThen, pElse] = args;
-    //
-    //   const condition = asBoolean(await evaluate(pTest));
-    //   logger.debug(`if: condition: ` + JSON.stringify(condition));
-    //
-    //   const branch = condition ? pThen : pElse;
-    //   if (typeof branch !== 'undefined') {
-    //     return await evaluate(branch);
-    //   }
-    //   return NIL;
+    // NB: the earlier implementation selected branches via
+    // ["first"/"second"/"third", ["quote", args]] and depended on those
+    // accessors RE-EVALUATING the extracted element; with car/cdr owned by
+    // the kernel (data semantics, CL-correct) `if` evaluates its own branch.
+    const [pTest, pThen, pElse] = args;
 
-    const if_args = ['quote', args];
-    // prettier-ignore
-    return evaluate([
-      "cond",
-        [["first", if_args], ["second", if_args]],
-        [T,                  ["third",  if_args]]]);
+    const condition = asBoolean(await evaluate(pTest));
+    logger.debug(`if: condition: ` + JSON.stringify(condition));
+
+    const branch = condition ? pThen : pElse;
+    if (typeof branch !== 'undefined') {
+      return await evaluate(branch);
+    }
+    return NIL;
   },
 
   // cond: async function (action, params, {evaluate, logger}) {

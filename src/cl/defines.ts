@@ -55,7 +55,10 @@ export const actions: Actions = {
   setq: async function (_, args, {evaluate, scopes, logger}) {
     validateArgs(args, {exactCount: 2});
 
-    const name = await evaluate(args[0]);
+    // CL: setq does NOT evaluate the variable name. (Evaluating it made any
+    // re-setq of a bound variable crash: "res" -> current value -> not a
+    // string. Use `set` semantics separately if a computed name is needed.)
+    const name = args[0];
     ensureString(name, `Expect string as a name of variable`);
 
     const value = await evaluate(args[1]);

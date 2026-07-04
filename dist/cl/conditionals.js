@@ -13,23 +13,18 @@ exports.actions = {
     /** @name if */
     if: async function (_, args, { evaluate, logger }) {
         (0, validate_args_1.validateArgs)(args, { exactCount: [2, 3] });
-        // const [pTest, pThen, pElse] = args;
-        //
-        //   const condition = asBoolean(await evaluate(pTest));
-        //   logger.debug(`if: condition: ` + JSON.stringify(condition));
-        //
-        //   const branch = condition ? pThen : pElse;
-        //   if (typeof branch !== 'undefined') {
-        //     return await evaluate(branch);
-        //   }
-        //   return NIL;
-        const if_args = ['quote', args];
-        // prettier-ignore
-        return evaluate([
-            "cond",
-            [["first", if_args], ["second", if_args]],
-            [booleans_1.T, ["third", if_args]]
-        ]);
+        // NB: the earlier implementation selected branches via
+        // ["first"/"second"/"third", ["quote", args]] and depended on those
+        // accessors RE-EVALUATING the extracted element; with car/cdr owned by
+        // the kernel (data semantics, CL-correct) `if` evaluates its own branch.
+        const [pTest, pThen, pElse] = args;
+        const condition = (0, booleans_1.asBoolean)(await evaluate(pTest));
+        logger.debug(`if: condition: ` + JSON.stringify(condition));
+        const branch = condition ? pThen : pElse;
+        if (typeof branch !== 'undefined') {
+            return await evaluate(branch);
+        }
+        return booleans_1.NIL;
     },
     // cond: async function (action, params, {evaluate, logger}) {
     //   fn_check_params(params, {minCount: 1});
