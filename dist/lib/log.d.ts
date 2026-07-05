@@ -1,6 +1,6 @@
 /** @format */
 /**
- * lib/ is layer-neutral (SB-INT style): no imports from eval/kernel/cl/contrib.
+ * lib/ is layer-neutral (SB-INT style): no imports from any layer.
  * The logger state shape is declared structurally here; eval/environment
  * implements it.
  */

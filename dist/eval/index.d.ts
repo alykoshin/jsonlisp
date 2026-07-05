@@ -20,6 +20,7 @@ export * from './validate-args';
 export * from './environment';
 export * from './tracer';
 export * from './conditions';
+export * from './package';
 export { eval_ } from './eval';
 export { execNamedAction, execFunction, evaluateListList } from './apply';
 export interface MakeEvaluatorOptions {

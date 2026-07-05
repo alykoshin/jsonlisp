@@ -24,6 +24,7 @@ __exportStar(require("./validate-args"), exports);
 __exportStar(require("./environment"), exports);
 __exportStar(require("./tracer"), exports);
 __exportStar(require("./conditions"), exports);
+__exportStar(require("./package"), exports);
 var eval_2 = require("./eval");
 Object.defineProperty(exports, "eval_", { enumerable: true, get: function () { return eval_2.eval_; } });
 var apply_1 = require("./apply");

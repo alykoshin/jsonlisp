@@ -5,50 +5,44 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
-const sbcl_1 = __importDefault(require("../contrib/sbcl"));
-const axios_1 = __importDefault(require("../contrib/axios"));
-const build_1 = __importDefault(require("../contrib/build"));
-const os_1 = __importDefault(require("../contrib/os"));
+const package_1 = require("../eval/package");
 const eval_1 = __importDefault(require("../eval/eval"));
-const kernel_1 = __importDefault(require("../kernel"));
-const conditionals_1 = __importDefault(require("../cl/conditionals"));
-const defines_1 = __importDefault(require("../cl/defines"));
-const documentation_1 = __importDefault(require("../cl/documentation"));
-const error_1 = __importDefault(require("../cl/error"));
-const input_output_1 = __importDefault(require("../cl/input-output"));
-const iteration_and_mapping_1 = __importDefault(require("../cl/iteration-and-mapping"));
-const lists_1 = __importDefault(require("../cl/lists"));
-const operators_1 = __importDefault(require("../cl/operators"));
-const system_1 = __importDefault(require("../cl/system"));
-const file_system_1 = __importDefault(require("../contrib/file-system"));
-const lisp_unit_1 = __importDefault(require("../contrib/lisp-unit"));
-const sb_posix_1 = __importDefault(require("../contrib/sb-posix"));
-const simple_parallel_tasks_1 = __importDefault(require("../contrib/simple-parallel-tasks"));
-const trivial_shell_1 = __importDefault(require("../contrib/trivial-shell"));
+const primitives_1 = __importDefault(require("../kernel/primitives"));
+const lambda_1 = __importDefault(require("../kernel/lambda"));
+const derived_1 = __importDefault(require("../kernel/derived"));
+const cl_1 = __importDefault(require("../cl"));
+const jl_1 = __importDefault(require("../jl"));
+const sb_posix_1 = __importDefault(require("../sbcl/sb-posix"));
+const alexandria_1 = __importDefault(require("../quicklisp/alexandria"));
+const str_1 = __importDefault(require("../quicklisp/str"));
+const lisp_unit_1 = __importDefault(require("../quicklisp/lisp-unit"));
+const simple_parallel_tasks_1 = __importDefault(require("../quicklisp/simple-parallel-tasks"));
+const trivial_shell_1 = __importDefault(require("../quicklisp/trivial-shell"));
+const sbcl_bridge_1 = __importDefault(require("../host/sbcl-bridge"));
+const axios_1 = __importDefault(require("../host/axios"));
+const build_1 = __importDefault(require("../host/build"));
+const os_1 = __importDefault(require("../host/os"));
 exports.actions = {
-    ...build_1.default,
-    // the axiomatic kernel first — cl modules may consciously extend it:
-    ...kernel_1.default,
-    // former lisp-like merge, original order:
-    ...conditionals_1.default,
-    ...defines_1.default,
-    ...documentation_1.default,
-    ...eval_1.default,
-    ...error_1.default,
-    ...file_system_1.default,
-    ...input_output_1.default,
-    ...iteration_and_mapping_1.default,
-    ...lisp_unit_1.default,
-    ...lists_1.default,
-    ...operators_1.default,
-    ...sb_posix_1.default,
-    ...simple_parallel_tasks_1.default,
-    ...system_1.default,
-    ...trivial_shell_1.default,
+    // the COMMON-LISP package: kernel primitives + lambda/defun are CL
+    // symbols, as are eval and everything in cl/
+    ...(0, package_1.defpackage)('cl', { ...primitives_1.default, ...lambda_1.default, ...eval_1.default, ...cl_1.default }),
+    // the paper's derived functions (null_ and_ not_ append_ list_ pair_ assoc_)
+    ...(0, package_1.defpackage)('jmc', derived_1.default),
+    // JL's own dialect extensions
+    ...(0, package_1.defpackage)('jl', jl_1.default),
     //
+    ...(0, package_1.defpackage)('sb-posix', sb_posix_1.default),
+    //
+    ...(0, package_1.defpackage)('alexandria', alexandria_1.default),
+    ...(0, package_1.defpackage)('str', str_1.default),
+    ...(0, package_1.defpackage)('lisp-unit', lisp_unit_1.default),
+    ...(0, package_1.defpackage)('simple-parallel-tasks', simple_parallel_tasks_1.default),
+    ...(0, package_1.defpackage)('trivial-shell', trivial_shell_1.default),
+    //
+    ...build_1.default,
     ...os_1.default,
     ...axios_1.default,
-    ...sbcl_1.default,
+    ...sbcl_bridge_1.default,
 };
 exports.default = exports.actions;
 //# sourceMappingURL=index.js.map

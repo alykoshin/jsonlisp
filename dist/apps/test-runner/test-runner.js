@@ -7,8 +7,8 @@ const booleans_1 = require("../../kernel/booleans");
 // import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 // import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
 const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");
-const exec_prepare_1 = require("../../contrib/sbcl/exec-prepare");
-const exec_1 = require("../../contrib/exec");
+const exec_prepare_1 = require("../../host/sbcl-bridge/exec-prepare");
+const exec_1 = require("../../lib/exec");
 const runner_1 = require("../runner/runner");
 const testRunner = async function (actions, exprJlIn, strSbclIn
 // {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
