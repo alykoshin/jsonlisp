@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.mapcar = exports.mapc = exports.nullp = exports.listp = exports.consp = exports.nthcdr = exports.third = exports.second = exports.nth = exports.list = void 0;
+exports.actions = exports.mapcar = exports.mapc = exports.listp = exports.consp = exports.nthcdr = exports.third = exports.second = exports.nth = exports.list = void 0;
 const validate_args_1 = require("../eval/validate-args");
 const sexpr_1 = require("../eval/sexpr");
 const booleans_1 = require("../kernel/booleans");
@@ -13,7 +13,7 @@ const evlis_1 = require("../eval/evlis");
  * (MAPC/MAPCAR live in the Conses dictionary).
  * quote, car, cdr are owned by kernel/primitives (SBCL-verified); this module
  * keeps the CL synonyms (first/rest) and nth-based accessors.
- * NB: `nullp` is a JL-ism (the ANSI name is `null`).
+ * (`nullp` — a JL-ism, ANSI name is `null` — lives in src/jl.)
  */
 const _nth = async function (idx, list) {
     return list.length > idx ? list[idx] : booleans_1.NIL;
@@ -26,9 +26,6 @@ const _consp = async function (p) {
 };
 const _listp = async function (p) {
     return (0, sexpr_1.isList)(p);
-};
-const _nullp = async function (p) {
-    return (0, sexpr_1.isList)(p) && (0, sexpr_1.isEmptyList)(p);
 };
 //===========================================================================//
 async function fn_rest(index, list, st) {
@@ -89,13 +86,6 @@ const listp = async (_, args, st) => {
     return _listp(a0);
 };
 exports.listp = listp;
-/** @name nullp */
-const nullp = async (_, args, st) => {
-    (0, validate_args_1.validateArgs)(args, { exactCount: 1 });
-    const a0 = await st.evaluate(args[0]);
-    return _nullp(a0);
-};
-exports.nullp = nullp;
 //===========================================================================//
 /**
  * @name mapc
@@ -152,7 +142,6 @@ exports.actions = {
     //
     consp: exports.consp,
     listp: exports.listp,
-    nullp: exports.nullp,
     //
     mapc: exports.mapc,
     mapcar: exports.mapcar,

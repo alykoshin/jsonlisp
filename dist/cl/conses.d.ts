@@ -14,8 +14,6 @@ export declare const nthcdr: ExecutorFn;
 export declare const consp: ExecutorFn;
 /** @name listp */
 export declare const listp: ExecutorFn;
-/** @name nullp */
-export declare const nullp: ExecutorFn;
 /**
  * @name mapc
  */

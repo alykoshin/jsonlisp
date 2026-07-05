@@ -2,8 +2,10 @@
 import { Actions } from '../eval/sexpr';
 /**
  * @module jl
- * JL's own dialect extensions — not ANSI, not third-party: '?' (describe)
- * and ';' (comment). The analog of SB-EXT: what this implementation adds.
+ * JL's own dialect extensions — vocabulary WE invented, appearing in no
+ * external canon: '?' (describe), ';' (comment), `nullp` (ANSI name is
+ * `null`), `%` (JS-flavored truncate-rem). The analog of SB-EXT: what this
+ * implementation adds — and like SB-EXT uses COMMON-LISP, jl may import cl.
  *
  * @description
  * Seems there is no single command to print all the variables in the Lisp

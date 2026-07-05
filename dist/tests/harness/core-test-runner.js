@@ -1,0 +1,108 @@
+"use strict";
+/** @format */
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("util");
+const test_runner_1 = require("./test-runner");
+const eval_1 = __importDefault(require("../../eval/eval"));
+const lambda_1 = __importDefault(require("../../kernel/lambda"));
+const primitives_1 = __importDefault(require("../../kernel/primitives"));
+const derived_1 = __importDefault(require("../../kernel/derived"));
+//
+const functions_cases_1 = __importDefault(require("../kernel/functions.cases"));
+const primitives_cases_1 = __importDefault(require("../kernel/primitives.cases"));
+const allCases = [...functions_cases_1.default, ...primitives_cases_1.default];
+const actions = {
+    ...eval_1.default,
+    ...lambda_1.default,
+    ...primitives_1.default,
+    ...derived_1.default,
+};
+const COLS = [
+    ['JL EXPRESSION', 50],
+    ['actual', 15],
+    ['CLISP EXPRESSION', 50],
+    ['expected/raw', 15],
+    ['expected/parsed', 15],
+    ['OK?', 5],
+    ['', 30],
+];
+function _formatCell(s, width = 40, padChar = ' ') {
+    return s.padEnd(width, padChar);
+}
+function _printSep() {
+    process.stdout.write(' | ');
+}
+function _printEnd(tail) {
+    if (tail)
+        process.stdout.write(tail);
+    process.stdout.write('\n');
+}
+function _printCell(s, width = 40, padChar = ' ') {
+    _printSep();
+    process.stdout.write(_formatCell(s, width, padChar));
+}
+function printCells(ss, padChar) {
+    let recurse = false;
+    const more = [...ss].map((s, i) => {
+        const w0 = COLS[i][1];
+        if (s === undefined) {
+            _printCell('', w0, ' ');
+            return '';
+        }
+        else {
+            const END_PERIOD = '...';
+            const BEGIN_PERIOD = '...';
+            const w_actual = w0 - END_PERIOD.length; // minus period string length
+            let rest = '';
+            if (s.length > w0) {
+                rest = BEGIN_PERIOD + s.substring(w_actual);
+                s = s.substring(0, w_actual) + END_PERIOD;
+                recurse = true;
+            }
+            _printCell(s, w0, padChar);
+            return rest;
+        }
+    });
+    _printEnd('');
+    if (recurse)
+        printCells(more, padChar);
+}
+function printSeparator() {
+    const values = COLS.map((c) => (c[0] ? '' : undefined));
+    printCells(values, '-');
+}
+function printHeaders() {
+    const headers = COLS.map((c) => c[0]);
+    printCells(headers, ' ');
+    printSeparator();
+}
+// async function init() {
+// }
+async function run() {
+    printHeaders();
+    let failCount = 0;
+    for (const i in allCases) {
+        const [exprJlIn, strSbclIn, message] = allCases[i];
+        const { exprJlOut, strSbclIn: strSbclIn_, strSbclOut, exprSbclOut, ok, } = await (0, test_runner_1.testRunner)(actions, exprJlIn, strSbclIn);
+        if (!ok)
+            failCount++;
+        const cellValues = [
+            JSON.stringify(exprJlIn),
+            (0, util_1.inspect)(exprJlOut),
+            strSbclIn_,
+            strSbclOut,
+            (0, util_1.inspect)(exprSbclOut),
+            String(ok),
+            message || '',
+        ];
+        printCells(cellValues, ' ');
+    }
+    console.log(`TOTAL: ${allCases.length}\n` +
+        `FAIL:  ${failCount}\n` +
+        `OK:    ${allCases.length - failCount}`);
+}
+run();
+//# sourceMappingURL=core-test-runner.js.map

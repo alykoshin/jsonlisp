@@ -218,8 +218,6 @@ exports.actions = {
         (0, validate_args_1.validateArgs)(args, { exactCount: 1 });
         return evaluate(['-', ...args, 1]);
     },
-    /** @name % */
-    '%': exports.operators,
     /** @name = */
     '=': exports.operators,
     /** @name /= */

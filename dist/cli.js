@@ -32,10 +32,10 @@ const _ = __importStar(require("lodash"));
 const json5_1 = __importDefault(require("json5"));
 const commander_1 = require("commander");
 // import pkg from '../package.json';
-const runner_1 = require("./apps/runner/runner");
-const Activities_1 = require("./apps/runner/startup/Activities");
-require("./_settings"); // init config and dotenv
-const _settings_1 = require("./_settings");
+const runner_1 = require("./toplevel/runner");
+const Activities_1 = require("./toplevel/Activities");
+require("./toplevel/settings"); // init config and dotenv
+const settings_1 = require("./toplevel/settings");
 const fileUtils_1 = require("./lib/fileUtils/fileUtils");
 const universalFileUtils_1 = require("./lib/fileUtils/read-write/universalFileUtils");
 const log_1 = require("./lib/log");
@@ -82,9 +82,9 @@ async function prepareAction(cliArgs) {
 }
 const program = new commander_1.Command();
 program
-    .name(_settings_1.packageJson.name)
-    .description(_settings_1.packageJson.description)
-    .version(_settings_1.packageJson.version)
+    .name(settings_1.packageJson.name)
+    .description(settings_1.packageJson.description)
+    .version(settings_1.packageJson.version)
     .argument('<activity>', 'Activity filename to load')
     .argument('[action]', "Activity' action name to run", 'default')
     .argument('[parameters...]', 'Parameters to pass to the action', [])

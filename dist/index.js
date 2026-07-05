@@ -37,10 +37,10 @@ var kernel_1 = require("./kernel");
 Object.defineProperty(exports, "kernel", { enumerable: true, get: function () { return __importDefault(kernel_1).default; } });
 var cl_1 = require("./cl");
 Object.defineProperty(exports, "cl", { enumerable: true, get: function () { return __importDefault(cl_1).default; } });
-var actions_1 = require("./actions");
-Object.defineProperty(exports, "defaultActions", { enumerable: true, get: function () { return actions_1.actions; } });
-var runner_1 = require("./apps/runner/runner");
+var modules_1 = require("./modules");
+Object.defineProperty(exports, "defaultActions", { enumerable: true, get: function () { return modules_1.actions; } });
+var runner_1 = require("./toplevel/runner");
 Object.defineProperty(exports, "Runner", { enumerable: true, get: function () { return runner_1.Runner; } });
-var Activities_1 = require("./apps/runner/startup/Activities");
+var Activities_1 = require("./toplevel/Activities");
 Object.defineProperty(exports, "Activities", { enumerable: true, get: function () { return Activities_1.Activities; } });
 //# sourceMappingURL=index.js.map
