@@ -5,7 +5,7 @@ import {isNil} from '../../kernel/booleans';
 // import {parse_sbcl_list} from '../../apps/translator-primitive/lisp2jl-primitive';
 
 // import {parse_sbcl_list} from 'node_modules/lisp2jl/dist/apps/translator-primitive';
-import {parse_sbcl_list} from 'lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive';
+import {parse_sbcl_list} from '../../host/sbcl-bridge/reader';
 
 import {get_sbcl_cmd, preprocess_sbcl_expr} from '../../host/sbcl-bridge/exec-prepare';
 import {execute} from '../../lib/exec';

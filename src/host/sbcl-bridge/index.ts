@@ -10,7 +10,7 @@ import {
 import {
   parse_sbcl_bool,
   parse_sbcl_list,
-} from 'lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive';
+} from './reader';
 import {get_sbcl_cmd} from './exec-prepare';
 
 /**
