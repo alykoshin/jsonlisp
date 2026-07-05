@@ -4,20 +4,19 @@ import {
   Activity,
   ActivityActionsDefinition,
 } from '../../apps/runner/startup/Activities';
-import $sbcl from '../../host/sbcl-bridge';
 
 // prettier-ignore
 const actions: ActivityActionsDefinition = {
-  ...$sbcl,
+  // $sbcl comes from the built-in vocabulary now
   default: [
     'list',
     ['print', 'This will test Iteration and mapping'],
-    // ['test-prog1'],
-    // ['test-prog2'],
-    // ['test-progn'],
+    ['test-prog1'],
+    ['test-prog2'],
+    ['test-progn'],
     ['test-mapc'],
-    // ['test-mapcar'],
-    // ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
+    ['test-mapcar'],
+    ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
   ],
 
   'test-prog1': [
@@ -48,10 +47,9 @@ const actions: ActivityActionsDefinition = {
       ['mapc', ['quote', '1+'], [100, 10, 1]],
       ['$sbcl-to-list', "(mapc '1+ (list 100 10 1) )"],
     ],
-    // !
-    // ['assert-equal', [ "mapc", ['quote', '1-'], [100, 10, 1]], [ "$sbcl-to-list",  "(mapc '1- (list 100 10 1) )" ] ],
-    // ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2, 3], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2 3) (list 1 2 3) )" ] ],
-    // ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2) (list 1 2 3) )" ] ],
+    ['assert-equal', [ "mapc", ['quote', '1-'], [100, 10, 1]], [ "$sbcl-to-list",  "(mapc '1- (list 100 10 1) )" ] ],
+    ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2, 3], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2 3) (list 1 2 3) )" ] ],
+    ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2) (list 1 2 3) )" ] ],
   ],
 
   'test-mapcar': [

@@ -12,6 +12,17 @@ import {execute} from '../../lib/exec';
 import {State} from '../../eval/environment';
 import {Runner} from '../runner/runner';
 
+/**
+ * CL upcases symbol names (TEST1) while JL spells symbols as lowercase
+ * strings and cannot distinguish symbols from string data — so the
+ * comparison folds case on both sides (CL readers are case-insensitive).
+ */
+function foldSymbolCase(e: Expression): Expression {
+  if (typeof e === 'string') return e.toLowerCase();
+  if (isList(e)) return e.map((x) => foldSymbolCase(x));
+  return e;
+}
+
 export const testRunner = async function (
   actions: Actions,
   exprJlIn: Expression,
@@ -62,7 +73,8 @@ export const testRunner = async function (
     }
     // console.log('>>>>', sbclParsed, exprJlOut);
     const ok =
-      JSON.stringify(exprSbclOut) === JSON.stringify(exprJlOut) ||
+      JSON.stringify(foldSymbolCase(exprSbclOut)) ===
+        JSON.stringify(foldSymbolCase(exprJlOut)) ||
       (isNil(exprSbclOut) && isNil(exprJlOut));
 
     return {

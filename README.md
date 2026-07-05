@@ -1,123 +1,116 @@
 <!-- @format -->
 
-Изучение языка:
+# tools-runner / JL
 
-https://exercism.org/tracks/common-lisp/exercises/grains/edit
+**tools-runner** is a task automation CLI whose scripts are written in **JL**
+— a Lisp whose concrete syntax is JSON/JSON5/JavaScript arrays. A nested
+array is an S-expression; the first element is the operator:
 
----
+```json5
+// build.activity.json5
+{
+  base_dir: './',
+  version: '0.0.0',
+  actions: {
+    default: ['print', 'Usage: build | release'],
+    build: ['list',
+      ['$shelljs', 'rm', '-rf', 'dist/*'],
+      ['shell-command', 'tsc --build ./tsconfig.json', {cwd: './', env: {}}],
+    ],
+    release: ['list',
+      ['build'],
+      ['$version', 'patch'],
+      ['plist',                       // parallel!
+        ['$zip', {file_names: ['./dist/'], archive_prefix: 'dist', out_dir: './_archive'}],
+        ['$zip', {file_names: ['./src/'],  archive_prefix: 'src',  out_dir: './_archive'}]],
+    ],
+  },
+}
+```
 
-Названия функций:
+```sh
+npx tools-runner ./build.activity.json5 release
+```
 
-- `(download "http://www.google.com/robots.txt" "/tmp/robots.txt")` -- https://github.com/eudoxia0/trivial-download
+Activity files (`.json5`, `.json`, `.ts`, `.js`) are libraries of named
+**actions**; the CLI command line itself is a JL form (`[action, ...params]`).
+Data passed via `-f config.json` / `-j '{...}'` becomes the variable scope,
+available to `${...}` templates: `"${dir}/${files.ca}"`.
 
----
+This repo is simultaneously a practical tool (portable, declarative,
+parallel build/ops scripts) and a language experiment: JL implements the
+Lisp of McCarthy's 1960 paper — verified by running Graham's *Roots of
+Lisp* meta-circular `eval.` on itself, and by comparing the vocabulary
+against a real SBCL.
 
-uLisp -- Lisp for microcontrollers -- Language reference
-[http://www.ulisp.com/show?3L](http://www.ulisp.com/show?3L)
+## Usage
 
-JSON-LISP is a very simple LISP interpreter that uses JSON as its concrete syntax
-[https://github.com/gliese1337/json-lisp](https://github.com/gliese1337/json-lisp)
+```
+tools-runner <activity-file> [action=default] [parameters...]
+  -f, --data-file <file>     data object -> variable scope (.ts/.js/.json/.json5)
+  -j, --json-data <json>     inline JSON data (deep-overrides --data-file)
+  -5, --json5-data <json5>   inline JSON5 data
+  -d, --debug                debug logging
+```
 
-SBCL -- Package: COMMON-LISP -- public: home of symbols defined by the ANSI language specification
-[https://koji-kojiro.github.io/sb-docs/build/html/common-lisp/](https://koji-kojiro.github.io/sb-docs/build/html/common-lisp/)
+During development: `ts-node ./src/cli.ts <activity> [action] …`.
 
-A brief introduction to Emacs Lisp for people with programming background
-[http://lgmoneda.github.io/2017/03/15/elisp-summary.html](http://lgmoneda.github.io/2017/03/15/elisp-summary.html)
+Example activities in-repo: [openssl cert generation](src/activities/openssl/)
+(with a JSON-schema'd config), [mongo backup/restore](src/activities/mongo/),
+and the tool's own build pipeline ([tools/tools-runner.activity.json5](tools/tools-runner.activity.json5))
+— tools-runner builds and releases itself.
 
-Common Lisp Programming Course -- Learn Lisp effectively, in videos
-[https://github.com/vindarel/common-lisp-course-in-videos/](https://github.com/vindarel/common-lisp-course-in-videos/)
+## The language
 
----
+See **[ARCHITECTURE.md](ARCHITECTURE.md)** for the full design and its
+sources (McCarthy 1960, Graham 2002, SBCL packaging). In brief:
 
-### Tutorials
+| Layer | What | Named after |
+| --- | --- | --- |
+| `src/eval/` | the evaluator (eval/apply, environment, `${}` templating) | McCarthy's universal function |
+| `src/kernel/` | `quote atom eq car cdr cons cond`, `lambda`/`defun`, derived fns | Graham's axiomatic kernel |
+| `src/cl/` | ANSI vocabulary; modules = CLHS chapters | the `COMMON-LISP` package |
+| `src/sbcl/` | `sb-posix` (getenv setenv chdir getcwd) | SBCL contribs |
+| `src/quicklisp/` | `trivial-shell`, `lisp-unit`, `simple-parallel-tasks`, `alexandria`, `str` | third-party CL systems |
+| `src/jl/` | dialect extensions (`?`, `;`) | (ours; cf. SB-EXT) |
+| `src/host/` | non-Lisp `$`-actions: `$zip $version $shelljs $axios` | — |
 
-https://www.tutorialspoint.com/lisp/
+Every Lisp action also has a package-qualified name (`cl:car`,
+`sb-posix:getenv`, `jmc:null_`) alongside its bare alias.
 
-https://exercism.org/tracks/common-lisp/exercises/grains/edit
+Deliberate divergences from CL (documented in ARCHITECTURE.md): every named
+action is a special form (receives unevaluated args); unbound symbols
+fall back to `${…}`-templated strings; JL is a Lisp-2; evaluation is async
+with parallel forms (`plist`).
 
----
+## Tests
 
-Pure versus Impure Lisp -- [https://dl.acm.org/doi/pdf/10.1145/244795.244798](https://dl.acm.org/doi/pdf/10.1145/244795.244798)
+```sh
+npm test              # layer law + kernel-vs-SBCL table + JL test activities
+npm run test-core     # kernel/derived expressions compared against SBCL
+npm run test:jl       # test activities (incl. the meta-circular eval. gate)
+npm run check:layers  # import-direction law
+```
 
-What is the difference between Lisp-1 and Lisp-2? -- [https://stackoverflow.com/questions/4578574/what-is-the-difference-between-lisp-1-and-lisp-2](https://stackoverflow.com/questions/4578574/what-is-the-difference-between-lisp-1-and-lisp-2)
+Requires [SBCL](https://www.sbcl.org/) on `PATH` — correctness is defined by
+comparison with a real Common Lisp. The flagship test,
+[jmc-eval.jl.ts](src/tests/lisp-like/jmc-eval.jl.ts), runs the paper's
+`eval.` (translated to JL) on the JL interpreter itself.
 
-### Minimal Core
+## Install
 
-- How many primitives does it take to build a LISP machine? Ten, seven or five? -- Basic Predicates/F-functions -- [https://stackoverflow.com/a/3484206](https://stackoverflow.com/a/3484206)
+```sh
+npm install --save-dev tools-runner
+```
 
-### Classical texts
+Node ≥ 18. `dist/` is committed — the package is its own build system
+(`npm start build`).
 
-Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I -- John McCarthy -- 1960 -- [http://www-formal.stanford.edu/jmc/recursive.pdf](http://www-formal.stanford.edu/jmc/recursive.pdf)
+## Links
 
-The Roots of Lisp -- Paul Graham -- 2002 -- [http://languagelog.ldc.upenn.edu/myl/llog/jmc.pdf](http://languagelog.ldc.upenn.edu/myl/llog/jmc.pdf) - local copy:
+[github.com](https://github.com/alykoshin/tools-runner) ·
+[npmjs.com](https://www.npmjs.com/package/tools-runner)
 
-- [.pdf](./_doc/The%20Roots%20of%20Lisp%20-%20Paul%20Graham/jmc.pdf)
-- [.lisp](./_doc/The%20Roots%20of%20Lisp%20-%20Paul%20Graham/jmc.lisp)
+## License
 
-### Source codes
-
-json-lisp
-
-- [https://github.com/gliese1337/json-lisp/blob/master/src/preamble.ts](https://github.com/gliese1337/json-lisp/blob/master/src/preamble.ts)
-
-Mary Had a Little Lambda: Implementing a Minimal Lisp for Assisting with Education
-
-- [https://github.com/andybelltree/Mary/blob/master/lisp/stdlib.lisp](https://github.com/andybelltree/Mary/blob/master/lisp/stdlib.lisp)
-
-maryrosecook --littlelisp.js
-
-- [https://github.com/maryrosecook/littlelisp/blob/master/littlelisp.js](https://github.com/maryrosecook/littlelisp/blob/master/littlelisp.js)
-
-miniMAL
-
-- [https://github.com/kanaka/miniMAL](https://github.com/kanaka/miniMAL)
-
-SBCL:
-
-- [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/pred.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/pred.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/seq.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/seq.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/string.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/string.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/symbol.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/symbol.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/loop.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/loop.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/numbers.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/numbers.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/query.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/query.lisp)
-  - [https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/list.lisp](https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/list.lisp)
-  - https://github.com/sbcl/sbcl/blob/master/src/code/target-format.lisp -- format
-
-CLISP
-
-- [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/)
-  - [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/lispbibl.d](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/lispbibl.d)
-  - [https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/list.d](https://sourceforge.net/p/clisp/clisp/ci/tip/tree/src/list.d)
-  - https://github.com/JoshCheek/clisp/blob/master/src/format.lisp -- format
-
-Klisp:
-
-- [https://github.com/thesephist/klisp/blob/main/src/klisp.ink](https://github.com/thesephist/klisp/blob/main/src/klisp.ink)
-- [https://github.com/thesephist/klisp/blob/main/lib/klisp.klisp](https://github.com/thesephist/klisp/blob/main/src/klisp.ink)
-- [https://github.com/thesephist/klisp/blob/main/lib/math.klisp](https://github.com/thesephist/klisp/blob/main/lib/math.klisp)
-
-SICL:
-
-- https://github.com/robert-strandh/SICL/tree/master
-  - https://github.com/s-expressionists/Incless
-  - https://github.com/s-expressionists/Invistra/tree/main/code
-
-ECL:
-
-- https://gitlab.com/embeddable-common-lisp/ecl/blob/develop/src/lsp/format.lsp -- format
-
-ABCL -- Armed Bear Common Lisp is a conforming implementation of ANSI Common Lisp that runs in a Java virtual machine. It compiles Lisp code directly to Java byte code.
-
-- https://github.com/slyrus/abcl/blob/master/src/org/armedbear/lisp/format.lisp -- format
-
-Clozure
-
-- https://github.com/Clozure/ccl/blob/003917cbbce90b7a7b5fa4bf90e9fe424e5637e9/lib/format.lisp -- format
-
----
-
-LISP 1.5 Programmer's Manual -- 1960
-
-- [https://www.softwarepreservation.org/projects/LISP/book/LISP%201.5%20Programmers%20Manual.pdf](https://www.softwarepreservation.org/projects/LISP/book/LISP%201.5%20Programmers%20Manual.pdf)
+MIT · [Alexander](https://github.com/alykoshin/)

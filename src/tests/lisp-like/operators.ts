@@ -4,19 +4,17 @@ import {
   Activity,
   ActivityActionsDefinition,
 } from '../../apps/runner/startup/Activities';
-import $sbcl from '../../host/sbcl-bridge';
-
 // prettier-ignore
 const actions: ActivityActionsDefinition = {
-  ...$sbcl,
+  // $sbcl comes from the built-in vocabulary now
   default: [
     'list',
     ['print', 'This will test operators'],
-    // ['test-plus'],
-    // ['test-minus'],
-    // ['test-mult'],
-    // ['test-div'],
-    // ['test-eq'],
+    ['test-plus'],
+    ['test-minus'],
+    ['test-mult'],
+    ['test-div'],
+    ['test-eq'],
     ['test-neq'],
     ['test-1+'],
     ['test-1-'],

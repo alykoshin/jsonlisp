@@ -125,72 +125,70 @@ const arithBiComp: Record<ArithComparisonOps, ArithComparisonFn> = {
   '<=': (a: number, b: number): boolean => a <= b,
 };
 
-type LogicalComparisonOps = 'and' | 'or';
-type LogicalBiFn = (a: boolean, b: boolean) => boolean;
-const logicalBiFns: Record<LogicalComparisonOps, LogicalBiFn> = {
-  and: (a: boolean, b: boolean): boolean => a && b,
-  or: (a: boolean, b: boolean): boolean => a || b,
-};
+// (the old calcBinary/biMap chain machinery was removed — see the CL
+// comparison semantics note below)
 
-type BiOps = ArithBinaryOps | ArithComparisonOps | LogicalComparisonOps;
-const biMap: typeof arithBiFns & typeof arithBiComp & typeof logicalBiFns = {
+/**
+ * CL comparison semantics:
+ * - `= < > <= >=` hold when every ADJACENT pair satisfies the relation
+ *   (monotone chain), e.g. (< 1 2 3);
+ * - `/=` holds when ALL PAIRS are distinct, e.g. (/= 1 2 1) => NIL;
+ * - `and`/`or` fold over all arguments (boolean approximation of CL's
+ *   last-value/first-value results — documented JL divergence).
+ * The previous machinery returned only the LAST pair's result, so
+ * (/= 1 1 2) and (and NIL T T) were wrong; `%`/`rem` were unmapped and
+ * threw on two args.
+ */
+const chainComparisonOps = ['=', '>', '<', '>=', '<='] as const;
+
+// CL: mod is floor-mod; rem (and the `%` JL-ism) is truncate-rem (JS %)
+const arithFoldFns: Record<string, (a: number, b: number) => number> = {
   ...arithBiFns,
-  ...arithBiComp,
-  ...logicalBiFns,
+  mod: (a, b) => ((a % b) + b) % b,
+  rem: (a, b) => a % b,
+  '%': (a, b) => a % b,
 };
-// type binaryOps = keyof typeof biOps;
-
-function calcBinary(
-  op: BiOps,
-  val1: any,
-  val2: any
-): {result: any; last: any; stop: boolean} {
-  switch (op) {
-    case '+':
-    case '-':
-    case '/':
-    case '*':
-    case 'mod':
-    case 'max':
-    case 'min':
-    case '=':
-    case '/=':
-    case '/=':
-      const fn = biMap[op];
-      if (typeof fn !== 'function') {
-        throw new Error(`Invalid bi-nary operation ${op}`);
-        // throw new Error(`Invalid opCode "${op}"`);
-      }
-      const res = fn(val1, val2);
-      return {result: res, last: val2, stop: false};
-    default:
-      throw new Error(`Invalid bi-nary operation ${op}`);
-    // throw new Error(`Invalid opCode "${op}"`);
-  }
-}
 
 export const operators: ExecutorFn = async function (action, args, state) {
   const {evaluate} = state;
   validateArgs(args, {minCount: 1});
+
   if (args.length === 1) {
     const v1 = await evaluate(args[0]);
     return calcUnary(action, v1);
-  } else {
-    let res;
-    const [p1, ...p_rest] = args;
-    let v_prev = await evaluate(p1);
-    // let v_prev = v1;
-    for (const p_curr of p_rest) {
-      const v_curr = await evaluate(p_curr);
-      const {result, last, stop} = calcBinary(action as BiOps, v_prev, v_curr);
-      res = result;
-      if (stop) {
-        break;
-      }
-      v_prev = last; //currValue;
-    }
-    return res;
   }
+
+  const values: any[] = [];
+  for (const p of args) {
+    values.push(await evaluate(p));
+  }
+
+  // all-pairs-distinct
+  if (action === '/=') {
+    for (let i = 0; i < values.length; i++)
+      for (let j = i + 1; j < values.length; j++)
+        if (values[i] === values[j]) return false;
+    return true;
+  }
+
+  // monotone chain over adjacent pairs
+  if ((chainComparisonOps as readonly string[]).includes(action)) {
+    const fn = arithBiComp[action as ArithComparisonOps];
+    for (let i = 1; i < values.length; i++)
+      if (!fn(values[i - 1], values[i])) return false;
+    return true;
+  }
+
+  // logical fold
+  if (action === 'and') return values.every((v) => !!v);
+  if (action === 'or') return values.some((v) => !!v);
+
+  // arithmetic fold
+  const fn = arithFoldFns[action];
+  if (typeof fn !== 'function') {
+    throw new Error(`Invalid bi-nary operation ${action}`);
+  }
+  return values.reduce((acc, v) => fn(acc, v));
 };
 
 type Reducer<T, U> = (

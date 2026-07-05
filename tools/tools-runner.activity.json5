@@ -30,43 +30,9 @@
       // ["shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
     ],
 
-    "-download-lisp-examples": [
-      "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator-downloader/download_lisp_examples.ts"
-    ],
-    "-cl2jl": [
-      "shell-command", ".\\node_modules\\.bin\\ts-node ./src/apps/translator/cl2jl.ts"
-    ],
-
-    "-save": [";", "$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"],
-
-    "-rebuild-grammar": [
-      "list",
-      ["$shelljs", "mkdir", "-p", "./resources/downloads/" ],
-      ["plist",
-        ["list",
-          ["str:to-file",  "./resources/downloads/lisp.pegjs", 
-            ["$axios", "get", "https://raw.githubusercontent.com/devijvers/lisp.js/master/lisp/grammar/lisp.pegjs"]],
-          ["plist",
-            ["shell-command", "node_modules\\.bin\\peggy -o resources/lisp.js resources/downloads/lisp.pegjs"],
-            ["shell-command", "node_modules\\.bin\\peggy --plugin ./node_modules/ts-pegjs/dist/tspegjs -o resources/downloads/lisp.ts resources/lisp.pegjs"]]],
-        ["list",
-          ["str:to-file",  "./resources/downloads/grammar.pegjs", 
-            ["$axios", "get", "https://raw.githubusercontent.com/honza/inertia/master/inertia/grammar.pegjs"]],
-          ["plist",
-            ["shell-command", "node_modules\\.bin\\peggy -o resources/grammar.js resources/downloads/grammar.pegjs"],
-            ["shell-command", "node_modules\\.bin\\peggy --plugin ./node_modules/ts-pegjs/dist/tspegjs -o resources/grammar.ts resources/downloads/grammar.pegjs"]]]
-      ]
-    ],
-
-    "-dl-3rd": [
-      "list",
-      ["setq", "$$path", "./resources/downloads/" ],
-      ["$shelljs", "mkdir", "-p", "${ $$path }" ],
-      ["plist",
-        ["str:to-file",  "${ $$path }sourceforge.net_p_sbcl_sbcl_ci_master_tree_src_code_pred.lisp", 
-          ["$axios", "get", "https://sourceforge.net/p/sbcl/sbcl/ci/master/tree/src/code/pred.lisp?format=raw"]]
-      ]
-    ],
+    // (dead actions removed: -download-lisp-examples / -cl2jl referenced
+    //  src/apps/translator* and -rebuild-grammar / -dl-3rd referenced
+    //  resources/ — neither exists in this repo; see lisp2jl)
 
     "-test-git-clean": [
       "list",
@@ -97,12 +63,11 @@
         ".\\node_modules\\.bin\\jsdoc ./src/actions/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
     "test-core-primitives": [
       "list",
-      ["shell-command", 
+      ["shell-command",
         "ts-node ./src/apps/test-runner/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
     "test-main": [
       "list",
-      ["shell-command", 
-        "ts-node ./src/cli.ts ./src/tests/lisp-like/conditionals.jl.ts", { "cwd": "./", "env": {} } ]],
+      ["shell-command", "npm test", { "cwd": "./", "env": {} } ]],
     "build-add-commit-push": [ "list",
       ["_build"], 
       ["git-add"], 

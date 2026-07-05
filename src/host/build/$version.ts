@@ -53,9 +53,9 @@ export const $version: ExecutorFn = async function $version(
     } catch (e) {
       logger.error(
         [
-          `Please check if you have installed following prerequisites:`,
-          `- yarn (npm i -g yarn);`,
-          `- yarn version plugin (yarn plugin import version).`,
+          `"${NPM_CMD}" failed. Most common cause: npm version requires a`,
+          `CLEAN git working tree — commit or stash changes first`,
+          `(the repo's own release flow commits before versioning).`,
         ].join('\n')
       );
       throw e;

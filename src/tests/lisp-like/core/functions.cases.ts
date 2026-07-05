@@ -21,7 +21,7 @@ export const cases: TestCase[] = [
   //
   [  ["defun", "test1", [], ['atom', 1] ],
     "( defun    test1   ()  ( atom   1) )",
-    `This fails because we are case-sensitive at the moment, while LISP isn't`],
+    `symbols compare case-insensitively (CL upcases them)`],
   
   [  ["defun", "TEST1", [], ['atom', 1] ],
     "( defun    test1   ()  ( atom   1) )"],

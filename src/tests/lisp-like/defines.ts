@@ -13,7 +13,10 @@ export const config: Activity = {
     ],
     "test_setq": [ 'list',
       [ 'setq', 'abc', 1 ],
-      [ 'assert-equal', '${abc}', 1 ],
+      // bare name = variable lookup -> the value itself
+      [ 'assert-equal', 'abc', 1 ],
+      // ${...} = template interpolation -> always a STRING
+      [ 'assert-equal', '${abc}', '1' ],
     ],
     'testTemplate': ['print', 'This output is based on template and scope: { test: "${test}" }'],
   },

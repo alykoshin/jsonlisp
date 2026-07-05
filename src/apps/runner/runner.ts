@@ -47,13 +47,15 @@ export class Runner {
     const logLevel = this.errorLevel ?? 'log';
 
     const scopes = scope ? new Scopes<Atom>([scope]) : new Scopes<Atom>();
+    // Scopes are constructed fresh from the data param on every init —
+    // nothing carries over between runs (the old "clean up the scopes"
+    // warning was vestigial).
     const st = makeEvaluator({
       actions: this.actions,
       scopes,
       errorLevel: logLevel,
       tracer: this.tracer,
     });
-    st.logger.warn(`need to clean up the scopes on start`);
     return st;
   }
 

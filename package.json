@@ -7,29 +7,18 @@
   "bin": "dist/cli.js",
   "typings": "dist/index.d.ts",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json5",
-    "start-activity-openssl": "ts-node ./src/cli.ts ./src/activities/openssl/index.ts",
-    "test-core": "ts-node ./src/apps/test-runner/core-test-runner.ts",
-    "check:layers": "node ./scripts/check-layers.js",
+    "start-js": "node ./dist/cli.js",
     "build": "npm start build",
-    "start-ts-no-esm": "ts-node ./src/cli.ts",
-    "start-ts": "ts-node --esm ./src/cli.ts",
-    "start-gen-certs": "ts-node --esm ./src/cli.ts src/activities/openssl/index.ts -f .src/activities/openssl/examples/gen-certs.config.json",
-    "start-js": "node ./dist/cli.js",
-    "start-ts-esm-node": "node --experimental-specifier-resolution=node --loader ts-node/esm  ./src/cli.ts"
-  },
-  "_scripts": {
-    "build": "echo \"WARN: dist/ is added to Git\" && npm run clean && mkdir dist && npm run build:server",
-    "build:server": "tsc -d",
-    "start": "ts-node --esm ./src/cli.ts",
-    "start-js": "node ./dist/cli.js",
-    "version_": "echo \"\n*** tsc:\" && tsc --version && echo \"\n*** ts-node:\" && ts-node -vvv",
-    "clean": "shx rm -rf dist",
-    "lint": "eslint src/*.ts test/*.ts",
-    "watch": "tsc -w"
+    "test": "npm run check:layers && npm run test-core && npm run test:jl",
+    "test-core": "ts-node ./src/apps/test-runner/core-test-runner.ts",
+    "test:jl": "node ./scripts/run-jl-tests.js",
+    "check:layers": "node ./scripts/check-layers.js",
+    "start-activity-openssl": "ts-node ./src/cli.ts ./src/activities/openssl/index.ts",
+    "start-gen-certs": "ts-node ./src/cli.ts ./src/activities/openssl/index.ts gen_all -f ./src/activities/openssl/examples/gen-certs.config.json"
   },
   "repository": {
     "type": "git",
