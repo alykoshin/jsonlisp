@@ -51,7 +51,8 @@ exports.actions = {
     /** @name get-env-var */
     'get-env-var': async function (_, args, { evaluate, logger }) {
         (0, validate_args_1.validateArgs)(args, { exactCount: 1 });
-        const name = evaluate(args[0]);
+        // NB: was missing `await` — ensureString always threw on the Promise
+        const name = await evaluate(args[0]);
         (0, sexpr_1.ensureString)(name);
         return process.env[name];
     },
