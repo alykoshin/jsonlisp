@@ -186,6 +186,25 @@ Both precedents existed in the codebase before the mechanism (`str:to-file`;
 
 ---
 
+## Semantics changes vs. pre-layers JL (2026-07, v0.0.58+)
+
+Behavior-visible changes made while aligning to CL (SBCL as referee).
+Fixes of crashes/dead code are not listed (see git log); these are the cases
+where the OLD behavior worked but differed:
+
+| Form | Before | After (CL) |
+| --- | --- | --- |
+| `car`, `nth` (→ `first` `second` `third`) | re-evaluated the extracted element | return it as data |
+| `cdr` of 1-element list (→ `rest`) | `[]` | `NIL` (both are nil to `isNil`) |
+| `if` | branch selection via re-evaluating accessors; else-branch unreachable | evaluates test, then its own branch |
+| `setq` | evaluated the variable name (crashed on rebind) | name taken literally; use a future `set` for computed names |
+| `cons x NIL` | threw | `[x]` |
+| `= < > <= >=` (3+ args) | only the LAST pair's result | all adjacent pairs must hold |
+| `/=` (3+ args) | last pair only | all pairs distinct |
+| `and` / `or` (3+ args) | last pair only | fold over all args (booleans — CL returns values; divergence) |
+| `mod` with negatives | JS `%` (truncate): `mod(-7,3) = -1` | floor-mod: `= 2`; `rem`/`%` remain truncate |
+| `print`/`princ`/`prin1` arity | (unchanged — always 1 arg) | confirmed CL-strict: exactly one object |
+
 ## Acceptance gates for the layering
 
 1. **Meta-circular** (kernel): Graham's `eval.` in JL runs via the CLI, matches SBCL.

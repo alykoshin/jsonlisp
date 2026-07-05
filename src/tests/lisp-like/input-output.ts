@@ -32,7 +32,8 @@ export const config: Activity = {
     ],
     "test_print": [ 'list',
       [ 'print', 'str1' ],
-      [ 'print', 'str2', 'str3', 'str4' ],
+      // CL: print takes exactly one object
+      [ 'print', 'str2' ], [ 'print', 'str3' ], [ 'print', 'str4' ],
       [ 'assert-equal', [ 'print', true ], true ],
       [ 'assert-equal', [ 'print', false ], false ],
       [ 'assert-equal', [ 'print', 123 ], 123 ],

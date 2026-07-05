@@ -9,38 +9,34 @@ export const config: Activity = {
   actions: {
     default: [
       'list',
+      ['test-chdir'],
+      ['test-setenv'],
+      ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
+    ],
 
-      ['print',
-        ['setq', 'orig_path',
-          ['getcwd'] ] ],
+    'test-chdir': ['list',
+      ['setq', 'orig_path', ['getcwd']],
+      ['chdir', '/'],
+      // on Windows getcwd() after chdir('/') is the drive root, e.g. D:\
+      ['assert-false', ['eq', ['getcwd'], 'orig_path']],
+      ['chdir', '${orig_path}'],
+      ['assert-equal', ['getcwd'], 'orig_path'],
+    ],
 
-      ['chdir', '/' ],
-      ['print',
-        ['getcwd'] ],
-
-      ['chdir', '${orig_path}' ],
-      ['print',
-        ['getcwd']],
-
+    'test-setenv': ['list',
       ['setenv', 'setenv-test-key', 'setenv-test-value-1', 1],
-      ['print', '>>>'],
-      ['print',
-        ['getenv', 'setenv-test-key']],
+      ['assert-equal', ['getenv', 'setenv-test-key'], 'setenv-test-value-1'],
 
+      // overwrite = 1: value replaced
       ['setenv', 'setenv-test-key', 'setenv-test-value-2', 1],
-      ['print', '>>>'],
-      ['print',
-        ['getenv', 'setenv-test-key']],
+      ['assert-equal', ['getenv', 'setenv-test-key'], 'setenv-test-value-2'],
 
-      ['setenv', 'setenv-test-key', 'setenv-test-value-2', 0],
-      ['print', '>>>'],
-      ['print',
-        ['getenv', 'setenv-test-key']],
+      // overwrite = 0: existing value kept
+      ['setenv', 'setenv-test-key', 'setenv-test-value-3', 0],
+      ['assert-equal', ['getenv', 'setenv-test-key'], 'setenv-test-value-2'],
 
       ['unsetenv', 'setenv-test-key'],
-      ['print', '>>>'],
-      ['print',
-        ['getenv', 'setenv-test-key']],
+      ['assert-false', ['getenv', 'setenv-test-key']],
     ],
   },
 };

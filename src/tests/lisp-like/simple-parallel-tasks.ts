@@ -9,8 +9,17 @@ export const config: Activity = {
   actions: {
 
     default: [ 'list',
-      // ['test-plist1'],
+      ['test-plist1'],
       ['test-plist2'],
+      ['test-plist-result'],
+      ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
+    ],
+
+    // plist returns the results of its branches, evaluated in parallel
+    'test-plist-result': ['list',
+      ['assert-equal',
+        ['plist', ['+', 1, 2], ['+', 3, 4]],
+        ['quote', [3, 7]]],
     ],
 
     'test-plist1': ['list',
@@ -32,11 +41,11 @@ export const config: Activity = {
       ['plist',
         ['list',
           ['print', 'series-2-parallel-1-series-1'],
-          ['sleep', 5],
+          ['sleep', 1],
           ['print', 'series-2-parallel-1-series-2'],],
         ['list',
           ['print', 'series-2-parallel-2-series-1'],
-          ['sleep', 5],
+          ['sleep', 1],
           ['print', 'series-2-parallel-2-series-2'],],],
     ],
 

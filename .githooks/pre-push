@@ -1,0 +1,12 @@
+#!/bin/sh
+# Local CI substitute (GitHub Actions unavailable): run the full gate before
+# push. Enable once with:  npm run hooks:install
+# Skip for a single push with:  git push --no-verify
+# Requires SBCL on PATH.
+
+echo "pre-push: running npm test (skip with --no-verify)..."
+npm test || {
+  echo ""
+  echo "pre-push: npm test FAILED — push aborted."
+  exit 1
+}

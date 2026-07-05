@@ -13,9 +13,9 @@ export const config: Activity = {
       'list',
       [ 'test-cond' ],
       [ 'test-if' ],
-      // [ 'test-when' ],
-      // [ 'test-unless' ],
-      // [ 'test-zerop' ],
+      [ 'test-when' ],
+      [ 'test-unless' ],
+      [ 'test-zerop' ],
       ['princ', 'assert-x:\n'+'  OK:   ${ assert_ok_count }\n'+'  FAIL: ${ assert_fail_count }'],
     ],
 
