@@ -112,7 +112,12 @@ inline *are* our kernel.
 1. **Every action is a special form.** Named actions receive *unevaluated*
    arguments and call `evaluate`/`evlis` themselves. In McCarthy/CL, functions
    get evaluated arguments and special operators are a closed set; in JL the set
-   is open (closer to fexprs). Only lambda-form application is applicative.
+   is open (closer to fexprs). The exception is canonical: closures made by
+   `lambda`/`defun` (kernel/lambda, tagged `isClosure`) are applicative — the
+   evaluator evlis-es their arguments exactly once, in the caller's
+   environment, at the single invocation site (`execFunction`, eval/apply.ts),
+   and the closure only binds values. This is McCarthy's split: `eval.` runs
+   `evlis.`, apply binds (SICP §4.1, CLHS 3.1.2.1.2.3).
 2. **Unbound symbol → templated string.** McCarthy's `(assoc. e a)` fails on
    unbound symbols; JL falls back to treating the string as a literal with
    `${…}` interpolation against the scope. This is the jsonScript data-binding
@@ -156,7 +161,7 @@ paper's order:
 | seven primitives                                 | `primitives.ts`                    | done   |
 | `lambda`, `label` (as `defun`)                   | `lambda.ts`                        | done   |
 | derived: `null.` `and.` `not.` `append.` `list.` `pair.` `assoc.` | `derived.ts`      | done   |
-| `eval.` `evcon.` `evlis.` (meta-circular)        | `src/tests/lisp-like/jmc-eval.jl.ts` | done — 14/14 incl. the label/subst example |
+| `eval.` `evcon.` `evlis.` (meta-circular)        | `src/tests/kernel/jmc-eval.jl.jsonc` | done — 14/14 incl. the label/subst example |
 
 The derived functions are written *in JL itself* (via `createExecutorFn`),
 mirroring the paper's self-hosting construction — `_` replaces Graham's `.`
@@ -247,6 +252,7 @@ where the OLD behavior worked but differed:
 | `and` / `or` (3+ args) | last pair only | fold over all args (booleans — CL returns values; divergence) |
 | `mod` with negatives | JS `%` (truncate): `mod(-7,3) = -1` | floor-mod: `= 2`; `rem`/`%` remain truncate |
 | `print`/`princ`/`prin1` arity | (unchanged — always 1 arg) | confirmed CL-strict: exactly one object |
+| closure (`lambda`/`defun`) arguments | inline application `[["lambda",…],…]` evaluated args TWICE (evlis at the call site, again in the closure) — quoted data got executed; named calls evaluated once | evaluated exactly once, in the caller's environment, at the single invocation site (`execFunction`; closures tagged `isClosure`, apply only binds — McCarthy/SICP/CLHS 3.1.2.1.2.3) |
 
 ## Acceptance gates for the layering
 

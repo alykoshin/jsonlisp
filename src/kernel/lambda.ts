@@ -21,7 +21,6 @@ import {
   ExecutorFn,
   ensureString,
 } from '../eval/sexpr';
-import {series} from '../eval/evlis';
 import {validateArgs} from '../eval/validate-args';
 import {passArgs} from './passArgs';
 
@@ -34,9 +33,11 @@ export const createExecutorFn = function (
 ): ExecutorFn {
   ensureList(argnames);
   ensureList(body);
+  // Applicative, per the paper: `evlis.` runs inside eval, once, in the
+  // caller's environment — here that is execFunction (apply.ts), which sees
+  // the isClosure tag and evlis-es the args. The closure only binds values.
   const fn: ExecutorFn = async function lambda(_, argvalues, st) {
     const {logger} = st;
-    argvalues = await series(argvalues, st);
 
     const sc = passArgs(argnames, argvalues);
     logger.debug('lambda:execute: scope:', sc, ',body:', body);
@@ -51,6 +52,7 @@ export const createExecutorFn = function (
 
     return res;
   };
+  fn.isClosure = true;
   return fn;
 };
 

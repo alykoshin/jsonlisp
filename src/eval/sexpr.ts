@@ -147,11 +147,16 @@ export function isFunction(val: any): val is Function {
   return jsTypeCheck.function(val);
 }
 
-export type ExecutorFn = (
-  name: string,
-  args: Parameters,
-  state: State
-) => Promise<Parameter>;
+export type ExecutorFn = {
+  (name: string, args: Parameters, state: State): Promise<Parameter>;
+  /**
+   * Marks closures made by kernel/lambda's createExecutorFn: applicative —
+   * the evaluator evlis-es their arguments at the call site (SICP §4.1,
+   * CLHS 3.1.2.1.2.3) and the closure only binds values. Absent = special
+   * form: receives raw, unevaluated arguments (divergence 1, ARCHITECTURE.md).
+   */
+  isClosure?: boolean;
+};
 
 export function ensureFunction(
   val: Parameter,

@@ -18,6 +18,10 @@ export const cases: TestCase[] = [
   [  [["lambda",["a","b"],['atom',['quote',[1,2]]]],11,22 ],
     "(( lambda  ( a   b)  ( atom  ( quote  (1 2)))) 11 22 )"
   ],
+  [  [["lambda", ["x"], ["cons", "x", ["quote", []]]], ["quote", ["print", 999]]],
+    "(( lambda  ( x)  ( cons  x ( quote  ()))) ( quote  ( print  999)))",
+    `args are evaluated exactly once (evlis at the call site, apply binds):
+     quoted data must come through unevaluated, never executed`],
   //
   [  ["defun", "test1", [], ['atom', 1] ],
     "( defun    test1   ()  ( atom   1) )",

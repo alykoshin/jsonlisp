@@ -25,10 +25,15 @@ export function defpackage(
     // `pkg:sym` names the same symbol as `sym` — executors that dispatch on
     // their invoked name (e.g. the cl/numbers operators family) must receive
     // the bare symbol name, not the qualified spelling.
-    out[`${pkg}:${name}`] =
-      typeof def === 'function'
-        ? (((_, args, st) => (def as ExecutorFn)(name, args, st)) as ExecutorFn)
-        : def;
+    if (typeof def === 'function') {
+      const qualified: ExecutorFn = (_, args, st) =>
+        (def as ExecutorFn)(name, args, st);
+      // applicative/special-form nature must survive qualification
+      qualified.isClosure = (def as ExecutorFn).isClosure;
+      out[`${pkg}:${name}`] = qualified;
+    } else {
+      out[`${pkg}:${name}`] = def;
+    }
     if (opts.use !== false) out[name] = def;
   }
   return out;

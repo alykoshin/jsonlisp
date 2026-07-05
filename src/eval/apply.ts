@@ -5,10 +5,12 @@
  * [machinery] The application half of the eval/apply pair (SICP §4.1):
  * resolving a named action and invoking an executor function.
  *
- * `evaluateListList` is lambda-form application — the only applicative-order
- * spot in the evaluator: outer args are pre-evaluated (evlis), unlike named
- * actions, which receive raw args (every action is a special form — see
- * ARCHITECTURE.md, divergence 1).
+ * `execFunction` is the single invocation site and carries the canonical
+ * function/special-operator split: closures (isClosure, made by
+ * kernel/lambda) are applicative — their args are evlis-ed here, exactly
+ * once, in the caller's environment (McCarthy's eval does evlis; apply only
+ * binds values — SICP §4.1, CLHS 3.1.2.1.2.3). Everything else is a special
+ * form and receives raw args (ARCHITECTURE.md, divergence 1).
  */
 
 import {
@@ -44,7 +46,7 @@ export const execNamedAction = async (
   }
 };
 
-/** The single error-wrapping site for executor invocation. */
+/** The single invocation (and error-wrapping) site for executors. */
 export const execFunction = async (
   fn: ExecutorFn,
   name: string,
@@ -53,7 +55,10 @@ export const execFunction = async (
 ): Promise<Expression> => {
   st.logger.debug(`evaluateFunction: "${name}"`);
   try {
-    return fn.call(st, name, args, st);
+    // closures are applicative: evlis once, in the caller's environment;
+    // special forms receive their args raw
+    const argv = fn.isClosure ? await series(args, st) : args;
+    return fn.call(st, name, argv, st);
   } catch (e1) {
     throw new EvaluationError([name, ...args], `Error executing "${fn}"`, {
       cause: e1,
@@ -74,14 +79,9 @@ export async function evaluateListList(
 
   st = st.newNextUp(inner_arg0);
 
-  const outer_arg_values = await series(outer_args, st);
-
-  st.logger.debug(`evaluateListList: outer_arg_values:`, outer_arg_values);
-
   const preparedFn = await execNamedAction(inner_arg0, inner_args, st);
   ensureFunction(preparedFn);
 
-  const res = preparedFn(inner_arg0, outer_arg_values, st);
-
-  return res;
+  // args go in raw; execFunction evlis-es them iff preparedFn is a closure
+  return execFunction(preparedFn as ExecutorFn, inner_arg0, outer_args, st);
 }
