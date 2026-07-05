@@ -8,6 +8,12 @@ import { ExecutorFn, Actions } from '../../eval/sexpr';
  */
 export declare const $sbcl: ExecutorFn;
 /**
+ * @name $parse-sbcl-list
+ * The reader alone: parse an SBCL-printed string into JL, without running
+ * SBCL (see reader.ts, vendored from lisp2jl).
+ */
+export declare const $parseSbclList: ExecutorFn;
+/**
  * @name $sbcl-to-list
  */
 export declare const $sbclToList: ExecutorFn;

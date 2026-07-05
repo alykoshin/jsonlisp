@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.$sbclToList = exports.$sbcl = void 0;
+exports.$sbclToList = exports.$parseSbclList = exports.$sbcl = void 0;
 const sexpr_1 = require("../../eval/sexpr");
 const reader_1 = require("./reader");
 const exec_prepare_1 = require("./exec-prepare");
@@ -53,6 +53,15 @@ exports.$sbcl = $sbcl;
 //     );
 // },
 /**
+ * @name $parse-sbcl-list
+ * The reader alone: parse an SBCL-printed string into JL, without running
+ * SBCL (see reader.ts, vendored from lisp2jl).
+ */
+const $parseSbclList = async function (_, args, { evaluate, logger }) {
+    return (0, reader_1.parse_sbcl_list)(String(await evaluate(args[0])), { logger });
+};
+exports.$parseSbclList = $parseSbclList;
+/**
  * @name $sbcl-to-list
  */
 const $sbclToList = async function (_, args, { evaluate, logger }) {
@@ -96,6 +105,7 @@ const actions = {
     //       [ `$sbcl`, params[0] ] ]
     //     );
     // },
+    '$parse-sbcl-list': exports.$parseSbclList,
     '$sbcl-to-list': exports.$sbclToList,
 };
 exports.default = actions;
