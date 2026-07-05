@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** @format */
 
+import {inspect} from 'util';
 import * as _ from 'lodash';
 import JSON5 from 'json5';
 import {Command} from 'commander';
@@ -154,7 +155,12 @@ program
 `
   );
 
-program.parse();
+// the action handler is async: parse() would leave its rejection unhandled
+// (ERR_UNHANDLED_REJECTION; non-Error reasons print as "#<Object>")
+program.parseAsync().catch((e: unknown) => {
+  console.error(e instanceof Error ? e : inspect(e, {depth: 6}));
+  process.exitCode = 1;
+});
 
 /*
 async function start() {
