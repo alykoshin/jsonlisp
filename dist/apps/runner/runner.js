@@ -19,8 +19,12 @@ class Runner {
         //
         // `this.actions` must be populated before creating the environment
         if (activities) {
+            // like CL's (require :sb-posix): an activity may restrict the
+            // vocabulary to core + declared packages (see actions/assemble)
+            const requires = activities.requires();
+            const base = requires ? (0, actions_1.assemble)(requires) : this.actions;
             this.actions = {
-                ...this.actions,
+                ...base,
                 ...activities.actions(),
             };
         }

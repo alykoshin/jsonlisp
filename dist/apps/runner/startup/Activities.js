@@ -49,6 +49,21 @@ class Activities extends Plugins_1.Plugins {
             return acc;
         }, log_1.DEFAULT_ERROR_LEVEL);
     }
+    /**
+     * Union of `requires` across all plugged activities; undefined when no
+     * activity declares one (-> full vocabulary).
+     */
+    requires() {
+        let declared = false;
+        const all = [];
+        Object.values(this.plugins).forEach((p) => {
+            if (p.requires) {
+                declared = true;
+                all.push(...p.requires);
+            }
+        });
+        return declared ? all : undefined;
+    }
 }
 exports.Activities = Activities;
 //# sourceMappingURL=Activities.js.map

@@ -73,6 +73,20 @@ exports.actions = {
         logger.debug(`${name} = ${(0, printer_1.stringify)(value)}`);
         return value;
     },
+    /**
+     * @name set
+     * CL: unlike setq, `set` EVALUATES the name — for computed variable
+     * names: (setq nm 'dyn) (set nm 42) assigns to `dyn`.
+     */
+    set: async function (_, args, { evaluate, scopes, logger }) {
+        (0, validate_args_1.validateArgs)(args, { exactCount: 2 });
+        const name = await evaluate(args[0]);
+        (0, sexpr_1.ensureString)(name, `Expect string as a name of variable`);
+        const value = await evaluate(args[1]);
+        scopes.current().set(name, value);
+        logger.debug(`${name} = ${(0, printer_1.stringify)(value)}`);
+        return value;
+    },
     /** @name prog1 */
     prog1: async function (_, args, st) {
         return (0, evlis_1.series1)(args, st);
