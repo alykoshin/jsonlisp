@@ -48,17 +48,14 @@ exports.list = list;
 /** @name nth */
 const nth = async (_, args, st) => {
     (0, validate_args_1.validateArgs)(args, { exactCount: 2 });
-    console.log('nth:args:', JSON.stringify(args));
-    // return fn_nth(params[0], params[1], evaluate);
     const idx = await st.evaluate(args[0]);
     (0, sexpr_1.ensureNumber)(idx);
-    console.log('nth:idx:', JSON.stringify(idx));
     const list = await st.evaluate(args[1]);
     (0, sexpr_1.ensureList)(list);
-    console.log('nth:list:', JSON.stringify(list));
-    const res = await st.evaluate(await _nth(idx, list));
-    console.log('nth:res:', JSON.stringify(res));
-    return res;
+    // CL: nth returns the element as DATA — it must not re-evaluate it
+    // (kernel car/cdr behave the same way; `if` used to depend on the old
+    // re-evaluating behavior and evaluates its own branch now).
+    return _nth(idx, list);
 };
 exports.nth = nth;
 /** @name second */

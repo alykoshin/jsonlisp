@@ -7,9 +7,12 @@ exports.config = {
     base_dir: '.',
     version: '0.0.0',
     actions: {
+        // NB: this is a DEMO of the lisp-unit assertions — half of these
+        // asserts fail BY DESIGN to show failure reporting. Do not include in
+        // green-gate test runs (scripts/run-jl-tests.js).
         default: [
             'list',
-            ['print', 'This will test operators'],
+            ['print', 'This will test lisp-unit assertions (4 fail by design)'],
             ['assert-true', true],
             ['assert-true', false],
             ['assert-false', true],

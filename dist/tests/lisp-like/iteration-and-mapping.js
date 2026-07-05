@@ -1,23 +1,19 @@
 "use strict";
 /** @format */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activity = void 0;
-const sbcl_bridge_1 = __importDefault(require("../../host/sbcl-bridge"));
 // prettier-ignore
 const actions = {
-    ...sbcl_bridge_1.default,
+    // $sbcl comes from the built-in vocabulary now
     default: [
         'list',
         ['print', 'This will test Iteration and mapping'],
-        // ['test-prog1'],
-        // ['test-prog2'],
-        // ['test-progn'],
+        ['test-prog1'],
+        ['test-prog2'],
+        ['test-progn'],
         ['test-mapc'],
-        // ['test-mapcar'],
-        // ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
+        ['test-mapcar'],
+        ['princ', 'assert-x:\n' + '  OK:   ${ assert_ok_count }\n' + '  FAIL: ${ assert_fail_count }'],
     ],
     'test-prog1': [
         'list',
@@ -44,10 +40,9 @@ const actions = {
             ['mapc', ['quote', '1+'], [100, 10, 1]],
             ['$sbcl-to-list', "(mapc '1+ (list 100 10 1) )"],
         ],
-        // !
-        // ['assert-equal', [ "mapc", ['quote', '1-'], [100, 10, 1]], [ "$sbcl-to-list",  "(mapc '1- (list 100 10 1) )" ] ],
-        // ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2, 3], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2 3) (list 1 2 3) )" ] ],
-        // ['assert-equal', [ "mapc", ['quote', '+' ], [1, 2], [1, 2, 3]], [ "$sbcl-to-list",  "(mapc '+ (list 1 2) (list 1 2 3) )" ] ],
+        ['assert-equal', ["mapc", ['quote', '1-'], [100, 10, 1]], ["$sbcl-to-list", "(mapc '1- (list 100 10 1) )"]],
+        ['assert-equal', ["mapc", ['quote', '+'], [1, 2, 3], [1, 2, 3]], ["$sbcl-to-list", "(mapc '+ (list 1 2 3) (list 1 2 3) )"]],
+        ['assert-equal', ["mapc", ['quote', '+'], [1, 2], [1, 2, 3]], ["$sbcl-to-list", "(mapc '+ (list 1 2) (list 1 2 3) )"]],
     ],
     'test-mapcar': [
         'list',

@@ -10,6 +10,18 @@ const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp
 const exec_prepare_1 = require("../../host/sbcl-bridge/exec-prepare");
 const exec_1 = require("../../lib/exec");
 const runner_1 = require("../runner/runner");
+/**
+ * CL upcases symbol names (TEST1) while JL spells symbols as lowercase
+ * strings and cannot distinguish symbols from string data — so the
+ * comparison folds case on both sides (CL readers are case-insensitive).
+ */
+function foldSymbolCase(e) {
+    if (typeof e === 'string')
+        return e.toLowerCase();
+    if ((0, sexpr_1.isList)(e))
+        return e.map((x) => foldSymbolCase(x));
+    return e;
+}
 const testRunner = async function (actions, exprJlIn, strSbclIn
 // {actions, evaluate}: {actions: Actions; evaluate: EvaluateFn}
 // st: State
@@ -44,7 +56,8 @@ const testRunner = async function (actions, exprJlIn, strSbclIn
             };
         }
         // console.log('>>>>', sbclParsed, exprJlOut);
-        const ok = JSON.stringify(exprSbclOut) === JSON.stringify(exprJlOut) ||
+        const ok = JSON.stringify(foldSymbolCase(exprSbclOut)) ===
+            JSON.stringify(foldSymbolCase(exprJlOut)) ||
             ((0, booleans_1.isNil)(exprSbclOut) && (0, booleans_1.isNil)(exprJlOut));
         return {
             ...res,

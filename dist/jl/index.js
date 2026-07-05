@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 /**
- * @module documentation
+ * @module jl
+ * JL's own dialect extensions — not ANSI, not third-party: '?' (describe)
+ * and ';' (comment). The analog of SB-EXT: what this implementation adds.
  *
  * @description
  * Seems there is no single command to print all the variables in the Lisp
