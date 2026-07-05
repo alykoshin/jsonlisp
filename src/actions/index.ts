@@ -9,14 +9,20 @@
  *   quicklisp/ — third-party CL systems (trivial-shell, lisp-unit, …)
  *   jl/        — JL's own dialect extensions
  *   host/      — non-Lisp, $-marked npm/host tooling
- * All action names within the language buckets are unique, so spread order
- * only matters for kernel-vs-cl (kernel first; cl may consciously extend).
+ *
+ * Every Lisp-world action is registered under BOTH its package-qualified
+ * name (cl:car, sb-posix:getenv, jmc:null_, …) and its bare name
+ * (defpackage = CL's package system; bare aliases = use-package).
+ * Host actions keep their `$` convention, unqualified.
  */
 
 import {Actions} from '../eval/sexpr';
+import {defpackage} from '../eval/package';
 
 import eval_ from '../eval/eval';
-import kernel from '../kernel';
+import primitives from '../kernel/primitives';
+import lambda from '../kernel/lambda';
+import derived from '../kernel/derived';
 import cl from '../cl';
 import jl from '../jl';
 
@@ -34,18 +40,21 @@ import buildActions from '../host/build';
 import osActions from '../host/os';
 
 export const actions: Actions = {
-  ...kernel,
-  ...eval_,
-  ...cl,
-  ...jl,
+  // the COMMON-LISP package: kernel primitives + lambda/defun are CL
+  // symbols, as are eval and everything in cl/
+  ...defpackage('cl', {...primitives, ...lambda, ...eval_, ...cl}),
+  // the paper's derived functions (null_ and_ not_ append_ list_ pair_ assoc_)
+  ...defpackage('jmc', derived),
+  // JL's own dialect extensions
+  ...defpackage('jl', jl),
   //
-  ...sbPosix,
+  ...defpackage('sb-posix', sbPosix),
   //
-  ...alexandria,
-  ...str,
-  ...lispUnit,
-  ...simpleParallelTasks,
-  ...trivialShell,
+  ...defpackage('alexandria', alexandria),
+  ...defpackage('str', str),
+  ...defpackage('lisp-unit', lispUnit),
+  ...defpackage('simple-parallel-tasks', simpleParallelTasks),
+  ...defpackage('trivial-shell', trivialShell),
   //
   ...buildActions,
   ...osActions,

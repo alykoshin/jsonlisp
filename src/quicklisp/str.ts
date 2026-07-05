@@ -9,7 +9,9 @@ import {Actions, ExecutorFn, ensureString} from '../eval/sexpr';
  * @module quicklisp/str
  * cl-str — "A modern and consistent Common Lisp string manipulation library"
  * {@link https://github.com/vindarel/cl-str}
- * Package prefix `str:` is part of the historical action names.
+ * Action names here are bare; the assembler wraps them with
+ * defpackage('str', …), producing the historical `str:to-file` /
+ * `str:from-file` plus bare aliases.
  */
 
 /**
@@ -57,8 +59,8 @@ export const strToFile: ExecutorFn = async function (
 };
 
 export const actions: Actions = {
-  'str:to-file': strToFile,
-  'str:from-file': strFromFile,
+  'to-file': strToFile,
+  'from-file': strFromFile,
 };
 
 export default actions;
