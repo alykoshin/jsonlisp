@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.$sbclToList = exports.$sbcl = void 0;
 const sexpr_1 = require("../../eval/sexpr");
-const lisp2jl_primitive_1 = require("lisp2jl/dist/apps/translator-primitive/lisp2jl-primitive");
+const reader_1 = require("./reader");
 const exec_prepare_1 = require("./exec-prepare");
 /**
  * @module $sbcl
@@ -56,7 +56,7 @@ exports.$sbcl = $sbcl;
  * @name $sbcl-to-list
  */
 const $sbclToList = async function (_, args, { evaluate, logger }) {
-    return (0, lisp2jl_primitive_1.parse_sbcl_list)(String(await evaluate([`$sbcl`, args[0]])), {
+    return (0, reader_1.parse_sbcl_list)(String(await evaluate([`$sbcl`, args[0]])), {
         logger,
     });
 };
