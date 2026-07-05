@@ -16,16 +16,17 @@ exports.actions = exports.defun = exports.lambda = exports.createExecutorFn = vo
  *   {@link http://clhs.lisp.se/Body/f_apply.htm}
  */
 const sexpr_1 = require("../eval/sexpr");
-const evlis_1 = require("../eval/evlis");
 const validate_args_1 = require("../eval/validate-args");
 const passArgs_1 = require("./passArgs");
 //
 const createExecutorFn = function (name, argnames, body) {
     (0, sexpr_1.ensureList)(argnames);
     (0, sexpr_1.ensureList)(body);
+    // Applicative, per the paper: `evlis.` runs inside eval, once, in the
+    // caller's environment — here that is execFunction (apply.ts), which sees
+    // the isClosure tag and evlis-es the args. The closure only binds values.
     const fn = async function lambda(_, argvalues, st) {
         const { logger } = st;
-        argvalues = await (0, evlis_1.series)(argvalues, st);
         const sc = (0, passArgs_1.passArgs)(argnames, argvalues);
         logger.debug('lambda:execute: scope:', sc, ',body:', body);
         st = st.newNextUp(name);
@@ -36,6 +37,7 @@ const createExecutorFn = function (name, argnames, body) {
         logger.debug('lambda:execute: res:', res);
         return res;
     };
+    fn.isClosure = true;
     return fn;
 };
 exports.createExecutorFn = createExecutorFn;

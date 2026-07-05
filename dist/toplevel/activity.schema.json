@@ -2,9 +2,10 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "tools-runner/activity.schema.json",
     "title": "tools-runner Activity",
-    "description": "A JL activity: a library of named actions plus loading metadata. JL program files use compound extensions <name>.jl.<syntax> (.jl.json5 canonical; .jl.ts/.jl.js/.jl.mjs/.jl.cjs when carrying JS actions). Validated at load time by Activities (ajv); the $schema key is allowed for documentation/tooling.",
+    "description": "A JL activity: a library of named actions plus loading metadata. JL program files use compound extensions <name>.jl.<syntax> (.jl.jsonc canonical; .jl.ts/.jl.js/.jl.mjs/.jl.cjs when carrying JS actions). Validated at load time by Activities (ajv); the $schema key is allowed for documentation/tooling.",
     "type": "object",
     "required": ["actions"],
+    "additionalProperties": false,
     "properties": {
         "$schema": {
             "type": "string"
