@@ -142,7 +142,7 @@ fixed: CL's `(cons x nil)` — `cons` accepts nil as the empty list.
 Named after the ANSI package — per SBCL docs, *"home of symbols defined by the
 ANSI language specification"*. ANSI symbols only; modules are named after
 **CLHS chapters**: `data-and-control-flow` (ch 5: if when unless cond setq
-prog* and or not), `conditions` (ch 9: error assert), `numbers` (ch 12:
+set prog* and or not), `conditions` (ch 9: error assert), `numbers` (ch 12:
 `+ - * / 1+ 1- = < > min max mod rem zerop parse-integer`), `conses` (ch 14:
 list nth first rest consp mapc mapcar), `sequences` (ch 17: length), `files`
 (ch 20: probe-file delete-file rename-file directory
@@ -175,9 +175,17 @@ spec"*). JL sorts the same territory by origin:
   `sbcl-bridge/` (the test harness that shells out to a real SBCL).
   All `$`-prefixed by convention.
 
-`require` ≈ `Activities.plug()`: the loading machinery already exists; these
-are statically assembled today but could become plug-loadable without
-redesign.
+**Vocabulary is require-able**, like SBCL contribs. An activity may declare
+
+```json5
+requires: ['sb-posix', {name: 'trivial-shell', use: false}, 'host']
+```
+
+and gets the core language (cl + jmc + jl) plus exactly those packages —
+`{use: false}` registers qualified names only (CL's "don't use-package"
+discipline); group names (`sbcl`, `quicklisp`, `host`) expand; no `requires`
+means the full vocabulary (backward compatible). See `assemble()` in
+`src/actions/index.ts` and the gate `src/tests/lisp-like/requires.jl.ts`.
 
 **Naming:** Lisp-world actions carry package-qualified names via
 `defpackage` (see above) alongside bare aliases; `$name` marks host actions.
@@ -197,7 +205,7 @@ where the OLD behavior worked but differed:
 | `car`, `nth` (→ `first` `second` `third`) | re-evaluated the extracted element | return it as data |
 | `cdr` of 1-element list (→ `rest`) | `[]` | `NIL` (both are nil to `isNil`) |
 | `if` | branch selection via re-evaluating accessors; else-branch unreachable | evaluates test, then its own branch |
-| `setq` | evaluated the variable name (crashed on rebind) | name taken literally; use a future `set` for computed names |
+| `setq` | evaluated the variable name (crashed on rebind) | name taken literally; `set` evaluates the name (computed variables) |
 | `cons x NIL` | threw | `[x]` |
 | `= < > <= >=` (3+ args) | only the LAST pair's result | all adjacent pairs must hold |
 | `/=` (3+ args) | last pair only | all pairs distinct |

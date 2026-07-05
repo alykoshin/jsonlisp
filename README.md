@@ -76,7 +76,14 @@ sources (McCarthy 1960, Graham 2002, SBCL packaging). In brief:
 | `src/host/` | non-Lisp `$`-actions: `$zip $version $shelljs $axios` | — |
 
 Every Lisp action also has a package-qualified name (`cl:car`,
-`sb-posix:getenv`, `jmc:null_`) alongside its bare alias.
+`sb-posix:getenv`, `jmc:null_`) alongside its bare alias. Activities may
+restrict their vocabulary like CL's `require`:
+
+```json5
+requires: ['sb-posix', {name: 'trivial-shell', use: false}, 'host'],
+```
+
+— core language always included; `use: false` = qualified names only.
 
 Deliberate divergences from CL (documented in ARCHITECTURE.md): every named
 action is a special form (receives unevaluated args); unbound symbols

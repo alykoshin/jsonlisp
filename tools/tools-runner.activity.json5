@@ -1,5 +1,7 @@
 {
   "base_dir": "./",
+  // vocabulary this activity needs, like (require :trivial-shell) — see ARCHITECTURE.md
+  "requires": ["trivial-shell", "host"],
   "version": "0.0.0",
   "logLevel": "debug",
   "actions": {
@@ -20,14 +22,14 @@
       ["$shelljs", "mkdir", "-p", "dist" ]], 
 
     "tsc-build": [ "list",
-      // ["shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
-      ["shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
-      // ["shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
+      ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
     ],
     "tsc-force": [ "list",
-      // ["shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
-      ["shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --force --verbose", { "cwd": "./", "env": {} } ]
-      // ["shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
+      ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --force --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
     ],
 
     // (dead actions removed: -download-lisp-examples / -cl2jl referenced
@@ -37,37 +39,37 @@
     "-test-git-clean": [
       "list",
       ["print", "Ensure Git directory is clean..."],
-      [";", "shell-command", "git status --untracked-files=no --porcelain`"],
-      ["shell-command", "git status --untracked-files=yes --porcelain"]
+      [";", "trivial-shell:shell-command", "git status --untracked-files=no --porcelain`"],
+      ["trivial-shell:shell-command", "git status --untracked-files=yes --porcelain"]
     ],
     "git-assert-clean": [
       "list",
       [";","if"],
-      [";","shell-command", "sleep 5"],
+      [";","trivial-shell:shell-command", "sleep 5"],
       ["print", "Check if Git directory is clean..."],
       ["assert",
-        ["not", ["shell-command", "git status --untracked-files=all --porcelain"] ], 
+        ["not", ["trivial-shell:shell-command", "git status --untracked-files=all --porcelain"] ], 
           "\n\nGit directory is not clean. Please check output of 'git status' for the details\n\n" ],
       [";","print", "TRUE"],
       [";","print", "FALSE"]
     ],
-    "git-add": ["shell-command", "git add ."],
-    "git-commit": ["shell-command", "git commit -am \"auto commit\""],
-    "git-push":   ["shell-command", "git push --follow-tags"],
-    "npm-publish-public":  ["shell-command", "npm publish --access public"],
-    "npm-publish-private": ["shell-command", "npm publish --access private"],
+    "git-add": ["trivial-shell:shell-command", "git add ."],
+    "git-commit": ["trivial-shell:shell-command", "git commit -am \"auto commit\""],
+    "git-push":   ["trivial-shell:shell-command", "git push --follow-tags"],
+    "npm-publish-public":  ["trivial-shell:shell-command", "npm publish --access public"],
+    "npm-publish-private": ["trivial-shell:shell-command", "npm publish --access private"],
     "jsdoc":      [
       "list",
       ["$shelljs", "rm", "-rf", "jsdoc/*" ],
-      ["shell-command", 
+      ["trivial-shell:shell-command", 
         ".\\node_modules\\.bin\\jsdoc ./src/actions/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
     "test-core-primitives": [
       "list",
-      ["shell-command",
+      ["trivial-shell:shell-command",
         "ts-node ./src/apps/test-runner/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
     "test-main": [
       "list",
-      ["shell-command", "npm test", { "cwd": "./", "env": {} } ]],
+      ["trivial-shell:shell-command", "npm test", { "cwd": "./", "env": {} } ]],
     "build-add-commit-push": [ "list",
       ["_build"], 
       ["git-add"], 

@@ -91,6 +91,25 @@ export const actions: Actions = {
     return value;
   },
 
+  /**
+   * @name set
+   * CL: unlike setq, `set` EVALUATES the name — for computed variable
+   * names: (setq nm 'dyn) (set nm 42) assigns to `dyn`.
+   */
+  set: async function (_, args, {evaluate, scopes, logger}) {
+    validateArgs(args, {exactCount: 2});
+
+    const name = await evaluate(args[0]);
+    ensureString(name, `Expect string as a name of variable`);
+
+    const value = await evaluate(args[1]);
+
+    scopes.current().set(name, value);
+
+    logger.debug(`${name} = ${stringify(value)}`);
+    return value;
+  },
+
   /** @name prog1 */
   prog1: async function (_, args, st) {
     return series1(args, st);

@@ -4,6 +4,7 @@ import {
   ActionDefinition,
   Actions,
 } from '../../../eval/sexpr';
+import type {Require} from '../../../actions';
 
 import {
   DEFAULT_ERROR_LEVEL,
@@ -20,6 +21,14 @@ export interface Activity extends Plugin {
   base_dir: string;
   version: string;
   logLevel?: ErrorLevel;
+  /**
+   * Vocabulary packages this activity needs, like CL's (require :sb-posix).
+   * Core (cl/jmc/jl) is always loaded. Entries: 'name' (bare + qualified
+   * action names), {name, use: false} (qualified names only — CL's
+   * "don't use-package" discipline), or a group (sbcl/quicklisp/host).
+   * Omitted -> the full vocabulary (backward compatible).
+   */
+  requires?: Require[];
   actions: ActivityActionsDefinition;
 }
 
@@ -73,5 +82,21 @@ export class Activities extends Plugins<Activity> {
       }
       return acc;
     }, DEFAULT_ERROR_LEVEL);
+  }
+
+  /**
+   * Union of `requires` across all plugged activities; undefined when no
+   * activity declares one (-> full vocabulary).
+   */
+  requires(): Require[] | undefined {
+    let declared = false;
+    const all: Require[] = [];
+    Object.values(this.plugins).forEach((p) => {
+      if (p.requires) {
+        declared = true;
+        all.push(...p.requires);
+      }
+    });
+    return declared ? all : undefined;
   }
 }

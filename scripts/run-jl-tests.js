@@ -23,6 +23,7 @@ const TESTS = [
   {file: 'src/tests/lisp-like/iteration-and-mapping.ts'},
   {file: 'src/tests/lisp-like/operators.ts'},
   {file: 'src/tests/lisp-like/sb-posix.ts'},
+  {file: 'src/tests/lisp-like/requires.jl.ts'}, // require-able vocabulary gate
   {file: 'src/tests/lisp-like/simple-parallel-tasks.ts'},
   {file: 'src/tests/lisp-like/trivial-shell.ts'},
   // failure-reporting gate: these asserts fail BY DESIGN
