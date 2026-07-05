@@ -36,6 +36,11 @@ export const cases: TestCase[] = [
     "( null     1 )" ],
   [  ["null_",  [] ],
     "( null     () )" ],
+  [  ["null.",  [] ],
+    "( null     () )",
+    `the paper's own names are registered (dot suffix; null_ etc. are aliases)`],
+  [  ["and.", ["atom", 1], ['eq', 1, 1]],
+    "( and    (atom    1)  ( eq   1  1))" ],
     
   //
   

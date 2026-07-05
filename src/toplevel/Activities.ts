@@ -13,6 +13,7 @@ import {
   ErrorLevel,
   errorLevelToNumber,
 } from '../lib/log';
+import {compileLambdaActions} from '../kernel/lambda';
 import {Plugin, PluginMap, Plugins} from './Plugins';
 
 import activitySchema from './activity.schema.json';
@@ -62,6 +63,12 @@ export class Activities extends Plugins<Activity> {
         .join('\n');
       throw new Error(`Invalid activity "${fname}":\n${errors}`);
     }
+    // a lambda-form value in the actions map denotes the function itself
+    // (CL's function cell) — compiled to a named closure now, at load
+    activity.actions = compileLambdaActions(
+      activity.actions,
+      fname
+    ) as ActivityActionsDefinition;
     return activity;
   }
 

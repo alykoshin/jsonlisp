@@ -45,7 +45,7 @@
       "items": {"type": "string"}
     },
     "actions": {
-      "description": "Named actions: JL expressions (arrays/atoms), action-name strings, or (in .jl.ts/.jl.js files) JS functions. `default` runs when no action is named on the CLI.",
+      "description": "Named actions: JL expressions (arrays/atoms), action-name strings, or (in .jl.ts/.jl.js files) JS functions. A value shaped [\"lambda\", [params...], [body...]] denotes the function itself (CL's function cell) and is compiled to a named closure at load — such actions take call arguments; plain list actions read their inputs from the scope. `default` runs when no action is named on the CLI.",
       "type": "object",
       "minProperties": 1
     }

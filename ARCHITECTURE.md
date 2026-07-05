@@ -24,6 +24,11 @@ parsed activity is validated against `src/toplevel/activity.schema.json`
 is a jsonc-only bonus. Pure-`.jl.jsonc` activities run on the compiled
 `dist/cli.js` with no TypeScript machinery at all.
 
+The interpreter's own Lisp-written vocabulary uses the same format: the
+kernel's derived functions live in `src/kernel/derived.jl.jsonc` (a bare
+actions map, not an activity), loaded at boot by `derived.ts` and copied
+next to the compiled loader by the build (`copy-jl-sources`).
+
 The code is organized in four layers. Each layer's name, scope, and boundary is
 taken from a specific source in the Lisp literature, documented below.
 
@@ -160,16 +165,22 @@ paper's order:
 | ------------------------------------------------ | ---------------------------------- | ------ |
 | seven primitives                                 | `primitives.ts`                    | done   |
 | `lambda`, `label` (as `defun`)                   | `lambda.ts`                        | done   |
-| derived: `null.` `and.` `not.` `append.` `list.` `pair.` `assoc.` | `derived.ts`      | done   |
+| derived: `null.` `and.` `not.` `append.` `list.` `pair.` `assoc.` | `derived.jl.jsonc` (loaded by `derived.ts`) | done   |
 | `eval.` `evcon.` `evlis.` (meta-circular)        | `src/tests/kernel/jmc-eval.jl.jsonc` | done — 14/14 incl. the label/subst example |
 
-The derived functions are written *in JL itself* (via `createExecutorFn`),
-mirroring the paper's self-hosting construction — `_` replaces Graham's `.`
-suffix (`null.` → `null_`).
+The derived functions are written *in JL itself*, in a JL source file
+(`derived.jl.jsonc`) that mirrors jmc.lisp one-to-one under the paper's own
+names — `null.` `and.` `not.` … (JSON keys allow the dot Graham uses;
+`null_`-style spellings are registered as aliases from when these lived in
+TS). `derived.ts` is only the loader — SBCL's cold boot: the host processes
+Lisp sources to build the image. Each definition is a lambda expression
+compiled to a named closure at load by `compileLambdaActions`
+(kernel/lambda.ts) — the same rule activities get: a lambda-form value in the
+function namespace denotes the function itself (CL's function cell).
 
 **Acceptance gate (passing):** the meta-circular test — Graham's `eval.`
 translated to JL runs through the CLI (`ts-node ./src/cli.ts
-./src/tests/lisp-like/jmc-eval.jl.ts`) and reproduces the paper's examples,
+./src/tests/kernel/jmc-eval.jl.jsonc`) and reproduces the paper's examples,
 including the `label subst` case. Completing it surfaced one kernel gap, now
 fixed: CL's `(cons x nil)` — `cons` accepts nil as the empty list.
 
@@ -253,6 +264,7 @@ where the OLD behavior worked but differed:
 | `mod` with negatives | JS `%` (truncate): `mod(-7,3) = -1` | floor-mod: `= 2`; `rem`/`%` remain truncate |
 | `print`/`princ`/`prin1` arity | (unchanged — always 1 arg) | confirmed CL-strict: exactly one object |
 | closure (`lambda`/`defun`) arguments | inline application `[["lambda",…],…]` evaluated args TWICE (evlis at the call site, again in the closure) — quoted data got executed; named calls evaluated once | evaluated exactly once, in the caller's environment, at the single invocation site (`execFunction`; closures tagged `isClosure`, apply only binds — McCarthy/SICP/CLHS 3.1.2.1.2.3) |
+| `["lambda", params, body]` as an actions-map value | evaluated the body on call → returned the function object, unapplied (call args silently dropped) | denotes the function itself (CL's function cell): compiled to a named closure at activity load (`compileLambdaActions`) — parameterized pure-JL actions; call args bind |
 
 ## Acceptance gates for the layering
 

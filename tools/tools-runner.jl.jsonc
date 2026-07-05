@@ -11,7 +11,14 @@
     "_build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
       ["clean-dist"],
-      ["tsc-build"] 
+      ["tsc-build"],
+      ["copy-jl-sources"]
+    ],
+
+    // kernel sources written in JL itself (not compiled by tsc) must ship
+    // next to their compiled loader modules
+    "copy-jl-sources": [
+      "$cp", { "source": "src/kernel/derived.jl.jsonc", "dest": "dist/kernel/derived.jl.jsonc" }
     ],
 
     "build": [ "list",

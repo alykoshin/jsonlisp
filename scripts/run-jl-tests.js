@@ -26,6 +26,7 @@ const TESTS = [
   {file: 'src/tests/cl/numbers.jl.jsonc'},
   {file: 'src/tests/sbcl/sb-posix.jl.jsonc'},
   {file: 'src/tests/modules/requires.jl.ts'}, // require-able vocabulary gate
+  {file: 'src/tests/toplevel/lambda-actions.jl.jsonc'}, // lambda actions compiled at load
   {file: 'src/tests/quicklisp/simple-parallel-tasks.jl.jsonc'},
   {file: 'src/tests/quicklisp/trivial-shell.jl.jsonc'},
   // failure-reporting gate: these asserts fail BY DESIGN

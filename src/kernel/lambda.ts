@@ -20,6 +20,8 @@ import {
   ensureList,
   ExecutorFn,
   ensureString,
+  isList,
+  List,
 } from '../eval/sexpr';
 import {validateArgs} from '../eval/validate-args';
 import {passArgs} from './passArgs';
@@ -85,6 +87,38 @@ export const defun: ExecutorFn = async function (_, args, state) {
 
 // null_ and and_ moved to kernel/derived (the paper's derived-function
 // sequence lives there in full).
+
+export const isLambdaForm = (def: unknown): def is List =>
+  isList(def) && def[0] === 'lambda';
+
+/**
+ * @name compileLambdaActions
+ * Load-time coercion of lambda expressions in the function namespace: an
+ * actions-map value shaped `["lambda", [params...], [body...]]` denotes the
+ * function itself — CL's `(setf (symbol-function 'f) (lambda ...))` /
+ * `(coerce '(lambda ...) 'function)` — and is compiled to a named closure
+ * here, when the map is loaded. No call-time dispatch: at runtime the map
+ * holds only functions and script lists, as before. Everything not
+ * lambda-shaped passes through unchanged.
+ */
+export function compileLambdaActions(actions: Actions, where = ''): Actions {
+  const out: Actions = {};
+  for (const [name, def] of Object.entries(actions)) {
+    if (isLambdaForm(def)) {
+      if (def.length !== 3 || !isList(def[1]) || !isList(def[2])) {
+        throw new Error(
+          `Malformed lambda action "${name}"${where ? ` in "${where}"` : ''}: ` +
+            `expected ["lambda", [params...], [body...]], ` +
+            `got ${JSON.stringify(def)}`
+        );
+      }
+      out[name] = createExecutorFn(name, def[1], def[2]);
+    } else {
+      out[name] = def;
+    }
+  }
+  return out;
+}
 
 export const actions: Actions = {
   lambda,

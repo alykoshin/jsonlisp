@@ -1,0 +1,56 @@
+// toplevel/Activities + kernel/lambda: a lambda-form value in the actions
+// map denotes the function itself (CL's function cell) and is compiled to a
+// named closure at load — such actions take call arguments (evaluated once,
+// in the caller's scope), unlike plain list actions (scope-driven, no args).
+// Also gates the derived vocabulary under the paper's names (null. append. …)
+// and their _ aliases.
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "actions": {
+    "default": ["list",
+      ["test-binding"],
+      ["test-recursion"],
+      ["test-single-eval"],
+      ["test-paper-names"],
+      ["princ", "assert-x:\n  OK:   ${ assert_ok_count }\n  FAIL: ${ assert_fail_count }"]
+    ],
+
+    // parameterized pure-JL actions: call args bind positionally
+    "twice": ["lambda", ["x"], ["+", "x", "x"]],
+    "sub2": ["lambda", ["a", "b"], ["-", "a", "b"]],
+    "test-binding": ["list",
+      ["assert-equal", ["twice", 21], 42],
+      ["assert-equal", ["sub2", 10, 3], 7]
+    ],
+
+    // recursion resolves by name at call time
+    "fact": ["lambda", ["n"],
+      ["cond", [["=", "n", 0], 1],
+               [["quote", true], ["*", "n", ["fact", ["-", "n", 1]]]]]],
+    "test-recursion": ["assert-equal", ["fact", 5], 120],
+
+    // args are evaluated exactly once (evlis at the call site, apply binds):
+    // quoted data survives application unexecuted
+    "keep": ["lambda", ["x"], ["prog1", "x"]],
+    "test-single-eval": ["assert-equal",
+      ["keep", ["quote", ["print", 999]]],
+      ["quote", ["print", 999]]],
+
+    // the derived vocabulary under the paper's own names, plus the _ aliases
+    "test-paper-names": ["list",
+      ["assert-true", ["null.", []]],
+      ["assert-false", ["null.", 1]],
+      ["assert-equal",
+        ["append.", ["quote", [1, 2]], ["quote", [3, 4]]],
+        ["quote", [1, 2, 3, 4]]],
+      ["assert-equal",
+        ["append_", ["quote", [1, 2]], ["quote", [3, 4]]],
+        ["quote", [1, 2, 3, 4]]],
+      ["assert-equal",
+        ["pair.", ["quote", ["a", "b"]], ["quote", [1, 2]]],
+        ["quote", [["a", 1], ["b", 2]]]]
+    ]
+  }
+}
