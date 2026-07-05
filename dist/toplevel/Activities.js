@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Activities = void 0;
 const ajv_1 = __importDefault(require("ajv"));
 const log_1 = require("../lib/log");
+const lambda_1 = require("../kernel/lambda");
 const Plugins_1 = require("./Plugins");
 const activity_schema_json_1 = __importDefault(require("./activity.schema.json"));
 const ajv = new ajv_1.default({ allowUnionTypes: true });
@@ -33,6 +34,9 @@ class Activities extends Plugins_1.Plugins {
                 .join('\n');
             throw new Error(`Invalid activity "${fname}":\n${errors}`);
         }
+        // a lambda-form value in the actions map denotes the function itself
+        // (CL's function cell) — compiled to a named closure now, at load
+        activity.actions = (0, lambda_1.compileLambdaActions)(activity.actions, fname);
         return activity;
     }
     actions() {

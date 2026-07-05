@@ -12,7 +12,7 @@
  * - LispWorks -- Common Lisp HyperSpec -- Function APPLY --
  *   {@link http://clhs.lisp.se/Body/f_apply.htm}
  */
-import { Actions, Parameter, ExecutorFn } from '../eval/sexpr';
+import { Actions, Parameter, ExecutorFn, List } from '../eval/sexpr';
 export declare const createExecutorFn: (name: string, argnames: Parameter, body: Parameter) => ExecutorFn;
 /**
  * @name lambda
@@ -31,5 +31,17 @@ export declare const lambda: ExecutorFn;
  * namespace (Lisp-2 divergence — see ARCHITECTURE.md).
  */
 export declare const defun: ExecutorFn;
+export declare const isLambdaForm: (def: unknown) => def is List;
+/**
+ * @name compileLambdaActions
+ * Load-time coercion of lambda expressions in the function namespace: an
+ * actions-map value shaped `["lambda", [params...], [body...]]` denotes the
+ * function itself — CL's `(setf (symbol-function 'f) (lambda ...))` /
+ * `(coerce '(lambda ...) 'function)` — and is compiled to a named closure
+ * here, when the map is loaded. No call-time dispatch: at runtime the map
+ * holds only functions and script lists, as before. Everything not
+ * lambda-shaped passes through unchanged.
+ */
+export declare function compileLambdaActions(actions: Actions, where?: string): Actions;
 export declare const actions: Actions;
 export default actions;

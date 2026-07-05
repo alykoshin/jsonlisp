@@ -1,7 +1,7 @@
 "use strict";
 /** @format */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actions = exports.defun = exports.lambda = exports.createExecutorFn = void 0;
+exports.actions = exports.compileLambdaActions = exports.isLambdaForm = exports.defun = exports.lambda = exports.createExecutorFn = void 0;
 /**
  * @module kernel/lambda
  * Denoting functions (The Roots of Lisp §2): lambda, and label as `defun`.
@@ -70,6 +70,36 @@ const defun = async function (_, args, state) {
 exports.defun = defun;
 // null_ and and_ moved to kernel/derived (the paper's derived-function
 // sequence lives there in full).
+const isLambdaForm = (def) => (0, sexpr_1.isList)(def) && def[0] === 'lambda';
+exports.isLambdaForm = isLambdaForm;
+/**
+ * @name compileLambdaActions
+ * Load-time coercion of lambda expressions in the function namespace: an
+ * actions-map value shaped `["lambda", [params...], [body...]]` denotes the
+ * function itself — CL's `(setf (symbol-function 'f) (lambda ...))` /
+ * `(coerce '(lambda ...) 'function)` — and is compiled to a named closure
+ * here, when the map is loaded. No call-time dispatch: at runtime the map
+ * holds only functions and script lists, as before. Everything not
+ * lambda-shaped passes through unchanged.
+ */
+function compileLambdaActions(actions, where = '') {
+    const out = {};
+    for (const [name, def] of Object.entries(actions)) {
+        if ((0, exports.isLambdaForm)(def)) {
+            if (def.length !== 3 || !(0, sexpr_1.isList)(def[1]) || !(0, sexpr_1.isList)(def[2])) {
+                throw new Error(`Malformed lambda action "${name}"${where ? ` in "${where}"` : ''}: ` +
+                    `expected ["lambda", [params...], [body...]], ` +
+                    `got ${JSON.stringify(def)}`);
+            }
+            out[name] = (0, exports.createExecutorFn)(name, def[1], def[2]);
+        }
+        else {
+            out[name] = def;
+        }
+    }
+    return out;
+}
+exports.compileLambdaActions = compileLambdaActions;
 exports.actions = {
     lambda: exports.lambda,
     defun: exports.defun,
