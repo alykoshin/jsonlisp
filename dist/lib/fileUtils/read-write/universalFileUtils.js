@@ -42,9 +42,12 @@ const readUniversal = async (pathname) => {
         case '.ts':
             return (0, tsFileUtils_1.readTsFile)(pathname);
         case '.js':
+        case '.cjs': // require()
+        case '.mjs': // readTsFile's require-first falls back to dynamic import()
             return (0, jsFileUtils_1.readJs)(pathname);
         case '.json':
             return (0, jsonFileUtils_1.readJsonFile)(pathname);
+        case '.jsonc': // JSON + comments + trailing commas — json5 is a superset
         case '.json5':
             return (0, json5FileUtils_1.readJson5)(pathname);
         default:
@@ -71,7 +74,29 @@ function writeUniversal(pathname, data) {
     }
 }
 exports.writeUniversal = writeUniversal;
-const SUPPORTED_EXTENSIONS = ['.ts', '.js', '.json', '.json5'];
+/**
+ * JL programs use compound extensions `<name>.jl.<syntax>` (see
+ * ARCHITECTURE.md): .jl.json5 canonical pure JL; .jl.json generated;
+ * .jl.ts/.jl.js/.jl.mjs/.jl.cjs FFI-carrying (contain JS actions).
+ * Dispatch works on the FINAL extension, so only index-probing needs the
+ * compound forms listed explicitly (probed first).
+ */
+const SUPPORTED_EXTENSIONS = [
+    '.jl.jsonc',
+    '.jl.json5',
+    '.jl.json',
+    '.jl.ts',
+    '.jl.js',
+    '.jl.mjs',
+    '.jl.cjs',
+    '.ts',
+    '.js',
+    '.mjs',
+    '.cjs',
+    '.json',
+    '.jsonc',
+    '.json5',
+];
 const INDEX_FILE_BASENAME = 'index';
 const resolveToFile = (pathname) => {
     // let pathname = buildPathname(fname)

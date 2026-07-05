@@ -21,6 +21,15 @@ export interface Activity extends Plugin {
     actions: ActivityActionsDefinition;
 }
 export declare class Activities extends Plugins<Activity> {
+    /**
+     * Schema validation at load time (activity.schema.json via ajv): works
+     * for every syntax (.jl.json5/.json/.ts/...) because JSON Schema applies
+     * to the PARSED object — editor-side $schema support does not exist for
+     * .json5, so this is the real enforcement. Lenient about extra keys,
+     * strict about types of the known ones (catches `require:` vs
+     * `requires:`-class typos).
+     */
+    _load(fname: string): Promise<Activity>;
     actions(): Actions;
     logLevel(): ErrorLevel;
     /**

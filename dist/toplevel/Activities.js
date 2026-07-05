@@ -1,14 +1,35 @@
 "use strict";
 /** @format */
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Activities = void 0;
+const ajv_1 = __importDefault(require("ajv"));
 const log_1 = require("../lib/log");
 const Plugins_1 = require("./Plugins");
+const activity_schema_json_1 = __importDefault(require("./activity.schema.json"));
+const ajv = new ajv_1.default({ allowUnionTypes: true });
+const validateActivity = ajv.compile(activity_schema_json_1.default);
 class Activities extends Plugins_1.Plugins {
-    // async plug(name: string): Promise<Activities> {
-    // const current = super.plug(name);
-    // return this;
-    // }
+    /**
+     * Schema validation at load time (activity.schema.json via ajv): works
+     * for every syntax (.jl.json5/.json/.ts/...) because JSON Schema applies
+     * to the PARSED object — editor-side $schema support does not exist for
+     * .json5, so this is the real enforcement. Lenient about extra keys,
+     * strict about types of the known ones (catches `require:` vs
+     * `requires:`-class typos).
+     */
+    async _load(fname) {
+        const activity = await super._load(fname);
+        if (!validateActivity(activity)) {
+            const errors = (validateActivity.errors ?? [])
+                .map((e) => `  ${e.instancePath || '(root)'} ${e.message}`)
+                .join('\n');
+            throw new Error(`Invalid activity "${fname}":\n${errors}`);
+        }
+        return activity;
+    }
     actions() {
         // console.log('Object.keys(this.plugins):', Object.keys(this.plugins));
         //

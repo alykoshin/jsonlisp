@@ -7,6 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.actions = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 const validate_args_1 = require("../eval/validate-args");
+const booleans_1 = require("../kernel/booleans");
 /**
  * @module lisp-unit
  *
@@ -92,7 +93,8 @@ exports.actions = {
         logger.debug('actual', actual);
         const expected = await evaluate(params[1]);
         logger.debug('expected', expected);
-        const res = lodash_1.default.isEqual(actual, expected);
+        // CL: NIL and the empty list are the same object — (equal '() nil) => T
+        const res = lodash_1.default.isEqual(actual, expected) || ((0, booleans_1.isNil)(actual) && (0, booleans_1.isNil)(expected));
         logger.debug('res', res);
         const sValue = JSON.stringify({ actual, expected });
         return evaluate(['assert-true', res, params[2] || sValue]);

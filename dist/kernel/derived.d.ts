@@ -9,7 +9,7 @@
  *
  * Together with the seven primitives and lambda/defun these are exactly the
  * vocabulary the paper needs to write eval. — see the meta-circular test
- * activity (src/tests/kernel/jmc-eval.jl.ts).
+ * activity (src/tests/kernel/jmc-eval.jl.jsonc).
  */
 import { Actions } from '../eval/sexpr';
 /**
