@@ -12,21 +12,39 @@ The code is organized in four layers. Each layer's name, scope, and boundary is
 taken from a specific source in the Lisp literature, documented below.
 
 ```
-src/eval/       L0  the evaluator        — McCarthy's universal function; SICP's eval/apply
-src/kernel/     L1  the axiomatic kernel — Graham, "The Roots of Lisp" (2002)
-src/cl/         L2  standard vocabulary  — the COMMON-LISP package (ANSI)
-src/contrib/    L3  host bindings        — SBCL's contrib/ tree
+src/eval/       L0  the evaluator          — McCarthy's universal function; SICP's eval/apply
+src/kernel/     L1  the axiomatic kernel   — Graham, "The Roots of Lisp" (2002)
+src/cl/         L2  ANSI COMMON-LISP       — modules named after CLHS chapters
+src/sbcl/           SBCL packages emulated — sb-posix
+src/quicklisp/      third-party CL systems — trivial-shell, lisp-unit,
+                    simple-parallel-tasks, alexandria, str
+src/jl/             JL dialect extensions  — '?', ';' (parallels SB-EXT)
+src/host/           non-Lisp host tooling  — $-marked: build/, os/, axios, sbcl-bridge/
 ```
+
+The vocabulary beyond the kernel is **split by origin**: ANSI (`cl`), the
+implementation we mirror (`sbcl`), the third-party CL ecosystem
+(`quicklisp`), our own dialect (`jl`), and things with no Lisp identity at
+all (`host`). Membership test: *which Lisp-world package is this named
+for?* — none means `host`.
 
 **Layer law** (enforced by `npm run check:layers`):
 
 ```
-eval ← kernel ← cl          contrib → eval, kernel (e.g. T/NIL, createExecutorFn)
-contrib never → cl          eval imports nothing above it
-lib/ is layer-neutral (SB-INT style): it imports no layer
+eval ← kernel ← cl
+sbcl, quicklisp, jl, host → eval, kernel only — never cl, never each other
+eval imports nothing above it; lib/ is layer-neutral (SB-INT style)
 ```
 
-The host (`apps/runner`, `cli.ts`) assembles all four layers plus user activities.
+The host (`apps/runner`, `cli.ts`) assembles all buckets plus user activities.
+
+**The package system** (`eval/package.ts`): every Lisp-world action is
+registered under its qualified name — `cl:car`, `jmc:null_`, `jl:?`,
+`sb-posix:getenv`, `trivial-shell:shell-command`, `str:to-file` — and its
+bare name (`defpackage` + implicit use-package, mirroring CL). Qualified
+names are collision-free by construction; `pkg:sym` invokes the same symbol
+as `sym` (executors receive the bare name). Host actions keep the `$`
+prefix, unqualified.
 
 ---
 
@@ -122,13 +140,15 @@ fixed: CL's `(cons x nil)` — `cons` accepts nil as the empty list.
 ## L2 `src/cl/` — standard vocabulary (the COMMON-LISP package)
 
 Named after the ANSI package — per SBCL docs, *"home of symbols defined by the
-ANSI language specification"*. This layer is JL's analog: the vocabulary a CL
-programmer expects, implemented natively: `conditionals` (`if when unless`),
-`defines` (`setq`), `lists`, `operators` (`+ - * / = < > and or not …`),
-`iteration-and-mapping` (`progn mapc mapcar`), `input-output`
-(`print princ format terpri`), `error` (`error assert`), `system`
-(`sleep time`), `documentation` (`? ;`). Module names follow CL-book chapter
-naming and are kept.
+ANSI language specification"*. ANSI symbols only; modules are named after
+**CLHS chapters**: `data-and-control-flow` (ch 5: if when unless cond setq
+prog* and or not), `conditions` (ch 9: error assert), `numbers` (ch 12:
+`+ - * / 1+ 1- = < > min max mod rem zerop parse-integer`), `conses` (ch 14:
+list nth first rest consp mapc mapcar), `sequences` (ch 17: length), `files`
+(ch 20: probe-file delete-file rename-file directory
+ensure-directories-exist), `printer` (ch 21/22: print princ prin1 format
+terpri fresh-line y-or-n-p). Known JL-isms are marked in-module (`nullp`,
+`%`).
 
 Correctness is defined by reference to a real implementation: the test suites
 (`src/tests/lisp-like/`, `apps/test-runner`) evaluate each JL expression and
@@ -136,29 +156,33 @@ compare against SBCL output via `contrib/sbcl` (`$sbcl-to-list`).
 
 ---
 
-## L3 `src/contrib/` — host bindings (SBCL's contrib model)
+## Beyond ANSI — `src/sbcl/`, `src/quicklisp/`, `src/jl/`, `src/host/`
 
-SBCL ships non-ANSI capability as **contribs** — separate modules in its
-`contrib/` tree, loaded with `require` (SB-EXT: *"public: miscellaneous
-supported extensions to the ANSI Lisp spec"*). JL's L3 copies the model and
-even the names:
+SBCL ships non-ANSI capability as **contribs** loaded with `require`
+(SB-EXT: *"public: miscellaneous supported extensions to the ANSI Lisp
+spec"*). JL sorts the same territory by origin:
 
-- `sb-posix.ts` — named after the SBCL contrib (*"a lispy interface to standard
-  POSIX facilities"*): `getenv setenv chdir getcwd`.
-- `trivial-shell.ts`, `lisp-unit.ts`, `simple-parallel-tasks.ts` — named after
-  the third-party CL libraries they imitate.
-- `file-system.ts` — host filesystem ops (several names are ANSI —
-  `probe-file`, `delete-file` — but the module is host I/O and stays here).
-- `build/`, `os/`, `axios.ts`, `sbcl/` — this tool's own contribs (`$`-prefixed
-  host actions: `$zip $version $shelljs $axios $sbcl`).
+- **`sbcl/`** — packages of the implementation we mirror: `sb-posix.ts`
+  (*"a lispy interface to standard POSIX facilities"*): `getenv setenv chdir
+  getcwd`.
+- **`quicklisp/`** — third-party CL systems, named for the libraries they
+  imitate: `trivial-shell` (shell-command), `lisp-unit` (assert-*),
+  `simple-parallel-tasks` (plist), `alexandria`
+  (read-file-into-string/write-string-into-file), `str` (to-file/from-file).
+- **`jl/`** — JL's own dialect extensions (`?`, `;`) — the analog of SB-EXT:
+  what *this* implementation adds beyond any standard.
+- **`host/`** — no Lisp identity: `build/`, `os/` ($shelljs), `axios.ts`,
+  `sbcl-bridge/` (the test harness that shells out to a real SBCL).
+  All `$`-prefixed by convention.
 
-`require` ≈ `Activities.plug()`: the loading machinery already exists; contribs
-are statically assembled today but could become plug-loadable without redesign.
+`require` ≈ `Activities.plug()`: the loading machinery already exists; these
+are statically assembled today but could become plug-loadable without
+redesign.
 
-**Naming conventions:** `$name` marks a host action (established). New contrib
-actions should use CL package-prefix style `package:name` — precedent already
-in the codebase (`str:to-file`) and in real activities (`demo:build:all` in the
-wild).
+**Naming:** Lisp-world actions carry package-qualified names via
+`defpackage` (see above) alongside bare aliases; `$name` marks host actions.
+Both precedents existed in the codebase before the mechanism (`str:to-file`;
+`demo:build:all` in real activities).
 
 ---
 
