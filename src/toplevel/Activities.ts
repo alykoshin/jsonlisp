@@ -42,17 +42,23 @@ export interface Activity extends Plugin {
 export class Activities extends Plugins<Activity> {
   /**
    * Schema validation at load time (activity.schema.json via ajv): works
-   * for every syntax (.jl.json5/.json/.ts/...) because JSON Schema applies
+   * for every syntax (.jl.jsonc/.json5/.ts/...) because JSON Schema applies
    * to the PARSED object — editor-side $schema support does not exist for
-   * .json5, so this is the real enforcement. Lenient about extra keys,
-   * strict about types of the known ones (catches `require:` vs
-   * `requires:`-class typos).
+   * .json5, so this is the real enforcement. Unknown top-level keys are
+   * rejected (additionalProperties: false — catches `require:` vs
+   * `requires:`-class typos by name).
    */
   async _load(fname: string): Promise<Activity> {
     const activity = await super._load(fname);
     if (!validateActivity(activity)) {
       const errors = (validateActivity.errors ?? [])
-        .map((e) => `  ${e.instancePath || '(root)'} ${e.message}`)
+        .map((e) => {
+          const extra =
+            'additionalProperty' in e.params
+              ? ` ("${e.params.additionalProperty}")`
+              : '';
+          return `  ${e.instancePath || '(root)'} ${e.message}${extra}`;
+        })
         .join('\n');
       throw new Error(`Invalid activity "${fname}":\n${errors}`);
     }
