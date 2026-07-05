@@ -31,12 +31,29 @@ for?* — none means `host`.
 **Layer law** (enforced by `npm run check:layers`):
 
 ```
-eval ← kernel ← cl
-sbcl, quicklisp, jl, host → eval, kernel only — never cl, never each other
+eval ← kernel ← cl ← jl        (jl extends the standard, as SB-EXT uses CL)
+sbcl, quicklisp, host → eval, kernel only — never cl, never each other
 eval imports nothing above it; lib/ is layer-neutral (SB-INT style)
 ```
 
-The host (`apps/runner`, `cli.ts`) assembles all buckets plus user activities.
+Above the layers sit the runtime and support directories, each named for
+its governing concept:
+
+```
+src/modules/         the module registry + assemble(requires) — CL's
+                     require/provide (*modules*); `requires:` entries are
+                     CL module-names
+src/toplevel/        everything between OS argv and the first evaluate():
+                     Runner, Activities/Plugins loading, dotenv settings
+                     (SBCL's "toplevel"); src/cli.ts stays put — its path
+                     is a consumer contract
+src/local-projects/  JL-native example libraries (openssl, mongo, git) —
+                     Quicklisp's local-projects: locally-developed systems
+src/tests/           mirrors the buckets it verifies: harness/ (SBCL
+                     referee), kernel/, cl/, sbcl/, quicklisp/, modules/,
+                     host/
+src/lib/             layer-neutral utilities (SB-INT): imports no layer
+```
 
 **The package system** (`eval/package.ts`): every Lisp-world action is
 registered under its qualified name — `cl:car`, `jmc:null_`, `jl:?`,
@@ -147,8 +164,8 @@ set prog* and or not), `conditions` (ch 9: error assert), `numbers` (ch 12:
 list nth first rest consp mapc mapcar), `sequences` (ch 17: length), `files`
 (ch 20: probe-file delete-file rename-file directory
 ensure-directories-exist), `printer` (ch 21/22: print princ prin1 format
-terpri fresh-line y-or-n-p). Known JL-isms are marked in-module (`nullp`,
-`%`).
+terpri fresh-line y-or-n-p). ANSI-purity is enforced in both directions:
+JL-isms (`nullp`, `%`) live in `src/jl`, not here.
 
 Correctness is defined by reference to a real implementation: the test suites
 (`src/tests/lisp-like/`, `apps/test-runner`) evaluate each JL expression and
@@ -169,8 +186,10 @@ spec"*). JL sorts the same territory by origin:
   imitate: `trivial-shell` (shell-command), `lisp-unit` (assert-*),
   `simple-parallel-tasks` (plist), `alexandria`
   (read-file-into-string/write-string-into-file), `str` (to-file/from-file).
-- **`jl/`** — JL's own dialect extensions (`?`, `;`) — the analog of SB-EXT:
-  what *this* implementation adds beyond any standard.
+- **`jl/`** — JL's own dialect extensions — the analog of SB-EXT: vocabulary
+  *we* invented, appearing in no external canon: `?` (describe), `;`
+  (comment), `nullp` (ANSI name is `null`), `%` (JS-flavored rem). Like
+  SB-EXT uses COMMON-LISP, jl may import cl.
 - **`host/`** — no Lisp identity: `build/`, `os/` ($shelljs), `axios.ts`,
   `sbcl-bridge/` (the test harness that shells out to a real SBCL).
   All `$`-prefixed by convention.

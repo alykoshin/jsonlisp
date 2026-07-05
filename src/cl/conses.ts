@@ -22,7 +22,7 @@ import {series, sliceListList} from '../eval/evlis';
  * (MAPC/MAPCAR live in the Conses dictionary).
  * quote, car, cdr are owned by kernel/primitives (SBCL-verified); this module
  * keeps the CL synonyms (first/rest) and nth-based accessors.
- * NB: `nullp` is a JL-ism (the ANSI name is `null`).
+ * (`nullp` — a JL-ism, ANSI name is `null` — lives in src/jl.)
  */
 
 const _nth = async function (
@@ -45,10 +45,6 @@ const _consp = async function (p: Parameter): Promise<boolean> {
 
 const _listp = async function (p: Parameter): Promise<boolean> {
   return isList(p);
-};
-
-const _nullp = async function (p: Parameter): Promise<boolean> {
-  return isList(p) && isEmptyList(p);
 };
 
 //===========================================================================//
@@ -122,13 +118,6 @@ export const listp: ExecutorFn = async (_, args, st) => {
   return _listp(a0);
 };
 
-/** @name nullp */
-export const nullp: ExecutorFn = async (_, args, st) => {
-  validateArgs(args, {exactCount: 1});
-  const a0 = await st.evaluate(args[0]);
-  return _nullp(a0);
-};
-
 //===========================================================================//
 
 /**
@@ -187,7 +176,6 @@ export const actions: Actions = {
   //
   consp,
   listp,
-  nullp,
   //
   mapc,
   mapcar,

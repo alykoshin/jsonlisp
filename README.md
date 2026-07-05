@@ -55,8 +55,8 @@ tools-runner <activity-file> [action=default] [parameters...]
 
 During development: `ts-node ./src/cli.ts <activity> [action] …`.
 
-Example activities in-repo: [openssl cert generation](src/activities/openssl/)
-(with a JSON-schema'd config), [mongo backup/restore](src/activities/mongo/),
+Example activities in-repo: [openssl cert generation](src/local-projects/openssl/)
+(with a JSON-schema'd config), [mongo backup/restore](src/local-projects/mongo/),
 and the tool's own build pipeline ([tools/tools-runner.activity.json5](tools/tools-runner.activity.json5))
 — tools-runner builds and releases itself.
 
@@ -72,7 +72,7 @@ sources (McCarthy 1960, Graham 2002, SBCL packaging). In brief:
 | `src/cl/` | ANSI vocabulary; modules = CLHS chapters | the `COMMON-LISP` package |
 | `src/sbcl/` | `sb-posix` (getenv setenv chdir getcwd) | SBCL contribs |
 | `src/quicklisp/` | `trivial-shell`, `lisp-unit`, `simple-parallel-tasks`, `alexandria`, `str` | third-party CL systems |
-| `src/jl/` | dialect extensions (`?`, `;`) | (ours; cf. SB-EXT) |
+| `src/jl/` | dialect extensions (`?`, `;`, `nullp`, `%`) | (ours; cf. SB-EXT) |
 | `src/host/` | non-Lisp `$`-actions: `$zip $version $shelljs $axios` | — |
 
 Every Lisp action also has a package-qualified name (`cl:car`,
@@ -101,7 +101,7 @@ npm run check:layers  # import-direction law
 
 Requires [SBCL](https://www.sbcl.org/) on `PATH` — correctness is defined by
 comparison with a real Common Lisp. The flagship test,
-[jmc-eval.jl.ts](src/tests/lisp-like/jmc-eval.jl.ts), runs the paper's
+[jmc-eval.jl.ts](src/tests/kernel/jmc-eval.jl.ts), runs the paper's
 `eval.` (translated to JL) on the JL interpreter itself.
 
 ## Install

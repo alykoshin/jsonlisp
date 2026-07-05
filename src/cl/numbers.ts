@@ -18,8 +18,7 @@ import {Logger} from '../lib/log';
  * @module cl/numbers
  * CLHS chapter 12 "Numbers": arithmetic, comparison, zerop, parse-integer.
  * The generic `operators` machinery is exported — cl/data-and-control-flow
- * reuses it for and/or/not.
- * NB: `%` is a JL-ism (ANSI names are mod/rem).
+ * reuses it for and/or/not, src/jl for the `%` JL-ism.
  */
 
 /* const schema: Schema = {
@@ -341,8 +340,6 @@ export const actions: Actions = {
     return evaluate(['-', ...args, 1]);
   },
 
-  /** @name % */
-  '%': operators,
   /** @name = */
   '=': operators,
   /** @name /= */

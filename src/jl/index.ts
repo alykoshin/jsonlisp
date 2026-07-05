@@ -1,13 +1,15 @@
 /** @format */
 
 import {validateArgs} from '../eval/validate-args';
-import {Actions, Parameters} from '../eval/sexpr';
-import {State} from '../eval/environment';
+import {Actions, ExecutorFn, isList, isEmptyList} from '../eval/sexpr';
+import {operators} from '../cl/numbers';
 
 /**
  * @module jl
- * JL's own dialect extensions — not ANSI, not third-party: '?' (describe)
- * and ';' (comment). The analog of SB-EXT: what this implementation adds.
+ * JL's own dialect extensions — vocabulary WE invented, appearing in no
+ * external canon: '?' (describe), ';' (comment), `nullp` (ANSI name is
+ * `null`), `%` (JS-flavored truncate-rem). The analog of SB-EXT: what this
+ * implementation adds — and like SB-EXT uses COMMON-LISP, jl may import cl.
  *
  * @description
  * Seems there is no single command to print all the variables in the Lisp
@@ -35,6 +37,16 @@ export const actions: Actions = {
     logger.debug(`Found ";", skipping the list`);
     return undefined;
   },
+
+  /** @name nullp — JL-ism; the ANSI predicate is `null` */
+  nullp: (async (_, args, st) => {
+    validateArgs(args, {exactCount: 1});
+    const a0 = await st.evaluate(args[0]);
+    return isList(a0) && isEmptyList(a0);
+  }) as ExecutorFn,
+
+  /** @name % — JL-ism: JS-flavored remainder (= CL rem, truncate semantics) */
+  '%': operators,
 };
 
 export default actions;

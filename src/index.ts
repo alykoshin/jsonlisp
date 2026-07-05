@@ -18,8 +18,8 @@ export * from './kernel/booleans';
 
 export {default as kernel} from './kernel';
 export {default as cl} from './cl';
-export {actions as defaultActions} from './actions';
+export {actions as defaultActions} from './modules';
 
-export {Runner} from './apps/runner/runner';
-export {Activities} from './apps/runner/startup/Activities';
-export type {Activity} from './apps/runner/startup/Activities';
+export {Runner} from './toplevel/runner';
+export {Activities} from './toplevel/Activities';
+export type {Activity} from './toplevel/Activities';

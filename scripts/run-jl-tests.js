@@ -13,23 +13,24 @@
 const {spawnSync} = require('child_process');
 const path = require('path');
 
+// tests mirror the src buckets they verify
 const TESTS = [
-  {file: 'src/tests/lisp-like/jmc-eval.jl.ts'}, // meta-circular gate
-  {file: 'src/tests/lisp-like/conditionals.jl.ts'},
-  {file: 'src/tests/lisp-like/defines.ts'},
-  {file: 'src/tests/lisp-like/file-system.ts'},
-  {file: 'src/tests/lisp-like/input-output.ts'},
-  {file: 'src/tests/lisp-like/lists.ts'},
-  {file: 'src/tests/lisp-like/iteration-and-mapping.ts'},
-  {file: 'src/tests/lisp-like/operators.ts'},
-  {file: 'src/tests/lisp-like/sb-posix.ts'},
-  {file: 'src/tests/lisp-like/requires.jl.ts'}, // require-able vocabulary gate
-  {file: 'src/tests/lisp-like/simple-parallel-tasks.ts'},
-  {file: 'src/tests/lisp-like/trivial-shell.ts'},
+  {file: 'src/tests/kernel/jmc-eval.jl.ts'}, // meta-circular gate
+  {file: 'src/tests/cl/conditionals.jl.ts'},
+  {file: 'src/tests/cl/defines.ts'},
+  {file: 'src/tests/cl/file-system.ts'},
+  {file: 'src/tests/cl/input-output.ts'},
+  {file: 'src/tests/cl/conses.ts'},
+  {file: 'src/tests/cl/iteration-and-mapping.ts'},
+  {file: 'src/tests/cl/numbers.ts'},
+  {file: 'src/tests/sbcl/sb-posix.ts'},
+  {file: 'src/tests/modules/requires.jl.ts'}, // require-able vocabulary gate
+  {file: 'src/tests/quicklisp/simple-parallel-tasks.ts'},
+  {file: 'src/tests/quicklisp/trivial-shell.ts'},
   // failure-reporting gate: these asserts fail BY DESIGN
-  {file: 'src/tests/lisp-like/lisp-unit.ts', expectFails: 4, expectOks: 4},
+  {file: 'src/tests/quicklisp/lisp-unit.ts', expectFails: 4, expectOks: 4},
   // smoke only: its real tests exit the process by design
-  {file: 'src/tests/lisp-like/error.ts', asserts: false},
+  {file: 'src/tests/cl/error.ts', asserts: false},
 ];
 
 const root = path.join(__dirname, '..');

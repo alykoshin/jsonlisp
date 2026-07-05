@@ -6,11 +6,11 @@ import JSON5 from 'json5';
 import {Command} from 'commander';
 
 // import pkg from '../package.json';
-import {Runner} from './apps/runner/runner';
-import {Activities} from './apps/runner/startup/Activities';
+import {Runner} from './toplevel/runner';
+import {Activities} from './toplevel/Activities';
 
-import './_settings'; // init config and dotenv
-import {PROJECT_DIR, packageJson as pkg} from './_settings';
+import './toplevel/settings'; // init config and dotenv
+import {PROJECT_DIR, packageJson as pkg} from './toplevel/settings';
 import {absPathname} from './lib/fileUtils/fileUtils';
 import {
   readUniversal,

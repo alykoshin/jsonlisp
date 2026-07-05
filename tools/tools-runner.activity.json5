@@ -62,11 +62,11 @@
       "list",
       ["$shelljs", "rm", "-rf", "jsdoc/*" ],
       ["trivial-shell:shell-command", 
-        ".\\node_modules\\.bin\\jsdoc ./src/actions/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
+        ".\\node_modules\\.bin\\jsdoc ./src/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
     "test-core-primitives": [
       "list",
       ["trivial-shell:shell-command",
-        "ts-node ./src/apps/test-runner/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
+        "ts-node ./src/tests/harness/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
     "test-main": [
       "list",
       ["trivial-shell:shell-command", "npm test", { "cwd": "./", "env": {} } ]],

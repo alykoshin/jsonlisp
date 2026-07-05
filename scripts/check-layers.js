@@ -6,9 +6,12 @@
  *   eval      -> lib only
  *   kernel    -> eval, lib
  *   cl        -> eval, kernel, lib
- *   sbcl / quicklisp / jl / host
- *             -> eval, kernel, lib (never cl, never each other, never apps)
+ *   jl        -> eval, kernel, cl, lib (the implementation's extensions
+ *                extend the standard — SB-EXT freely uses COMMON-LISP)
+ *   sbcl / quicklisp / host
+ *             -> eval, kernel, lib (never cl, never each other)
  *   lib       -> layer-neutral: imports no layer at all
+ *   (modules/, toplevel/, local-projects/, tests/ sit above the layers)
  *
  * Exits non-zero listing every violation.
  */
@@ -19,7 +22,7 @@ const path = require('path');
 const SRC = path.join(__dirname, '..', 'src');
 
 const LAYERS = ['eval', 'kernel', 'cl', 'sbcl', 'quicklisp', 'jl', 'host'];
-const HOSTY = ['actions', 'apps', 'activities'];
+const HOSTY = ['modules', 'toplevel', 'local-projects', 'tests'];
 
 const FORBIDDEN = {
   eval: ['kernel', 'cl', 'sbcl', 'quicklisp', 'jl', 'host', ...HOSTY],
@@ -27,7 +30,7 @@ const FORBIDDEN = {
   cl: ['sbcl', 'quicklisp', 'jl', 'host', ...HOSTY],
   sbcl: ['cl', 'quicklisp', 'jl', 'host', ...HOSTY],
   quicklisp: ['cl', 'sbcl', 'jl', 'host', ...HOSTY],
-  jl: ['cl', 'sbcl', 'quicklisp', 'host', ...HOSTY],
+  jl: ['sbcl', 'quicklisp', 'host', ...HOSTY],
   host: ['cl', 'sbcl', 'quicklisp', 'jl', ...HOSTY],
   lib: [...LAYERS, ...HOSTY],
 };
