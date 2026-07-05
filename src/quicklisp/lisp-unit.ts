@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import {validateArgs} from '../eval/validate-args';
 import {Actions, Atom, Parameters} from '../eval/sexpr';
+import {isNil} from '../kernel/booleans';
 import {State} from '../eval/environment';
 import {Scope, Scopes} from '@utilities/object';
 
@@ -108,7 +109,9 @@ export const actions: Actions = {
     const expected = await evaluate(params[1]);
     logger.debug('expected', expected);
 
-    const res = _.isEqual(actual, expected);
+    // CL: NIL and the empty list are the same object — (equal '() nil) => T
+    const res =
+      _.isEqual(actual, expected) || (isNil(actual) && isNil(expected));
     logger.debug('res', res);
 
     const sValue = JSON.stringify({actual, expected});

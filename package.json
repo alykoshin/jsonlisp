@@ -16,15 +16,15 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "ts-node ./src/cli.ts tools/tools-runner.activity.json5",
+    "start": "ts-node ./src/cli.ts tools/tools-runner.jl.jsonc",
     "start-js": "node ./dist/cli.js",
     "build": "npm start build",
     "test": "npm run check:layers && npm run test-core && npm run test:jl",
     "test-core": "ts-node ./src/tests/harness/core-test-runner.ts",
     "test:jl": "node ./scripts/run-jl-tests.js",
     "check:layers": "node ./scripts/check-layers.js",
-    "start-activity-openssl": "ts-node ./src/cli.ts ./src/local-projects/openssl/index.ts",
-    "start-gen-certs": "ts-node ./src/cli.ts ./src/local-projects/openssl/index.ts gen_all -f ./src/local-projects/openssl/examples/gen-certs.config.json",
+    "start-activity-openssl": "ts-node ./src/cli.ts ./src/local-projects/openssl/index.jl.jsonc",
+    "start-gen-certs": "ts-node ./src/cli.ts ./src/local-projects/openssl/index.jl.jsonc gen_all -f ./src/local-projects/openssl/examples/gen-certs.config.json",
     "hooks:install": "git config core.hooksPath .githooks"
   },
   "repository": {

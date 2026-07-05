@@ -1,4 +1,5 @@
 {
+  "$schema": "../src/toplevel/activity.schema.json",
   "base_dir": "./",
   // vocabulary this activity needs, like (require :trivial-shell) — see ARCHITECTURE.md
   "requires": ["trivial-shell", "host"],
@@ -10,7 +11,7 @@
     "_build": [ "list",
       ["print", "WARN: dist/ is added to Git"],
       ["clean-dist"],
-      ["tsc-build"], 
+      ["tsc-build"] 
     ],
 
     "build": [ "list",

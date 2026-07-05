@@ -13,24 +13,25 @@
 const {spawnSync} = require('child_process');
 const path = require('path');
 
-// tests mirror the src buckets they verify
+// tests mirror the src buckets they verify; .jl.jsonc = pure JL,
+// .jl.ts = FFI-carrying (contains JS actions)
 const TESTS = [
-  {file: 'src/tests/kernel/jmc-eval.jl.ts'}, // meta-circular gate
-  {file: 'src/tests/cl/conditionals.jl.ts'},
-  {file: 'src/tests/cl/defines.ts'},
-  {file: 'src/tests/cl/file-system.ts'},
-  {file: 'src/tests/cl/input-output.ts'},
-  {file: 'src/tests/cl/conses.ts'},
-  {file: 'src/tests/cl/iteration-and-mapping.ts'},
-  {file: 'src/tests/cl/numbers.ts'},
-  {file: 'src/tests/sbcl/sb-posix.ts'},
+  {file: 'src/tests/kernel/jmc-eval.jl.jsonc'}, // meta-circular gate
+  {file: 'src/tests/cl/conditionals.jl.jsonc'},
+  {file: 'src/tests/cl/defines.jl.jsonc'},
+  {file: 'src/tests/cl/file-system.jl.jsonc'},
+  {file: 'src/tests/cl/input-output.jl.jsonc'},
+  {file: 'src/tests/cl/conses.jl.jsonc'},
+  {file: 'src/tests/cl/iteration-and-mapping.jl.jsonc'},
+  {file: 'src/tests/cl/numbers.jl.jsonc'},
+  {file: 'src/tests/sbcl/sb-posix.jl.jsonc'},
   {file: 'src/tests/modules/requires.jl.ts'}, // require-able vocabulary gate
-  {file: 'src/tests/quicklisp/simple-parallel-tasks.ts'},
-  {file: 'src/tests/quicklisp/trivial-shell.ts'},
+  {file: 'src/tests/quicklisp/simple-parallel-tasks.jl.jsonc'},
+  {file: 'src/tests/quicklisp/trivial-shell.jl.jsonc'},
   // failure-reporting gate: these asserts fail BY DESIGN
-  {file: 'src/tests/quicklisp/lisp-unit.ts', expectFails: 4, expectOks: 4},
+  {file: 'src/tests/quicklisp/lisp-unit.jl.jsonc', expectFails: 4, expectOks: 4},
   // smoke only: its real tests exit the process by design
-  {file: 'src/tests/cl/error.ts', asserts: false},
+  {file: 'src/tests/cl/error.jl.jsonc', asserts: false},
 ];
 
 const root = path.join(__dirname, '..');

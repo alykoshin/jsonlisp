@@ -1,0 +1,21 @@
+// quicklisp/lisp-unit assertions — a DEMO of failure reporting: half of
+// these asserts fail BY DESIGN. run-jl-tests expects exactly 4 fails.
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "actions": {
+    "default": [
+      "list",
+      ["print", "This will test lisp-unit assertions (4 fail by design)"],
+      ["assert-true", true],
+      ["assert-true", false],
+      ["assert-false", true],
+      ["assert-false", false],
+      ["assert-equal", 1, 1],
+      ["assert-equal", 1, 2],
+      ["assert-equal", "aaa", "aaa"],
+      ["assert-equal", "aaa", "bbb"]
+    ]
+  }
+}

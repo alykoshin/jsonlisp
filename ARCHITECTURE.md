@@ -2,11 +2,27 @@
 
 # Architecture — JL and its sources
 
-`tools-runner` embeds **JL** — a Lisp whose concrete syntax is JSON/JSON5/JS arrays
-(see the `.jl.json5` / `.jl.ts` file extensions and the companion package `lisp2jl`,
+`tools-runner` embeds **JL** — a Lisp whose concrete syntax is JSON/JSONC/JS arrays
+(see the file-format rule below and the companion package `lisp2jl`,
 "Lisp → JL"). The runner itself descends from an earlier "jsonScript" design
 (`_doc/jsonScript.md`; the `Tracer` error messages still say `JsonScript:`), onto
 which the Lisp was layered.
+
+**File formats — language is visible in the filename.** JL programs use
+compound extensions `<name>.jl.<syntax>`:
+
+| Extension | Meaning |
+| --- | --- |
+| `.jl.jsonc` | **canonical pure JL**: strict JSON + comments, no trailing commas — VS Code natively applies `$schema` (activity.schema.json) with IntelliSense |
+| `.jl.json` | pure JL, generated/interchange (lisp2jl output target) |
+| `.jl.json5` | accepted — legacy pure-JL files in the wild |
+| `.jl.ts` `.jl.js` `.jl.mjs` `.jl.cjs` | **FFI-carrying** JL: the activity contains JS actions (foreign code); `.jl.ts` needs ts-node |
+
+A plain `.ts` under `src/` is implementation, never a JL program. Every
+parsed activity is validated against `src/toplevel/activity.schema.json`
+(ajv) at load time — that is the real enforcement; editor `$schema` support
+is a jsonc-only bonus. Pure-`.jl.jsonc` activities run on the compiled
+`dist/cli.js` with no TypeScript machinery at all.
 
 The code is organized in four layers. Each layer's name, scope, and boundary is
 taken from a specific source in the Lisp literature, documented below.
@@ -236,7 +252,7 @@ where the OLD behavior worked but differed:
 
 1. **Meta-circular** (kernel): Graham's `eval.` in JL runs via the CLI, matches SBCL.
 2. **Self-hosting** (whole stack): `npm start build` — the tool rebuilds itself
-   with the refactored interpreter (the `tools/tools-runner.activity.json5`
+   with the refactored interpreter (the `tools/tools-runner.jl.jsonc`
    activity is the tool's own build system).
 
 ## References

@@ -1,0 +1,11 @@
+// cl/conditions: error (each test exits the process by design — smoke only).
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "actions": {
+    "default": ["print", "Any of the tests here will immediately exit the process, so they are not default"],
+    "errorUserMsg": ["error", "This is the error message"],
+    "errorDefaultMsg": ["error", "This is the error message"]
+  }
+}

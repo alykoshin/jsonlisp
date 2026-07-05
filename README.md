@@ -7,7 +7,7 @@
 array is an S-expression; the first element is the operator:
 
 ```json5
-// build.activity.json5
+// build.jl.jsonc
 {
   base_dir: './',
   version: '0.0.0',
@@ -29,7 +29,7 @@ array is an S-expression; the first element is the operator:
 ```
 
 ```sh
-npx tools-runner ./build.activity.json5 release
+npx tools-runner ./build.jl.jsonc release
 ```
 
 Activity files (`.json5`, `.json`, `.ts`, `.js`) are libraries of named
@@ -57,7 +57,7 @@ During development: `ts-node ./src/cli.ts <activity> [action] …`.
 
 Example activities in-repo: [openssl cert generation](src/local-projects/openssl/)
 (with a JSON-schema'd config), [mongo backup/restore](src/local-projects/mongo/),
-and the tool's own build pipeline ([tools/tools-runner.activity.json5](tools/tools-runner.activity.json5))
+and the tool's own build pipeline ([tools/tools-runner.jl.jsonc](tools/tools-runner.jl.jsonc))
 — tools-runner builds and releases itself.
 
 ## The language
@@ -101,7 +101,7 @@ npm run check:layers  # import-direction law
 
 Requires [SBCL](https://www.sbcl.org/) on `PATH` — correctness is defined by
 comparison with a real Common Lisp. The flagship test,
-[jmc-eval.jl.ts](src/tests/kernel/jmc-eval.jl.ts), runs the paper's
+[jmc-eval.jl.jsonc](src/tests/kernel/jmc-eval.jl.jsonc), runs the paper's
 `eval.` (translated to JL) on the JL interpreter itself.
 
 ## Install

@@ -1,0 +1,15 @@
+// cl/files: probe-file, directory.
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "actions": {
+    "default": [
+      "list",
+      ["assert-true", ["probe-file", "package.json"]],
+      ["assert-false", ["probe-file", "package.json---------"]],
+      ["directory", "."],
+      ["princ", "assert-x:\n  OK:   ${ assert_ok_count }\n  FAIL: ${ assert_fail_count }"]
+    ]
+  }
+}

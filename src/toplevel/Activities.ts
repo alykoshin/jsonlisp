@@ -1,5 +1,7 @@
 /** @format */
 
+import Ajv from 'ajv';
+
 import {
   ActionDefinition,
   Actions,
@@ -12,6 +14,11 @@ import {
   errorLevelToNumber,
 } from '../lib/log';
 import {Plugin, PluginMap, Plugins} from './Plugins';
+
+import activitySchema from './activity.schema.json';
+
+const ajv = new Ajv({allowUnionTypes: true});
+const validateActivity = ajv.compile(activitySchema);
 
 export type ActivityActionsDefinition = Actions & {
   default: ActionDefinition;
@@ -33,10 +40,24 @@ export interface Activity extends Plugin {
 }
 
 export class Activities extends Plugins<Activity> {
-  // async plug(name: string): Promise<Activities> {
-  // const current = super.plug(name);
-  // return this;
-  // }
+  /**
+   * Schema validation at load time (activity.schema.json via ajv): works
+   * for every syntax (.jl.json5/.json/.ts/...) because JSON Schema applies
+   * to the PARSED object — editor-side $schema support does not exist for
+   * .json5, so this is the real enforcement. Lenient about extra keys,
+   * strict about types of the known ones (catches `require:` vs
+   * `requires:`-class typos).
+   */
+  async _load(fname: string): Promise<Activity> {
+    const activity = await super._load(fname);
+    if (!validateActivity(activity)) {
+      const errors = (validateActivity.errors ?? [])
+        .map((e) => `  ${e.instancePath || '(root)'} ${e.message}`)
+        .join('\n');
+      throw new Error(`Invalid activity "${fname}":\n${errors}`);
+    }
+    return activity;
+  }
 
   actions(): Actions {
     // console.log('Object.keys(this.plugins):', Object.keys(this.plugins));
