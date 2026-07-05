@@ -68,6 +68,19 @@ export const $sbcl: ExecutorFn = async function (a, params, {evaluate}) {
 // },
 
 /**
+ * @name $parse-sbcl-list
+ * The reader alone: parse an SBCL-printed string into JL, without running
+ * SBCL (see reader.ts, vendored from lisp2jl).
+ */
+export const $parseSbclList: ExecutorFn = async function (
+  _,
+  args,
+  {evaluate, logger}
+) {
+  return parse_sbcl_list(String(await evaluate(args[0])), {logger});
+};
+
+/**
  * @name $sbcl-to-list
  */
 export const $sbclToList: ExecutorFn = async function (
@@ -120,6 +133,7 @@ const actions: Actions = {
   //     );
   // },
 
+  '$parse-sbcl-list': $parseSbclList,
   '$sbcl-to-list': $sbclToList,
 };
 

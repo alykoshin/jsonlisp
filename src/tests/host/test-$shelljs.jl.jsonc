@@ -1,0 +1,17 @@
+// host/os: $shelljs built-ins run, and their cwd agrees with sb-posix getcwd.
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "requires": ["os", "sb-posix", "lisp-unit"],
+  "actions": {
+    "default": ["list",
+      ["$shelljs", "echo", "\nThis is the output from shelljs echo method"],
+      ["$shelljs", "cd", "dist"],
+      ["assert-equal", ["$shelljs", "pwd"], ["getcwd"]],
+      ["$shelljs", "cd", ".."],
+      ["assert-equal", ["$shelljs", "pwd"], ["getcwd"]],
+      ["princ", "assert-x:\n  OK:   ${ assert_ok_count }\n  FAIL: ${ assert_fail_count }"]
+    ]
+  }
+}

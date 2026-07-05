@@ -27,6 +27,10 @@ const TESTS = [
   {file: 'src/tests/sbcl/sb-posix.jl.jsonc'},
   {file: 'src/tests/modules/requires.jl.ts'}, // require-able vocabulary gate
   {file: 'src/tests/toplevel/lambda-actions.jl.jsonc'}, // lambda actions compiled at load
+  {file: 'src/tests/host/test-$shelljs.jl.jsonc'},
+  {file: 'src/tests/host/$sbcl.jl.jsonc'}, // sbcl-bridge reader + real SBCL round-trip
+  // smoke only: archives data/in -> data/out (gitignored) via the 7zip exe
+  {file: 'src/tests/host/$zip.jl.jsonc', asserts: false},
   {file: 'src/tests/quicklisp/simple-parallel-tasks.jl.jsonc'},
   {file: 'src/tests/quicklisp/trivial-shell.jl.jsonc'},
   // failure-reporting gate: these asserts fail BY DESIGN

@@ -1,0 +1,20 @@
+// host/build: $zip archives data/in into data/out (gitignored) via the 7zip
+// exe (Windows). Smoke test — exit 0 suffices, no asserts.
+// ($zip evaluates ["$version"], which shells out via shell-command — hence
+//  trivial-shell in requires.)
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "requires": ["build", "trivial-shell"],
+  "actions": {
+    "default": ["list",
+      ["$zip", {
+        "file_names": [".\\src\\tests\\host\\data\\in\\"],
+        "archive_prefix": "dist",
+        "out_dir": ".\\src\\tests\\host\\data\\out\\",
+        "exclude_files": ["test1.txt"]
+      }]
+    ]
+  }
+}

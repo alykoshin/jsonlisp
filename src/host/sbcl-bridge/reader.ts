@@ -58,8 +58,13 @@ export function parse_sbcl_list(
           r = nNominator;
         }
       } else if (token[0] === '"' && token[token.length - 1] === '"') {
-        // String in double quotes — leave double quotes as is
-        r = `${token}`;
+        // String in double quotes — leave double quotes as is: they are what
+        // distinguishes a CL string from a symbol once both become JL strings.
+        // The atoms are re-joined into a JSON5 source (res.join below), so
+        // the token must be escaped as a string literal — emitting it bare
+        // made JSON5.parse consume the quotes as syntax (upstream lisp2jl
+        // bug: strings collapsed into symbols, contradicting this comment).
+        r = JSON.stringify(token);
       } else {
         // Anything else (symbols) — consider it a string
         r = `"${token}"`;
