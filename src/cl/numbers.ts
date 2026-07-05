@@ -9,13 +9,17 @@ import {
   Atom,
   Parameter,
   Parameters,
+  ensureNumber,
 } from '../eval/sexpr';
 import {State} from '../eval/environment';
-import {start} from 'repl';
 import {Logger} from '../lib/log';
 
 /**
- * @module operators
+ * @module cl/numbers
+ * CLHS chapter 12 "Numbers": arithmetic, comparison, zerop, parse-integer.
+ * The generic `operators` machinery is exported — cl/data-and-control-flow
+ * reuses it for and/or/not.
+ * NB: `%` is a JL-ism (ANSI names are mod/rem).
  */
 
 /* const schema: Schema = {
@@ -165,7 +169,7 @@ function calcBinary(
   }
 }
 
-const operators: ExecutorFn = async function (action, args, state) {
+export const operators: ExecutorFn = async function (action, args, state) {
   const {evaluate} = state;
   validateArgs(args, {minCount: 1});
   if (args.length === 1) {
@@ -361,11 +365,23 @@ export const actions: Actions = {
   mod: operators,
   /** @name rem */
   rem: operators,
-  /** @name and */
-  and: operators,
-  /** @name or */
-  or: operators,
-  /** @name not */
-  not: operators,
+
+  /** @name zerop */
+  zerop: async function (_, args, {evaluate, logger}) {
+    validateArgs(args, {exactCount: 1});
+    const value = await evaluate(args[0]);
+    ensureNumber(value);
+    return evaluate(['=', value, 0]);
+  },
+
+  /**
+   * @name parse-integer
+   * @summary Convert string (decimal, binary etc) to number
+   * @see
+   * {@link https://stackoverflow.com/questions/57565902/convert-binary-string-to-number}<br>
+   */
+  'parse-integer': async function (a, params, {evaluate}) {
+    return parseInt(String(await evaluate(params[0])));
+  },
 };
 export default actions;

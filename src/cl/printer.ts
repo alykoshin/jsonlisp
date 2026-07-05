@@ -8,7 +8,9 @@ import {print, stringify, EOL, atBOL} from '../eval/printer';
 import {confirm as confirm_} from './helpers/confirm';
 
 /**
- * @module input-output
+ * @module cl/printer
+ * CLHS chapters 21 "Streams" / 22 "Printer": print princ prin1 format
+ * terpri fresh-line y-or-n-p yes-or-no-p.
  *
  * @see
  * The Common Lisp Cookbook – Files and Directories

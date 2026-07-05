@@ -4,33 +4,31 @@
  * @module cl
  * The standard vocabulary — JL's analog of the COMMON-LISP package
  * ("home of symbols defined by the ANSI language specification").
- * ANSI symbols only; JL extensions live in src/jl, non-ANSI Lisp
- * libraries in src/quicklisp, SBCL packages in src/sbcl.
- * See ARCHITECTURE.md.
+ * Modules are named after CLHS chapters. ANSI symbols only; JL extensions
+ * live in src/jl, third-party Lisp libraries in src/quicklisp, SBCL
+ * packages in src/sbcl. See ARCHITECTURE.md.
  */
 
 import {Actions} from '../eval/sexpr';
 
-import conditionals from './conditionals';
-import defines from './defines';
-import error from './error';
-import files from './files';
-import inputOutput from './input-output';
-import iterationAndMapping from './iteration-and-mapping';
-import lists from './lists';
-import operators from './operators';
-import system from './system';
+import conses from './conses'; // ch 14
+import conditions from './conditions'; // ch 9
+import dataAndControlFlow from './data-and-control-flow'; // ch 5
+import environment from './environment'; // ch 25
+import files from './files'; // ch 20
+import numbers from './numbers'; // ch 12
+import printer from './printer'; // ch 21/22
+import sequences from './sequences'; // ch 17
 
 export const actions: Actions = {
-  ...conditionals,
-  ...defines,
-  ...error,
+  ...conses,
+  ...conditions,
+  ...dataAndControlFlow,
+  ...environment,
   ...files,
-  ...inputOutput,
-  ...iterationAndMapping,
-  ...lists,
-  ...operators,
-  ...system,
+  ...numbers,
+  ...printer,
+  ...sequences,
 };
 
 export default actions;

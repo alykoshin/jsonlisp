@@ -4,7 +4,8 @@ import {validateArgs} from '../eval/validate-args';
 import {Actions, Parameters, ensureNumber} from '../eval/sexpr';
 
 /**
- * @module system
+ * @module cl/environment
+ * CLHS chapter 25 "Environment": sleep, time.
  * @see ...
  */
 

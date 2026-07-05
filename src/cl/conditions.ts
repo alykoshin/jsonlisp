@@ -4,7 +4,8 @@ import {validateArgs} from '../eval/validate-args';
 import {Actions} from '../eval/sexpr';
 
 /**
- * @module error
+ * @module cl/conditions
+ * CLHS chapter 9 "Conditions": error, assert.
  */
 
 export const actions: Actions = {

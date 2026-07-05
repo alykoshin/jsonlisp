@@ -1,13 +1,18 @@
 /** @format */
 
 import {validateArgs} from '../eval/validate-args';
-import {Actions, Parameters, ensureNumber} from '../eval/sexpr';
+import {Actions, ensureString} from '../eval/sexpr';
+import {series1, series2, seriesn} from '../eval/evlis';
+import {stringify} from '../eval/printer';
 
 import {cond} from '../kernel/primitives';
 import {NIL, asBoolean} from '../kernel/booleans';
+import {operators} from './numbers';
 
 /**
- * @module conditionals
+ * @module cl/data-and-control-flow
+ * CLHS chapter 5 "Data and Control Flow": if/when/unless/cond, setq,
+ * prog1/prog2/progn, and/or/not.
  */
 
 export const actions: Actions = {
@@ -30,21 +35,6 @@ export const actions: Actions = {
     return NIL;
   },
 
-  // cond: async function (action, params, {evaluate, logger}) {
-  //   fn_check_params(params, {minCount: 1});
-
-  //   for (const i in params) {
-  //     const [test, ...forms] = params[i] as Parameters;
-  //     const condition = await evaluate(test);
-  //     // logger.debug(`cond[{$i}]: condition:`, JSON.stringify(condition));
-  //     logger.debug(`cond[${i}]: condition:`, condition);
-  //     if (condition) {
-  //       return seriesn(forms, evaluate);
-  //     }
-  //   }
-
-  //   return null;
-  // },
   cond,
 
   /** @name when */
@@ -77,12 +67,51 @@ export const actions: Actions = {
     return null;
   },
 
-  zerop: async function (_, args, {evaluate, logger}) {
-    validateArgs(args, {exactCount: 1});
-    const value = await evaluate(args[0]);
-    ensureNumber(value);
-    return evaluate(['=', value, 0]);
+  /**
+   * @name setq
+   * @see
+   * Difference between `set`, `setq`, and `setf` in Common Lisp?
+   * {@link https://stackoverflow.com/questions/869529/difference-between-set-setq-and-setf-in-common-lisp}
+   */
+  setq: async function (_, args, {evaluate, scopes, logger}) {
+    validateArgs(args, {exactCount: 2});
+
+    // CL: setq does NOT evaluate the variable name. (Evaluating it made any
+    // re-setq of a bound variable crash: "res" -> current value -> not a
+    // string. Use `set` semantics separately if a computed name is needed.)
+    const name = args[0];
+    ensureString(name, `Expect string as a name of variable`);
+
+    const value = await evaluate(args[1]);
+
+    // creates variable at local scope
+    scopes.current().set(name, value);
+
+    logger.debug(`${name} = ${stringify(value)}`);
+    return value;
   },
+
+  /** @name prog1 */
+  prog1: async function (_, args, st) {
+    return series1(args, st);
+  },
+
+  /** @name prog2 */
+  prog2: async function (_, args, st) {
+    return series2(args, st);
+  },
+
+  /** @name progn */
+  progn: async function (_, args, st) {
+    return seriesn(args, st);
+  },
+
+  /** @name and */
+  and: operators,
+  /** @name or */
+  or: operators,
+  /** @name not */
+  not: operators,
 };
 
 export default actions;
