@@ -28,6 +28,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = require("util");
 const _ = __importStar(require("lodash"));
 const json5_1 = __importDefault(require("json5"));
 const commander_1 = require("commander");
@@ -122,7 +123,12 @@ program
     Example calls (Linux):
       $ yarn run start -- tools-runner.ts default ttt '{"test": "test-value"}'
 `);
-program.parse();
+// the action handler is async: parse() would leave its rejection unhandled
+// (ERR_UNHANDLED_REJECTION; non-Error reasons print as "#<Object>")
+program.parseAsync().catch((e) => {
+    console.error(e instanceof Error ? e : (0, util_1.inspect)(e, { depth: 6 }));
+    process.exitCode = 1;
+});
 /*
 async function start() {
   const pathname = getConfigFilename();
