@@ -1,10 +1,14 @@
 <!-- @format -->
 
-# tools-runner / JL
+# jsonlisp / JL
 
-**tools-runner** is a task automation CLI whose scripts are written in **JL**
-— a Lisp whose concrete syntax is JSON/JSON5/JavaScript arrays. A nested
-array is an S-expression; the first element is the operator:
+**jsonlisp** is a task automation CLI whose scripts are written in **JL —
+JSON Lisp** — a Lisp whose concrete syntax is JSON/JSON5/JavaScript arrays.
+A nested array is an S-expression; the first element is the operator:
+
+> Formerly published as **tools-runner**; that package name remains as a
+> compatibility shim. (And no relation to Julia — files are `*.jl.<syntax>`,
+> where the final extension is the carrier: `.jl.jsonc`, `.jl.ts`, …)
 
 ```json5
 // build.jl.jsonc
@@ -29,7 +33,7 @@ array is an S-expression; the first element is the operator:
 ```
 
 ```sh
-npx tools-runner ./build.jl.jsonc release
+npx jsonlisp ./build.jl.jsonc release
 ```
 
 Activity files (`.json5`, `.json`, `.ts`, `.js`) are libraries of named
@@ -46,7 +50,7 @@ against a real SBCL.
 ## Usage
 
 ```
-tools-runner <activity-file> [action=default] [parameters...]
+jsonlisp <activity-file> [action=default] [parameters...]
   -f, --data-file <file>     data object -> variable scope (.ts/.js/.json/.json5)
   -j, --json-data <json>     inline JSON data (deep-overrides --data-file)
   -5, --json5-data <json5>   inline JSON5 data
@@ -57,8 +61,8 @@ During development: `ts-node ./src/cli.ts <activity> [action] …`.
 
 Example activities in-repo: [openssl cert generation](src/local-projects/openssl/)
 (with a JSON-schema'd config), [mongo backup/restore](src/local-projects/mongo/),
-and the tool's own build pipeline ([tools/tools-runner.jl.jsonc](tools/tools-runner.jl.jsonc))
-— tools-runner builds and releases itself.
+and the tool's own build pipeline ([tools/jsonlisp.jl.jsonc](tools/jsonlisp.jl.jsonc))
+— jsonlisp builds and releases itself.
 
 ## The language
 
@@ -107,16 +111,18 @@ comparison with a real Common Lisp. The flagship test,
 ## Install
 
 ```sh
-npm install --save-dev tools-runner
+npm install --save-dev jsonlisp
 ```
 
-Node ≥ 18. `dist/` is committed — the package is its own build system
-(`npm start build`).
+Node ≥ 18. The package is its own build system: the `prepack` script runs
+the `jsonlisp` build activity (`npm start build` manually), so `dist/` is
+rebuilt on publish/pack/git-installs — npm and yarn alike — and stays out
+of git.
 
 ## Links
 
-[github.com](https://github.com/alykoshin/tools-runner) ·
-[npmjs.com](https://www.npmjs.com/package/tools-runner)
+[github.com](https://github.com/alykoshin/jsonlisp) ·
+[npmjs.com](https://www.npmjs.com/package/jsonlisp)
 
 ## License
 

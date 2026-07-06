@@ -1,0 +1,17 @@
+// cl/system-construction: load — reads a JL program file (top-level array
+// of forms) and evaluates each form in order in the CURRENT environment:
+// the fixture's defun registers, its setq lands in scope; returns T per CL.
+{
+  "$schema": "../../toplevel/activity.schema.json",
+  "base_dir": ".",
+  "version": "0.0.0",
+  "actions": {
+    "default": [
+      "list",
+      ["assert-true", ["load", "./src/tests/cl/data/loaded-program.jl.jsonc"]],
+      ["assert-equal", ["loaded-inc", 7], 8],
+      ["assert-equal", "loaded-marker", 42],
+      ["princ", "assert-x:\n  OK:   ${ assert_ok_count }\n  FAIL: ${ assert_fail_count }"]
+    ]
+  }
+}

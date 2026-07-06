@@ -1,0 +1,7 @@
+// Fixture for the `load` test: a JL PROGRAM — a top-level array of forms,
+// evaluated in order in the loader's environment (system-construction.jl.jsonc).
+[
+  [";", "a comment form — evaluates to nothing"],
+  ["defun", "loaded-inc", ["x"], ["+", "x", 1]],
+  ["setq", "loaded-marker", 42]
+]

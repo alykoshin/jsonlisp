@@ -7,14 +7,16 @@ import type {Atom, Actions} from '../eval/sexpr';
 import {State, makeEvaluator} from '../eval';
 import {Tracer, TracerConstructorOptions} from '../eval/tracer';
 
-import {actions as defaultActions, assemble} from '../modules';
+import {defaultActions, assemble} from '../modules';
 
 interface RunnerConstructorOptions extends TracerConstructorOptions {
   errorLevel?: ErrorLevel;
 }
 
 export class Runner {
-  actions: Actions;
+  /** The image — BUILT in init() (assembly cold-loads the JL-written
+   * kernel vocabulary; see modules/assemble), not a static constant. */
+  actions: Actions = {};
   tracer: Tracer;
   errorLevel?: ErrorLevel;
 
@@ -23,7 +25,6 @@ export class Runner {
     maxSteps,
     errorLevel,
   }: RunnerConstructorOptions = {}) {
-    this.actions = defaultActions;
     this.tracer = new Tracer({maxLevels, maxSteps});
     this.errorLevel = errorLevel;
   }
@@ -36,17 +37,12 @@ export class Runner {
     scope?: ScopeObject<Atom>;
   } = {}) {
     //
-    // `this.actions` must be populated before creating the environment
-    if (activities) {
-      // like CL's (require :sb-posix): an activity may restrict the
-      // vocabulary to core + declared packages (see actions/assemble)
-      const requires = activities.requires();
-      const base = requires ? assemble(requires) : this.actions;
-      this.actions = {
-        ...base,
-        ...activities.actions(),
-      };
-    }
+    // `this.actions` must be populated before creating the environment.
+    // like CL's (require :sb-posix): an activity may restrict the
+    // vocabulary to core + declared packages (see modules/assemble)
+    const requires = activities?.requires();
+    const base = requires ? await assemble(requires) : await defaultActions();
+    this.actions = activities ? {...base, ...activities.actions()} : base;
 
     const logLevel = this.errorLevel ?? 'log';
 

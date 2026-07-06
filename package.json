@@ -1,10 +1,13 @@
 {
-  "name": "tools-runner",
-  "version": "0.0.68",
-  "description": "tools-runner",
+  "name": "jsonlisp",
+  "version": "0.1.0",
+  "description": "JL (JSON Lisp) — a Lisp whose concrete syntax is JSON/JSON5, with a portable, declarative task-automation CLI. Formerly published as tools-runner.",
   "type": "commonjs",
   "main": "dist/index.js",
-  "bin": "dist/cli.js",
+  "bin": {
+    "jsonlisp": "dist/cli.js",
+    "tools-runner": "dist/cli.js"
+  },
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -16,8 +19,9 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "start": "ts-node ./src/cli.ts tools/tools-runner.jl.jsonc",
+    "start": "ts-node ./src/cli.ts tools/jsonlisp.jl.jsonc",
     "start-js": "node ./dist/cli.js",
+    "prepack": "ts-node ./src/cli.ts tools/jsonlisp.jl.jsonc _build",
     "build": "npm start build",
     "test": "npm run check:layers && npm run test-core && npm run test:jl",
     "test-core": "ts-node ./src/tests/harness/core-test-runner.ts",
@@ -29,15 +33,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alykoshin/tools-runner.git"
+    "url": "git+https://github.com/alykoshin/jsonlisp.git"
   },
-  "keywords": [],
+  "keywords": [
+    "lisp",
+    "json",
+    "json5",
+    "s-expression",
+    "task-runner",
+    "build",
+    "automation",
+    "common-lisp"
+  ],
   "author": "alykoshin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alykoshin/tools-runner/issues"
+    "url": "https://github.com/alykoshin/jsonlisp/issues"
   },
-  "homepage": "https://github.com/alykoshin/tools-runner#readme",
+  "homepage": "https://github.com/alykoshin/jsonlisp#readme",
   "dependencies": {
     "@utilities/object": "^0.4.4",
     "@utilities/string": "^0.1.1",

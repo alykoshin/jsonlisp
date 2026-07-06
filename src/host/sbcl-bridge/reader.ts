@@ -6,8 +6,9 @@
  * emits (lists, numbers incl. ratios, T/NIL, symbols) back into JL data.
  *
  * Vendored from lisp2jl@0.0.2 (dist/apps/translator-primitive) to break the
- * lisp2jl ⇄ tools-runner circular dependency — lisp2jl depends on
- * tools-runner; tools-runner needed only these two functions back.
+ * lisp2jl ⇄ jsonlisp circular dependency — lisp2jl depends on this package
+ * (via its pre-rename name tools-runner); we needed only these two
+ * functions back.
  *
  * !!! Strings with embedded spaces/brackets are not supported !!!
  */

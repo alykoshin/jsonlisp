@@ -19,6 +19,7 @@ import files from './files'; // ch 20
 import numbers from './numbers'; // ch 12
 import printer from './printer'; // ch 21/22
 import sequences from './sequences'; // ch 17
+import systemConstruction from './system-construction'; // ch 24
 
 export const actions: Actions = {
   ...conses,
@@ -29,6 +30,7 @@ export const actions: Actions = {
   ...numbers,
   ...printer,
   ...sequences,
+  ...systemConstruction,
 };
 
 export default actions;

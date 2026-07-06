@@ -145,13 +145,13 @@ program
     'after',
     `
     Example calls (Windows):
-      > ts-node .\\src\\cli.ts .\\tools-runner.ts default ttt --data-json '{ "test": "test-value" }'    
-      > ts-node .\\src\\cli.ts .\\tools-runner.ts default ttt --data-json '{ """test""": """test-value""" }'    
-      > ts-node .\\src\\cli.ts .\\tools-runner.ts default ttt --data-json '{ ^"test^": ^"test-value^" }'    
-      > ts-node .\\src\\cli.ts .\\tools-runner.ts default ttt --data-json5 "{ test: 'test-value' }"    
-      > yarn run start -- tools-runner.ts default ttt '{"test": "test-value"}'
+      > ts-node .\\src\\cli.ts .\\activity.jl.ts default ttt --data-json '{ "test": "test-value" }'
+      > ts-node .\\src\\cli.ts .\\activity.jl.ts default ttt --data-json '{ """test""": """test-value""" }'
+      > ts-node .\\src\\cli.ts .\\activity.jl.ts default ttt --data-json '{ ^"test^": ^"test-value^" }'
+      > ts-node .\\src\\cli.ts .\\activity.jl.ts default ttt --data-json5 "{ test: 'test-value' }"
+      > yarn run start -- activity.jl.ts default ttt '{"test": "test-value"}'
     Example calls (Linux):
-      $ yarn run start -- tools-runner.ts default ttt '{"test": "test-value"}'
+      $ yarn run start -- activity.jl.ts default ttt '{"test": "test-value"}'
 `
   );
 

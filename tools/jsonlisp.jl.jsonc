@@ -1,0 +1,89 @@
+{
+  "$schema": "../src/toplevel/activity.schema.json",
+  "base_dir": "./",
+  // vocabulary this activity needs, like (require :trivial-shell) — see ARCHITECTURE.md
+  "requires": ["trivial-shell", "host"],
+  "version": "0.0.0",
+  "logLevel": "debug",
+  "actions": {
+    "default": [ "print", "\nThis Activity requires specific Action name to be provided\n" ],
+
+    "_build": [ "list",
+      ["print", "Building dist/ (untracked by git; ships to npm via the files field)"],
+      ["clean-dist"],
+      ["tsc-build"],
+      ["copy-jl-sources"]
+    ],
+
+    // kernel sources written in JL itself (not compiled by tsc) must ship
+    // next to their compiled loader modules
+    "copy-jl-sources": [
+      "$cp", { "source": "src/kernel/derived.jl.jsonc", "dest": "dist/kernel/derived.jl.jsonc" }
+    ],
+
+    "build": [ "list",
+      ["_build"], 
+      ["$version", "patch" ]],
+
+    "clean-dist": [ "list",
+      ["$shelljs", "rm", "-rf", "dist/*" ],
+      ["$shelljs", "mkdir", "-p", "dist" ]], 
+
+    "tsc-build": [ "list",
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
+      ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+    ],
+    "tsc-force": [ "list",
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --verbose", { "cwd": "./", "env": {} } ]
+      ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --force --verbose", { "cwd": "./", "env": {} } ]
+      // ["trivial-shell:shell-command", ".\\node_modules\\.bin\\tsc --build ./tsconfig.json --verbose", { "cwd": "./", "env": {} } ]
+    ],
+
+    // (dead actions removed: -download-lisp-examples / -cl2jl referenced
+    //  src/apps/translator* and -rebuild-grammar / -dl-3rd referenced
+    //  resources/ — neither exists in this repo; see lisp2jl)
+
+    "-test-git-clean": [
+      "list",
+      ["print", "Ensure Git directory is clean..."],
+      [";", "trivial-shell:shell-command", "git status --untracked-files=no --porcelain`"],
+      ["trivial-shell:shell-command", "git status --untracked-files=yes --porcelain"]
+    ],
+    "git-assert-clean": [
+      "list",
+      [";","if"],
+      [";","trivial-shell:shell-command", "sleep 5"],
+      ["print", "Check if Git directory is clean..."],
+      ["assert",
+        ["not", ["trivial-shell:shell-command", "git status --untracked-files=all --porcelain"] ], 
+          "\n\nGit directory is not clean. Please check output of 'git status' for the details\n\n" ],
+      [";","print", "TRUE"],
+      [";","print", "FALSE"]
+    ],
+    "git-add": ["trivial-shell:shell-command", "git add ."],
+    "git-commit": ["trivial-shell:shell-command", "git commit -am \"auto commit\""],
+    "git-push":   ["trivial-shell:shell-command", "git push --follow-tags"],
+    "npm-publish-public":  ["trivial-shell:shell-command", "npm publish --access public"],
+    "npm-publish-private": ["trivial-shell:shell-command", "npm publish --access private"],
+    "jsdoc":      [
+      "list",
+      ["$shelljs", "rm", "-rf", "jsdoc/*" ],
+      ["trivial-shell:shell-command", 
+        ".\\node_modules\\.bin\\jsdoc ./src/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
+    "test-core-primitives": [
+      "list",
+      ["trivial-shell:shell-command",
+        "ts-node ./src/tests/harness/core-test-runner.ts", { "cwd": "./", "env": {} } ]],
+    "test-main": [
+      "list",
+      ["trivial-shell:shell-command", "npm test", { "cwd": "./", "env": {} } ]],
+    "build-add-commit-push": [ "list",
+      ["_build"], 
+      ["git-add"], 
+      ["git-commit"], 
+      ["$version", "patch" ],
+      ["git-assert-clean"],
+      ["git-push"] ]
+  }
+}

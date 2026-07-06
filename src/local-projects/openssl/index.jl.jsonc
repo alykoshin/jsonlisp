@@ -6,7 +6,7 @@
   "$schema": "../../toplevel/activity.schema.json",
   "base_dir": "./demo",
   "version": "2.5.22",
-  "requires": ["trivial-shell", "host"],
+  "requires": ["trivial-shell", "host", "cl-files"], // cl-files: ensure-directories-exist
   "actions": {
     "default": ["gen_all"],
 

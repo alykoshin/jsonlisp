@@ -89,7 +89,11 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-#dist
+
+# compiled output — NOT tracked; ships to npm via the "files" field and is
+# rebuilt by the `prepack` script (self-hosted: the jsonlisp build activity;
+# prepack covers npm/yarn publish, pack, and git-URL installs on both)
+/dist/
 
 # Gatsby files
 .cache/
@@ -130,12 +134,20 @@ out
 .pnp.*
 
 #
-.idea
+.idea/
+.vscode/
+
+#
+.claude/
+CLAUDE.md
 
 #
 
-_archive
-_doc
-jsdoc
+_archive/
+_doc/
+jsdoc/
 
-demo/temp
+demo/temp/
+configs/ssl/
+_status.md
+_todo.md

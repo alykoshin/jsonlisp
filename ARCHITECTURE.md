@@ -2,7 +2,7 @@
 
 # Architecture — JL and its sources
 
-`tools-runner` embeds **JL** — a Lisp whose concrete syntax is JSON/JSONC/JS arrays
+`jsonlisp` embeds **JL — JSON Lisp** — a Lisp whose concrete syntax is JSON/JSONC/JS arrays
 (see the file-format rule below and the companion package `lisp2jl`,
 "Lisp → JL"). The runner itself descends from an earlier "jsonScript" design
 (`_doc/jsonScript.md`; the `Tracer` error messages still say `JsonScript:`), onto
@@ -24,10 +24,22 @@ parsed activity is validated against `src/toplevel/activity.schema.json`
 is a jsonc-only bonus. Pure-`.jl.jsonc` activities run on the compiled
 `dist/cli.js` with no TypeScript machinery at all.
 
-The interpreter's own Lisp-written vocabulary uses the same format: the
-kernel's derived functions live in `src/kernel/derived.jl.jsonc` (a bare
-actions map, not an activity), loaded at boot by `derived.ts` and copied
-next to the compiled loader by the build (`copy-jl-sources`).
+The interpreter's own Lisp-written vocabulary uses the same syntax but the
+other file shape: `src/kernel/derived.jl.jsonc` is a **JL program** — a
+top-level ARRAY of `defun` forms, Lisp source proper, mirroring jmc.lisp
+form-for-form — where an OBJECT is an activity/actions map (the image view:
+each entry ≈ `(setf (symbol-function 'f) (lambda …))`). It is cold-loaded
+through the REAL evaluator over the kernel's own vocabulary
+(`kernel/load.ts` `coldLoadJlProgram`, awaited by `modules/assemble`) —
+SBCL loading its Lisp-written library; the image is the product of an async
+boot, not a module-load-time constant. Whether a top-level form cold-loads
+is decided by the boot vocabulary, not by the loader; the one reader-level
+rule is comment stripping (`[";", …]` forms — in CL `;` is reader syntax
+and never reaches eval). The runtime counterpart is CL's `load`
+(cl/system-construction, CLHS ch 24): the same reader
+(`readJlProgramSync`), evaluated in the current environment instead of a
+boot one. The build copies the .jl.jsonc next to the compiled loader
+(`copy-jl-sources`).
 
 The code is organized in four layers. Each layer's name, scope, and boundary is
 taken from a specific source in the Lisp literature, documented below.
@@ -229,14 +241,28 @@ spec"*). JL sorts the same territory by origin:
 **Vocabulary is require-able**, like SBCL contribs. An activity may declare
 
 ```json5
-requires: ['sb-posix', {name: 'trivial-shell', use: false}, 'host']
+requires: ['sb-posix', {name: 'trivial-shell', use: false}, 'cl-files']
 ```
 
-and gets the core language (cl + jmc + jl) plus exactly those packages —
-`{use: false}` registers qualified names only (CL's "don't use-package"
-discipline); group names (`sbcl`, `quicklisp`, `host`) expand; no `requires`
-means the full vocabulary (backward compatible). See `assemble()` in
-`src/actions/index.ts` and the gate `src/tests/lisp-like/requires.jl.ts`.
+and gets the core language (`cl-core` + jmc + jl) plus exactly those
+packages — `{use: false}` registers qualified names only (CL's "don't
+use-package" discipline); group names (`cl`, `sbcl`, `quicklisp`, `host`)
+expand; no `requires` means the full vocabulary (backward compatible). See
+`assemble()` in `src/modules/index.ts` and the gate
+`src/tests/modules/requires.jl.ts`.
+
+**The always-loaded core is the language, not the library.** `cl-core`
+holds the kernel primitives, `lambda`/`defun`/`eval`, all of CLHS ch 5
+(control flow) and ch 9's `error`/`assert`, plus glue cherry-picked from
+other chapters (`list`, `print`/`princ`, arithmetic/comparisons) — chosen by
+what real activities call. The remaining chapters (`cl-conses`,
+`cl-environment`, `cl-files`, `cl-numbers`, `cl-printer`, `cl-sequences`,
+`cl-system-construction`) are ordinary require-able packages;
+`requires: ['cl']` restores the full ANSI surface. The precedent is R7RS's `(scheme base)` vs its optional
+`(scheme file)`/`(scheme cxr)` libraries and Emacs Lisp's core vs
+`cl-lib` — NOT conforming CL, where the whole COMMON-LISP package is always
+present; the SBCL referee harness therefore always runs with the full
+vocabulary (no `requires`), keeping JL-vs-SBCL comparisons apples-to-apples.
 
 **Naming:** Lisp-world actions carry package-qualified names via
 `defpackage` (see above) alongside bare aliases; `$name` marks host actions.
@@ -270,7 +296,7 @@ where the OLD behavior worked but differed:
 
 1. **Meta-circular** (kernel): Graham's `eval.` in JL runs via the CLI, matches SBCL.
 2. **Self-hosting** (whole stack): `npm start build` — the tool rebuilds itself
-   with the refactored interpreter (the `tools/tools-runner.jl.jsonc`
+   with the refactored interpreter (the `tools/jsonlisp.jl.jsonc`
    activity is the tool's own build system).
 
 ## References

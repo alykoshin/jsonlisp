@@ -8,19 +8,12 @@ import {testRunner} from './test-runner';
 import eval from '../../eval/eval';
 import functions from '../../kernel/lambda';
 import primitives from '../../kernel/primitives';
-import derived from '../../kernel/derived';
+import {loadDerived} from '../../kernel/derived';
 //
 import functionsCases from '../kernel/functions.cases';
 import primitivesCases from '../kernel/primitives.cases';
 
 const allCases = [...functionsCases, ...primitivesCases];
-
-const actions: Actions = {
-  ...eval,
-  ...functions,
-  ...primitives,
-  ...derived,
-};
 
 type SbclExpression = string;
 
@@ -94,6 +87,13 @@ function printHeaders() {
 // }
 
 async function run() {
+  const actions: Actions = {
+    ...eval,
+    ...functions,
+    ...primitives,
+    ...(await loadDerived()),
+  };
+
   printHeaders();
   let failCount = 0;
 

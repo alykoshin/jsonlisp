@@ -2,6 +2,7 @@
 
 import * as fs from 'fs/promises';
 import fsPromises from 'fs/promises';
+import {readFileSync} from 'fs';
 // import {ensureFile} from './fileUtils';
 
 //
@@ -11,6 +12,14 @@ export async function readTextFile(
   encoding: BufferEncoding = 'utf8'
 ): Promise<string> {
   return await fs.readFile(pathname, {encoding});
+}
+
+/** Sync variant — for module-load-time reads (no top-level await in CJS). */
+export function readTextFileSync(
+  pathname: string,
+  encoding: BufferEncoding = 'utf8'
+): string {
+  return readFileSync(pathname, {encoding});
 }
 
 // export async function writeTextFile(

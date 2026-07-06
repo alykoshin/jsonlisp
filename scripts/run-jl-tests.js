@@ -20,6 +20,7 @@ const TESTS = [
   {file: 'src/tests/cl/conditionals.jl.jsonc'},
   {file: 'src/tests/cl/defines.jl.jsonc'},
   {file: 'src/tests/cl/file-system.jl.jsonc'},
+  {file: 'src/tests/cl/system-construction.jl.jsonc'}, // runtime `load`
   {file: 'src/tests/cl/input-output.jl.jsonc'},
   {file: 'src/tests/cl/conses.jl.jsonc'},
   {file: 'src/tests/cl/iteration-and-mapping.jl.jsonc'},

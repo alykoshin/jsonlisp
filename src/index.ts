@@ -1,7 +1,7 @@
 /** @format */
 
 /**
- * tools-runner / JL — public facade.
+ * jsonlisp / JL — public facade.
  *
  * Layers (see ARCHITECTURE.md):
  *   eval/      the evaluator (makeEvaluator, Environment, S-expression model)
@@ -18,7 +18,9 @@ export * from './kernel/booleans';
 
 export {default as kernel} from './kernel';
 export {default as cl} from './cl';
-export {actions as defaultActions} from './modules';
+// async: the image is built (the jmc vocabulary is cold-loaded from JL
+// source through the real evaluator), not a module-load-time constant
+export {defaultActions} from './modules';
 
 export {Runner} from './toplevel/runner';
 export {Activities} from './toplevel/Activities';
