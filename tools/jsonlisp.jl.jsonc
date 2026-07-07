@@ -66,11 +66,6 @@
     "git-push":   ["trivial-shell:shell-command", "git push --follow-tags"],
     "npm-publish-public":  ["trivial-shell:shell-command", "npm publish --access public"],
     "npm-publish-private": ["trivial-shell:shell-command", "npm publish --access private"],
-    "jsdoc":      [
-      "list",
-      ["$shelljs", "rm", "-rf", "jsdoc/*" ],
-      ["trivial-shell:shell-command", 
-        ".\\node_modules\\.bin\\jsdoc ./src/ -r -c jsdoc.conf.json -d jsdoc/", { "cwd": "./", "env": {} } ]],
     "test-core-primitives": [
       "list",
       ["trivial-shell:shell-command",

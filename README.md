@@ -6,9 +6,10 @@
 JSON Lisp** — a Lisp whose concrete syntax is JSON/JSON5/JavaScript arrays.
 A nested array is an S-expression; the first element is the operator:
 
-> Formerly published as **tools-runner**; that package name remains as a
-> compatibility shim. (And no relation to Julia — files are `*.jl.<syntax>`,
-> where the final extension is the carrier: `.jl.jsonc`, `.jl.ts`, …)
+> Published as **[@jsonlisp/core](https://www.npmjs.com/package/@jsonlisp/core)**;
+> formerly **tools-runner**, which remains as a compatibility shim. (And no
+> relation to Julia — files are `*.jl.<syntax>`, where the final extension is
+> the carrier: `.jl.jsonc`, `.jl.ts`, …)
 
 ```json5
 // build.jl.jsonc
@@ -111,7 +112,7 @@ comparison with a real Common Lisp. The flagship test,
 ## Install
 
 ```sh
-npm install --save-dev jsonlisp
+npm install --save-dev @jsonlisp/core
 ```
 
 Node ≥ 18. The package is its own build system: the `prepack` script runs
@@ -122,7 +123,7 @@ of git.
 ## Links
 
 [github.com](https://github.com/alykoshin/jsonlisp) ·
-[npmjs.com](https://www.npmjs.com/package/jsonlisp)
+[npmjs.com](https://www.npmjs.com/package/@jsonlisp/core)
 
 ## License
 
